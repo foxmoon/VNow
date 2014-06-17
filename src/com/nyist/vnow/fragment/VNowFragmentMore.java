@@ -34,7 +34,7 @@ public class VNowFragmentMore extends Fragment implements OnClickListener {
         super.onCreate(savedInstanceState);
         mCore = VNowApplication.getInstance().getCore();
         mCallBackListener = new MyEventListener();
-        mVNowAPI = IVNowAPI.createIVNowAPI();
+        mVNowAPI = IVNowAPI.newInstance();
     }
 
     @Override

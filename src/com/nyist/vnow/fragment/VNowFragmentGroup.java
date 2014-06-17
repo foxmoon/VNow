@@ -148,7 +148,7 @@ public class VNowFragmentGroup extends Fragment implements DelListener {
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new PinyinComparator();
         mCallBackListener = new MyEventListener();
-        mVNowAPI = IVNowAPI.createIVNowAPI();
+        mVNowAPI = IVNowAPI.newInstance();
     }
 
     @Override

@@ -43,10 +43,13 @@ public class IVNowFramework {
     private int mVideoFrameRate = 15;
     private int mVideoEncoderType = 0; // 0: stagefright 1: recorder
 
-    // ////////////////////////////////////////////////////////////////
-    // interface
-    public void startVNowService(Context context) {
-        Log.i(TAG, "init");
+    
+    /**
+     * 绑定VNowCoreService服务
+     * @param context
+     */
+    public void bindVNowService(Context context) {
+        Log.i(TAG, "bindVNowService");
         if (mIsInit == true) {
             // return;
         }

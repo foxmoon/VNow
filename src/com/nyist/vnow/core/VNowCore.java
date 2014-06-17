@@ -55,7 +55,7 @@ import com.vnow.sdk.openapi.EventListener;
 import com.vnow.sdk.openapi.IVNowAPI;
 
 /**
- * 数据访问方法的封装
+ * 常用接口访问方法的封装
  * @author harry
  * @version Creat on 2014-6-17上午9:47:03
  */
@@ -104,7 +104,7 @@ public class VNowCore {
         mListPhotoUpdate = new ArrayList<UploadCaptrue>();
         mListPicUrl = new ArrayList<String>();
         mTaskDao = new VNTaskDao(mContext);
-        mIVNowAPI = IVNowAPI.createIVNowAPI();
+        mIVNowAPI = IVNowAPI.newInstance();
         bindVNowService();
         mEventListener = new MyEventListener();
         mIVNowAPI.setEventListener(mEventListener);

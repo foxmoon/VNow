@@ -30,36 +30,40 @@ import com.vnow.sdk.framework.IVNowFramework;
 
 /**
  * 调用IVNowFramework方法的封装
+ * 
  * @author harry
  * @version Creat on 2014-6-17上午9:45:22
  */
 public class IVNowAPI {
     private final String TAG = "IVNowAPI";
     private static String mSessionID;
-    static private IVNowFramework mIVNowFramework = null;
-    static private ArrayList<EventListener> mListenerList = new ArrayList<EventListener>();
-    static private VNFrameworkEventListener mVNFrameworkEventListener = new VNFrameworkEventListener();
+    private static IVNowFramework mIVNowFramework = null;
+    private static ArrayList<EventListener> mListenerList = new ArrayList<EventListener>();
+    private static VNFrameworkEventListener mVNFrameworkEventListener = new VNFrameworkEventListener();
     private Context mContext;
+    private static IVNowAPI mInstance = new IVNowAPI();
 
     private IVNowAPI() {
-    }
-
-    static public IVNowAPI createIVNowAPI() {
         if (mIVNowFramework == null) {
             mIVNowFramework = new IVNowFramework();
             mIVNowFramework.setEventListener(mVNFrameworkEventListener);
         }
-        return new IVNowAPI();
+    }
+
+    public static IVNowAPI newInstance() {
+        if (mInstance == null) {
+            mInstance = new IVNowAPI();
+        }
+        return mInstance;
     }
 
     public void bindVNowService(Context context) {
-        Log.i(TAG, "init");
-        mIVNowFramework.startVNowService(context);
+        Log.i(TAG, "bindVNowService");
+        mIVNowFramework.bindVNowService(context);
         mContext = context;
     }
 
-    public void setServerIP(String server) {
-    }
+    public void setServerIP(String server) {}
 
     public void deInit(Context context) {
         Log.i(TAG, "deInit");
@@ -186,7 +190,7 @@ public class IVNowAPI {
                     .append(strPhone)
                     .append("/")
                     .append(CommonUtil._svrIP).append("/SafetyExit.html");
-            LogTag.e(TAG+"login:", sBuffer.toString());
+            LogTag.d("login:", sBuffer.toString());
             return mIVNowFramework.httpGet(sBuffer.toString(),
                     Request.REQ_LOGIN);
         }
@@ -352,7 +356,7 @@ public class IVNowAPI {
                     .append("/req_query_colleage_list/").append(version)
                     .append("/").append(code).append("/list.html;jsessionid=")
                     .append(mSessionID);
-            System.out.println(sBuffer.toString());
+            LogTag.d("queryColleagueList", sBuffer.toString());
             return mIVNowFramework.httpGet(sBuffer.toString(),
                     Request.REQ_QUERY_COLLEAGE_LIST);
         }
@@ -688,8 +692,7 @@ public class IVNowAPI {
                                 String status = parser.getAttributeValue(null, "Status");
                                 onResponseApiStatus(status);
                             }
-                            else if (name != null && "loginsta".equals(name)) {
-                            }
+                            else if (name != null && "loginsta".equals(name)) {}
                             else if (name != null && "callhungup".equals(name)) {
                                 onResponseHangup(name);
                                 // VNowAPI.closeLocalVideo();
@@ -708,8 +711,7 @@ public class IVNowAPI {
                                 String callFrom = parser.getAttributeValue(null, "CallerID");
                                 onResponseCallIn(callFrom);
                             }
-                            else if (name != null && "callanswer".equals(name)) {
-                            }
+                            else if (name != null && "callanswer".equals(name)) {}
                             else if (name != null && "stopvidenc".equals(name)) {
                                 // 05-06 20:51:58.741: I/System.out(3491):
                                 // processCoreEvent--><root><Info

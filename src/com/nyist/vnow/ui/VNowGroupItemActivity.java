@@ -123,7 +123,7 @@ public class VNowGroupItemActivity extends Activity implements DelGroupUserListe
         pinyinComparator = new PinyinComparator();
         mCallBackListener = new MyEventListener();
         mListGrpUser = new ArrayList<Group>();
-        mVNowAPI = IVNowAPI.createIVNowAPI();
+        mVNowAPI = IVNowAPI.newInstance();
         initGroupUserUI();
         initGrpUser();
     }

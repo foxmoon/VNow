@@ -3,23 +3,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
-    >
-     <RelativeLayout
+    android:orientation="vertical" >
+
+    <RelativeLayout
         android:id="@+id/rlayout_main_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_bar_top" >
-<ImageButton 
-   	        android:id="@+id/btn_back"
-   	        android:layout_width="wrap_content"
-   	        android:layout_height="wrap_content"
-   	        android:src="@drawable/btn_title_back_bg"
-   	        android:background="@null"
-   	        android:layout_centerVertical="true"
-   	        android:scaleType="centerInside"
-   	        android:layout_margin="10dp"
-   	        />
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:background="@null"
+            android:scaleType="centerInside"
+            android:src="@drawable/btn_title_back_bg" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,98 +32,100 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:padding="10dp"
                 android:text="设置"
                 android:textColor="@color/list_white"
                 android:textSize="@dimen/LargestTextSize"
-                android:padding="10dp"
                 android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>
-    <TextView 
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:textSize="18sp"
-        android:textColor="@color/txt_black"
         android:text="@string/str_video_setting"
-        />
-    <ImageView 
+        android:textColor="@color/txt_black"
+        android:textSize="18sp" />
+
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/line_alert_gray"
-        />
-     <RadioGroup
-            android:id="@+id/rgroup_show_modes"
-            android:layout_width="match_parent"
+        android:src="@drawable/line_alert_gray" />
+
+    <RadioGroup
+        android:id="@+id/rgroup_show_modes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/rbtn_mode1_show"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:orientation="horizontal" >
-            <RadioButton
-                android:id="@+id/rbtn_mode1_show"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:checked="true"
-                android:layout_height="wrap_content"
-                android:text="@string/str_video_mode1" />
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="@string/str_video_mode1" />
 
-            <RadioButton
-                android:id="@+id/rbtn_mode2_show"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/str_video_mode2" />
+        <RadioButton
+            android:id="@+id/rbtn_mode2_show"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/str_video_mode2" />
 
-            <RadioButton
-                android:id="@+id/rbtn_mode3_show"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/str_video_mode3" />
-        </RadioGroup>
-     <TextView 
+        <RadioButton
+            android:id="@+id/rbtn_mode3_show"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/str_video_mode3" />
+    </RadioGroup>
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:textSize="18sp"
-        android:textColor="@color/txt_black"
         android:text="@string/str_sound_back"
-        />
-     
-     <EditText
-         android:id="@+id/edit_sound_reduce"
+        android:textColor="@color/txt_black"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/edit_sound_reduce"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:textColor="@color/txt_black"
+        android:background="@drawable/bg_add_contact_edit_search"
         android:gravity="center"
         android:hint="100-500"
-        android:background="@drawable/bg_add_contact_edit_search"
         android:inputType="number"
-        />
-     <LinearLayout 
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:gravity="center"
-         android:orientation="vertical"
-         >
-     <Button
-        android:id="@+id/btn_logout"
+        android:textColor="@color/txt_black"
+        android:textSize="18sp" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="13dp"
-        android:layout_marginRight="13dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/btn_logout_style"
-        android:text="@string/str_logout"
-        android:textColor="@android:color/holo_red_light"
-        android:textSize="20sp"
-        android:padding="10dp" />
-     </LinearLayout>
-    
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="13dp"
+            android:layout_marginRight="13dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/btn_logout_style"
+            android:padding="10dp"
+            android:text="@string/str_logout"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="20sp" />
+    </LinearLayout>
+
 </LinearLayout>

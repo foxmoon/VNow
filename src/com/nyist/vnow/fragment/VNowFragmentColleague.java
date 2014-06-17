@@ -107,7 +107,7 @@ public class VNowFragmentColleague extends Fragment {
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new PinyinComparator();
         mCallBackListener = new MyEventListener();
-        mVNowAPI = IVNowAPI.createIVNowAPI();
+        mVNowAPI = IVNowAPI.newInstance();
     }
 
     @Override
