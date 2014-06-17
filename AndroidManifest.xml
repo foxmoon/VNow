@@ -81,7 +81,7 @@
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:alwaysRetainTaskState="true" />
         <activity
             android:name="com.nyist.vnow.ui.One2oneActivity"

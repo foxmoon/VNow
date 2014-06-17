@@ -139,7 +139,7 @@ public class SystemSetActivity extends Activity implements OnClickListener {
                 Intent intent = new Intent(this,
                         VNowHostActivity.class);
                 startActivity(intent);
-                mCore.initCore();
+                mCore.bindVNowService();
                 this.finish();
             }
                 break;

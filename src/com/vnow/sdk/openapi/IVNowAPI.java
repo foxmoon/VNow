@@ -25,6 +25,7 @@ import com.nyist.vnow.event.Response;
 import com.nyist.vnow.struct.Room;
 import com.nyist.vnow.struct.User;
 import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.LogTag;
 import com.vnow.sdk.framework.IVNowFramework;
 
 /**
@@ -51,9 +52,9 @@ public class IVNowAPI {
         return new IVNowAPI();
     }
 
-    public void init(Context context) {
+    public void bindVNowService(Context context) {
         Log.i(TAG, "init");
-        mIVNowFramework.init(context);
+        mIVNowFramework.startVNowService(context);
         mContext = context;
     }
 
@@ -185,7 +186,7 @@ public class IVNowAPI {
                     .append(strPhone)
                     .append("/")
                     .append(CommonUtil._svrIP).append("/SafetyExit.html");
-            System.out.println(sBuffer.toString());
+            LogTag.e(TAG+"login:", sBuffer.toString());
             return mIVNowFramework.httpGet(sBuffer.toString(),
                     Request.REQ_LOGIN);
         }

@@ -35,7 +35,7 @@ public class VNowFragmentSetSvr extends Fragment implements OnClickListener {
             // TODO Auto-generated method stub
             super.handleMessage(msg);
             if (msg.what == RESET_VNAPI_CORE) {
-                mCore.initCore();
+                mCore.bindVNowService();
             }
         }
     };

@@ -105,7 +105,7 @@ public class VNowCore {
         mListPicUrl = new ArrayList<String>();
         mTaskDao = new VNTaskDao(mContext);
         mIVNowAPI = IVNowAPI.createIVNowAPI();
-        initCore();
+        bindVNowService();
         mEventListener = new MyEventListener();
         mIVNowAPI.setEventListener(mEventListener);
         mDES = new DES();
@@ -305,8 +305,8 @@ public class VNowCore {
         mIVNowAPI.coreExit(mContext);
     }
 
-    public void initCore() {
-        mIVNowAPI.init(mContext);
+    public void bindVNowService() {
+        mIVNowAPI.bindVNowService(mContext);
     }
 
     public void loadWebData() {

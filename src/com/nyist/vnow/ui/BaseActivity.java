@@ -3,6 +3,7 @@ package com.nyist.vnow.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Window;
 
 import com.nyist.vnow.R;
 import com.nyist.vnow.core.VNowApplication;
@@ -22,6 +23,7 @@ public abstract class BaseActivity extends Activity {
 		if (VNowApplication.mAppState == -1) {
 			restartApplication();
 		}else {
+		    requestWindowFeature(Window.FEATURE_NO_TITLE);
 			setContentView();
 			initializeData();
 			initializeViews();

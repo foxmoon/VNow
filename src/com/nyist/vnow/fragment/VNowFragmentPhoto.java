@@ -33,13 +33,18 @@ public class VNowFragmentPhoto extends Fragment {
     // private String filePath=Environment.getExternalStorageDirectory()+"/tmp";
     private View mMyView;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mCore = VNowApplication.getInstance().getCore();
+    }
+
     @SuppressLint("NewApi")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         mMyView = inflater.inflate(R.layout.vnow_list_photo, container, false);
-        mCore = VNowApplication.getInstance().getCore();
         initUI();
         return mMyView;
     }

@@ -45,7 +45,7 @@ public class IVNowFramework {
 
     // ////////////////////////////////////////////////////////////////
     // interface
-    public void init(Context context) {
+    public void startVNowService(Context context) {
         Log.i(TAG, "init");
         if (mIsInit == true) {
             // return;
