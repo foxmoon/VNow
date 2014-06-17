@@ -11,6 +11,7 @@ import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.struct.VNowRctContact;
 import com.nyist.vnow.ui.ConfActivity;
 import com.nyist.vnow.utils.DES;
+import com.nyist.vnow.utils.ToastUtil;
 
 public class EventReceiver extends BroadcastReceiver {
     private Context mContext;
@@ -31,17 +32,17 @@ public class EventReceiver extends BroadcastReceiver {
                 callIntent.putExtra("callName", strUserID);
                 callIntent.addFlags(callIntent.FLAG_ACTIVITY_NEW_TASK);
                 VNowRctContact rctItem = new VNowRctContact();
-                rctItem.setmStrUserId(VNowApplication.the().getCore()
+                rctItem.setmStrUserId(VNowApplication.getInstance().getCore()
                         .getMySelf().uuid);
-                rctItem.setmStrUserName(VNowApplication.the().getCore()
+                rctItem.setmStrUserName(VNowApplication.getInstance().getCore()
                         .getMySelf().name);
                 rctItem.setmStrConPhone((new DES()).encrypt(strUserID));
                 rctItem.setmStrContactName(strUserID);
                 rctItem.setmCallTime(System.currentTimeMillis());
                 rctItem.setmIsCallIn(true);
-                VNowApplication.the().getCore().insertCallHistory(rctItem);
+                VNowApplication.getInstance().getCore().insertCallHistory(rctItem);
                 context.startActivity(callIntent);
-                VNowApplication.the().showToast(strUserID + "呼入...");
+                ToastUtil.getInstance(mContext).showShort(strUserID + "呼入...");
             }
         }
     }

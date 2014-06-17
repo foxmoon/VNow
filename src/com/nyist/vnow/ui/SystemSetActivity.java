@@ -36,7 +36,7 @@ public class SystemSetActivity extends Activity implements OnClickListener {
         AlphaAnimation alphaAnim = new AlphaAnimation(0.0f, 1.0f);
         alphaAnim.setDuration(300);
         view.setAnimation(alphaAnim);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         loadSatrtUI();
     }
 
@@ -48,11 +48,11 @@ public class SystemSetActivity extends Activity implements OnClickListener {
         if (sound.length() > 0) {
             int value = Integer.parseInt(sound);
             if (value < 100 || value > 500) {
-                VNowApplication.the().setSetting(getString(R.string.setting_video_sound_red), mValue);
+                VNowApplication.getInstance().setSetting(getString(R.string.setting_video_sound_red), mValue);
                 soundValue = mValue;
             }
             else {
-                VNowApplication.the().setSetting(getString(R.string.setting_video_sound_red), value);
+                VNowApplication.getInstance().setSetting(getString(R.string.setting_video_sound_red), value);
                 soundValue = value;
             }
         }
@@ -67,7 +67,7 @@ public class SystemSetActivity extends Activity implements OnClickListener {
         mEdSoundRd = (EditText) findViewById(R.id.edit_sound_reduce);
         mBtnBack.setOnClickListener(this);
         mBtnLogout.setOnClickListener(this);
-        String mode = VNowApplication.the().getSetting(getString(R.string.setting_video_show_params), "-30-320-240-300000-1");
+        String mode = VNowApplication.getInstance().getSetting(getString(R.string.setting_video_show_params), "-30-320-240-300000-1");
         if (mode.equals("-30-320-240-300000-1")) {
             mRadioGp.check(R.id.rbtn_mode1_show);
         }
@@ -77,7 +77,7 @@ public class SystemSetActivity extends Activity implements OnClickListener {
         else if (mode.equals("-30-1280-720-1500000-1")) {
             mRadioGp.check(R.id.rbtn_mode3_show);
         }
-        mValue = VNowApplication.the().getSetting(getString(R.string.setting_video_sound_red), 240);
+        mValue = VNowApplication.getInstance().getSetting(getString(R.string.setting_video_sound_red), 240);
         mEdSoundRd.setText("" + mValue);
         mEdSoundRd.addTextChangedListener(new TextWatcher() {
             @Override
@@ -108,15 +108,15 @@ public class SystemSetActivity extends Activity implements OnClickListener {
                 // TODO Auto-generated method stub
                 switch (checkedId) {
                     case R.id.rbtn_mode1_show: {
-                        VNowApplication.the().setSetting(getString(R.string.setting_video_show_params), "-30-320-240-300000-1");
+                        VNowApplication.getInstance().setSetting(getString(R.string.setting_video_show_params), "-30-320-240-300000-1");
                     }
                         break;
                     case R.id.rbtn_mode2_show: {
-                        VNowApplication.the().setSetting(getString(R.string.setting_video_show_params), "-30-640-480-800000-1");
+                        VNowApplication.getInstance().setSetting(getString(R.string.setting_video_show_params), "-30-640-480-800000-1");
                     }
                         break;
                     case R.id.rbtn_mode3_show: {
-                        VNowApplication.the().setSetting(getString(R.string.setting_video_show_params), "-30-1280-720-1500000-1");
+                        VNowApplication.getInstance().setSetting(getString(R.string.setting_video_show_params), "-30-1280-720-1500000-1");
                     }
                         break;
                 }
@@ -135,7 +135,7 @@ public class SystemSetActivity extends Activity implements OnClickListener {
                 break;
             case R.id.btn_logout: {
                 mCore.exitCore();
-                VNowApplication.the().setSetting(getString(R.string.setting_login_user_pwd), null);
+                VNowApplication.getInstance().setSetting(getString(R.string.setting_login_user_pwd), null);
                 Intent intent = new Intent(this,
                         VNowHostActivity.class);
                 startActivity(intent);

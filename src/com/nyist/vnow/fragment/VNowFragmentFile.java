@@ -24,6 +24,7 @@ import com.nyist.vnow.adapter.VNSdFileAdapter.FileListener;
 import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.core.VNowCore;
 import com.nyist.vnow.struct.FileUpdate;
+import com.nyist.vnow.utils.ToastUtil;
 
 public class VNowFragmentFile extends Fragment implements FileListener {
     private VNowCore mCore;
@@ -42,7 +43,7 @@ public class VNowFragmentFile extends Fragment implements FileListener {
             Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         View view = inflater.inflate(R.layout.vnow_login, container, false);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         initUI(view);
         return view;
     }
@@ -110,7 +111,7 @@ public class VNowFragmentFile extends Fragment implements FileListener {
             // loadFileUpdateUI();
         }
         else {
-            VNowApplication.the().showToast("该文件已经在上传列表中!");
+            ToastUtil.getInstance(getActivity()).showShort("该文件已经在上传列表中!");
         }
     }
 }

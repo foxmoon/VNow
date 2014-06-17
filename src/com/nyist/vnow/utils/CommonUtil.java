@@ -66,6 +66,10 @@ public class CommonUtil {
         return _httpUrl;
     }
 
+    /**
+     * 设置ip地址
+     * @param ip
+     */
     public static void set_httpUrl(String ip) {
         CommonUtil._svrIP = ip;
         CommonUtil._httpUrl = "http://" + ip + ":8080/remote/";
@@ -293,7 +297,7 @@ public class CommonUtil {
      * @return
      */
     public static String formatTime(long time) {
-        if (DateFormat.is24HourFormat(VNowApplication.the()
+        if (DateFormat.is24HourFormat(VNowApplication.getInstance()
                 .getApplicationContext())) {
             return new SimpleDateFormat(TIME_24FORMAT).format(time);
         }
@@ -408,7 +412,7 @@ public class CommonUtil {
      */
     public static boolean checkWIFIor3G() {
         ConnectivityManager mConnectivity = (ConnectivityManager) VNowApplication
-                .the().getSystemService(Context.CONNECTIVITY_SERVICE);
+                .getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = mConnectivity.getActiveNetworkInfo();
         if (info == null || !mConnectivity.getBackgroundDataSetting()) {
             return false;

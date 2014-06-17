@@ -103,7 +103,7 @@ public class VNowFragmentColleague extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new PinyinComparator();
         mCallBackListener = new MyEventListener();

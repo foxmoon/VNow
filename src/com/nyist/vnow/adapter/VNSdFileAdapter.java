@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.nyist.vnow.R;
 import com.nyist.vnow.core.VNowApplication;
+import com.nyist.vnow.utils.ToastUtil;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -21,14 +22,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class VNSdFileAdapter extends BaseAdapter {
-    Context context;
+    Context mContext;
     File current;
     List<File> mListFiles;
     private FileListener mFileListener;
 
     public VNSdFileAdapter(Context context, File current, FileListener listener) {
         // TODO Auto-generated constructor stub
-        this.context = context;
+        this.mContext = context;
         this.current = current;
         mListFiles = new ArrayList<File>();
         mFileListener = listener;
@@ -69,7 +70,7 @@ public class VNSdFileAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view;
-        LayoutInflater inflater = (LayoutInflater) context
+        LayoutInflater inflater = (LayoutInflater) mContext
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         TextView fileName;
         ImageView fileIcon;
@@ -85,11 +86,11 @@ public class VNSdFileAdapter extends BaseAdapter {
         clickView = (LinearLayout) view.findViewById(R.id.itemView);
         File file = (File) getItem(position);
         if (file.isDirectory()) {
-            fileIcon.setBackgroundDrawable(context.getResources().getDrawable(
+            fileIcon.setBackgroundDrawable(mContext.getResources().getDrawable(
                     R.drawable.folder));
         }
         else {
-            fileIcon.setBackgroundDrawable(context.getResources().getDrawable(
+            fileIcon.setBackgroundDrawable(mContext.getResources().getDrawable(
                     R.drawable.file));
         }
         fileName.setText(file.getName());
@@ -97,7 +98,7 @@ public class VNSdFileAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (mListFiles.get(position).isFile()) {
-                    VNowApplication.the().showToast(mListFiles.get(position).getName());
+                    ToastUtil.getInstance(mContext).showShort(mListFiles.get(position).getName());
                     mFileListener.onClickFile(mListFiles.get(position));
                 }
                 else {

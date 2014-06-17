@@ -4,13 +4,12 @@
     android:layout_height="match_parent"
     android:background="@color/bg_gray" >
 
-   <LinearLayout 
-       android:id="@+id/host_fragment_plane"
-       android:layout_width="fill_parent"
-       android:layout_height="fill_parent"
-       android:orientation="vertical"
-       android:background="@color/bg_gray"
-       ></LinearLayout>
-    
+    <LinearLayout
+        android:id="@+id/host_fragment_plane"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/bg_gray"
+        android:orientation="vertical" >
+    </LinearLayout>
 
 </RelativeLayout>

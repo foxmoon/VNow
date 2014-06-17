@@ -27,11 +27,11 @@ import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.core.VNowCore;
 import com.nyist.vnow.dialog.AvcProgress;
 import com.nyist.vnow.dialog.VNowGroupDlg;
-import com.nyist.vnow.struct.Friend;
 import com.nyist.vnow.struct.Group;
 import com.nyist.vnow.ui.VNowGroupItemActivity;
 import com.nyist.vnow.utils.CharacterParser;
 import com.nyist.vnow.utils.PinyinComparator;
+import com.nyist.vnow.utils.ToastUtil;
 import com.nyist.vnow.view.ViEPullToRefreshListView;
 import com.nyist.vnow.view.ViEPullToRefreshListView.OnRefreshListener;
 import com.vnow.sdk.openapi.EventListener;
@@ -89,23 +89,23 @@ public class VNowFragmentGroup extends Fragment implements DelListener {
                     break;
                 case DEL_GROUP_SUCCESS: {
                     mCore.doQueryGroupList();
-                    VNowApplication.the().showToast(
+                    ToastUtil.getInstance(getActivity()).showShort(
                             getString(R.string.str_del_group_success));
                 }
                     break;
                 case DEL_GROUP_FIELD: {
-                    VNowApplication.the().showToast(
+                    ToastUtil.getInstance(getActivity()).showShort(
                             getString(R.string.str_del_group_field));
                 }
                     break;
                 case CREATE_GROUP_SUCCESS: {
                     mCore.doQueryGroupList();
-                    VNowApplication.the().showToast(
+                    ToastUtil.getInstance(getActivity()).showShort(
                             getString(R.string.str_create_group_success));
                 }
                     break;
                 case CREATE_GROUP_FAILED: {
-                    VNowApplication.the().showToast(
+                    ToastUtil.getInstance(getActivity()).showShort(
                             getString(R.string.str_create_group_failed));
                 }
                     break;
@@ -116,12 +116,12 @@ public class VNowFragmentGroup extends Fragment implements DelListener {
                     break;
                 case MODIFY_GROUP_SUCCESS: {
                     mCore.doQueryGroupList();
-                    VNowApplication.the().showToast(
+                    ToastUtil.getInstance(getActivity()).showShort(
                             getString(R.string.str_modify_group_success));
                 }
                     break;
                 case MODIFY_GROUP_FAILED: {
-                    VNowApplication.the().showToast(
+                    ToastUtil.getInstance(getActivity()).showShort(
                             getString(R.string.str_modify_group_failed));
                 }
                     break;
@@ -144,7 +144,7 @@ public class VNowFragmentGroup extends Fragment implements DelListener {
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new PinyinComparator();
         mCallBackListener = new MyEventListener();
@@ -240,7 +240,7 @@ public class VNowFragmentGroup extends Fragment implements DelListener {
                     public void onClick(DialogInterface dialog, int i) {
                         // TODO Auto-generated method stub
                         if (dlg.getGrpName().equals("")) {
-                            VNowApplication.the().showToast(
+                            ToastUtil.getInstance(getActivity()).showShort(
                                     getString(R.string.str_modify_not_null));
                             return;
                         }
@@ -268,7 +268,7 @@ public class VNowFragmentGroup extends Fragment implements DelListener {
                     public void onClick(DialogInterface dialog, int i) {
                         // TODO Auto-generated method stub
                         if (dlg.getGrpName().equals("")) {
-                            VNowApplication.the().showToast(
+                            ToastUtil.getInstance(getActivity()).showShort(
                                     getString(R.string.str_grp_name_not_null));
                             return;
                         }

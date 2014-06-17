@@ -32,6 +32,7 @@ import com.nyist.vnow.struct.Group;
 import com.nyist.vnow.struct.VNowRctContact;
 import com.nyist.vnow.utils.CharacterParser;
 import com.nyist.vnow.utils.PinyinComparator;
+import com.nyist.vnow.utils.ToastUtil;
 import com.nyist.vnow.view.ViEPullToRefreshListView;
 import com.vnow.sdk.openapi.EventListener;
 import com.vnow.sdk.openapi.IVNowAPI;
@@ -90,24 +91,22 @@ public class VNowGroupItemActivity extends Activity implements DelGroupUserListe
                     break;
                 case ADD_GROUP_USER_SUCCESS: {
                     mCore.doQueryGroupList();
-                    VNowApplication.the().showToast(
-                            getString(R.string.str_add_grp_user_success));
+                    ToastUtil.showShort(VNowGroupItemActivity.this, R.string.str_add_grp_user_success);
                 }
                     break;
                 case ADD_GROUP_USER_FAILED: {
-                    VNowApplication.the().showToast(
-                            getString(R.string.str_add_grp_user_failed));
+                    ToastUtil.showShort(VNowGroupItemActivity.this,
+                            R.string.str_add_grp_user_failed);
                 }
                     break;
                 case DEL_GROUP_USER_SUCCESS: {
                     mCore.doQueryGroupList();
-                    VNowApplication.the().showToast(
-                            getString(R.string.str_del_group_success));
+                    ToastUtil.showShort(VNowGroupItemActivity.this,
+                            R.string.str_del_group_success);
                 }
                     break;
                 case DEL_GROUP_USER_FAILED: {
-                    VNowApplication.the().showToast(
-                            getString(R.string.str_del_group_field));
+                    ToastUtil.showShort(VNowGroupItemActivity.this, R.string.str_del_group_field);
                 }
                     break;
             }
@@ -119,7 +118,7 @@ public class VNowGroupItemActivity extends Activity implements DelGroupUserListe
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vnow_activity_group_user);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new PinyinComparator();
         mCallBackListener = new MyEventListener();
@@ -276,8 +275,7 @@ public class VNowGroupItemActivity extends Activity implements DelGroupUserListe
                         // TODO Auto-generated method stub
                         if (dlg.getFriendName().equals("")
                                 || dlg.getFriendPhone().equals("")) {
-                            VNowApplication.the().showToast(
-                                    getString(R.string.str_modify_not_null));
+                            ToastUtil.showShort(VNowGroupItemActivity.this, R.string.str_modify_not_null);
                             return;
                         }
                         else {
@@ -371,8 +369,7 @@ public class VNowGroupItemActivity extends Activity implements DelGroupUserListe
                 mMainHandler.sendEmptyMessage(ADD_GROUP_USER_SUCCESS);
             }
             else if (reason == -1) {
-                VNowApplication.the().showToast(
-                        getString(R.string.str_add_grp_user_error_nobody));
+                ToastUtil.showShort(VNowGroupItemActivity.this, R.string.str_add_grp_user_error_nobody);
             }
             else
                 mMainHandler.sendEmptyMessage(ADD_GROUP_USER_FAILED);

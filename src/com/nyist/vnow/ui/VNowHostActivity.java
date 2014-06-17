@@ -18,6 +18,7 @@ import com.nyist.vnow.struct.User;
 import com.nyist.vnow.struct.VNowRctContact;
 import com.nyist.vnow.utils.ActionEvent;
 import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.ToastUtil;
 import com.vnow.sdk.openapi.EventListener;
 
 public class VNowHostActivity extends FragmentActivity {
@@ -34,8 +35,8 @@ public class VNowHostActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.vnow_host);
-        mCore = VNowApplication.the().getCore();
-        CommonUtil.set_httpUrl(VNowApplication.the().getSetting(getString(R.string.setting_media_server_ip),
+        mCore = VNowApplication.getInstance().getCore();
+        CommonUtil.set_httpUrl(VNowApplication.getInstance().getSetting(getString(R.string.setting_media_server_ip),
                 getString(R.string.setting_defult_server_ip)));
         initUI();
     }
@@ -70,7 +71,7 @@ public class VNowHostActivity extends FragmentActivity {
             mCurrentEvent = ActionEvent.ACTION_LOGIN;
         }
         else {
-            VNowApplication.the().getCore().doLogout();
+            VNowApplication.getInstance().getCore().doLogout();
             // VNowApplication.the().destroyCore();
             System.exit(0);
         }
@@ -103,10 +104,10 @@ public class VNowHostActivity extends FragmentActivity {
     }
 
     public void actionLogin() {
-        String strPhone = VNowApplication.the().getSetting(getString(R.string.setting_login_user_phone), null);
-        String strpws = VNowApplication.the().getSetting(getString(R.string.setting_login_user_pwd), null);
+        String strPhone = VNowApplication.getInstance().getSetting(getString(R.string.setting_login_user_phone), null);
+        String strpws = VNowApplication.getInstance().getSetting(getString(R.string.setting_login_user_pwd), null);
         if (null != strPhone && null != strpws) {
-            VNowApplication.the().getCore().doLogin(strPhone, strpws, true);
+            VNowApplication.getInstance().getCore().doLogin(strPhone, strpws, true);
         }
         else {
             mCore.checkUpVersion(this, true);
@@ -117,36 +118,32 @@ public class VNowHostActivity extends FragmentActivity {
     private class MyEventListener extends EventListener {
         public void onResponseRegister(boolean bSuccess, String uuid) {
             if (bSuccess) {
-                VNowApplication.the().showToast(
-                        getString(R.string.str_regist_success));
+                ToastUtil.showShort(VNowHostActivity.this, R.string.str_regist_success);
                 VNowApplication
-                        .the()
+                        .getInstance()
                         .getCore()
                         .doLogin(
-                                VNowApplication.the().getCore().getMySelf().phone,
-                                VNowApplication.the().getCore().getMySelf().password,
+                                VNowApplication.getInstance().getCore().getMySelf().phone,
+                                VNowApplication.getInstance().getCore().getMySelf().password,
                                 true);
             }
             else
-                VNowApplication.the().showToast(
-                        getString(R.string.str_regist_field));
+                ToastUtil.showShort(VNowHostActivity.this,R.string.str_regist_field);
         }
 
         public void onResponseLogin(boolean bSuccess, User user) {
             if (bSuccess) {
                 Intent intent = new Intent();
                 intent.setClass(VNowHostActivity.this, VNowMainActivity.class);
-                if (null != VNowApplication.the().getCore().getApiStatus()) {
+                if (null != VNowApplication.getInstance().getCore().getApiStatus()) {
                     startActivity(intent);
                     VNowHostActivity.this.finish();
-                    VNowApplication.the().showToast(
-                            getString(R.string.str_login_success));
+                    ToastUtil.showShort(VNowHostActivity.this,R.string.str_login_success);
                 }
             }
             else {
                 mLoginFragment.loginError();
-                VNowApplication.the().showToast(
-                        getString(R.string.str_login_field));
+                ToastUtil.showShort(VNowHostActivity.this,R.string.str_login_field);
                 mCore.checkUpVersion(VNowHostActivity.this, true);
             }
         }
@@ -162,11 +159,10 @@ public class VNowHostActivity extends FragmentActivity {
             else if (status.equals("1")) {
                 Intent intent = new Intent();
                 intent.setClass(VNowHostActivity.this, VNowMainActivity.class);
-                if (null != VNowApplication.the().getCore().getApiStatus()) {
+                if (null != VNowApplication.getInstance().getCore().getApiStatus()) {
                     startActivity(intent);
                     VNowHostActivity.this.finish();
-                    VNowApplication.the().showToast(
-                            getString(R.string.str_login_success));
+                    ToastUtil.showShort(VNowHostActivity.this,R.string.str_login_success);
                 }
             }
             else if (status.equals("5") || status.equals("7")) {

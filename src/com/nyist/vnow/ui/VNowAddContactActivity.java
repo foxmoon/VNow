@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.nyist.vnow.R;
 import com.nyist.vnow.core.VNowApplication;
+import com.nyist.vnow.utils.ToastUtil;
 
 public class VNowAddContactActivity extends Activity {
     private ImageView mBtnBack;
@@ -48,15 +49,15 @@ public class VNowAddContactActivity extends Activity {
                 finish();
             }
             else if (id == R.id.btn_add_search) {
-                VNowApplication.the().showToast("search");
+                ToastUtil.showShort(VNowAddContactActivity.this,"search");
             }
             else if (id == R.id.rlayout_add_phone_contact) {
-                VNowApplication.the().showToast("phone_contact");
+                ToastUtil.showShort(VNowAddContactActivity.this,"phone_contact");
                 Intent intent = new Intent(VNowAddContactActivity.this, One2oneActivity.class);
                 startActivity(intent);
             }
             else if (id == R.id.rlayout_add_qq_contact) {
-                VNowApplication.the().showToast("qq_contact");
+                ToastUtil.showShort(VNowAddContactActivity.this,"qq_contact");
             }
         }
     };

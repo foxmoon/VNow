@@ -4,6 +4,11 @@ import android.util.Log;
 
 import com.nyist.vnow.struct.User;
 
+/**
+ * 网络访问接口回调
+ * @author harry
+ * @version Creat on 2014-6-17上午10:27:06
+ */
 public class EventListener {
     private final String TAG = "EventListener";
 

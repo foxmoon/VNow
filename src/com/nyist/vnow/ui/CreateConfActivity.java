@@ -14,6 +14,7 @@ import com.nyist.vnow.R;
 import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.core.VNowCore;
 import com.nyist.vnow.struct.VNConfItem;
+import com.nyist.vnow.utils.ToastUtil;
 
 public class CreateConfActivity extends Activity implements OnClickListener {
     private ImageButton mBtnBack;
@@ -33,7 +34,7 @@ public class CreateConfActivity extends Activity implements OnClickListener {
         AlphaAnimation alphaAnim = new AlphaAnimation(0.0f, 1.0f);
         alphaAnim.setDuration(300);
         view.setAnimation(alphaAnim);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         loadSatrtUI();
     }
 
@@ -61,7 +62,7 @@ public class CreateConfActivity extends Activity implements OnClickListener {
                 String confTheme = mEdConfTheme.getText().toString().trim();
                 String confTime = mEdConfTime.getText().toString().trim();
                 if (confName.length() == 0) {
-                    VNowApplication.the().showToast("请输入会议名称");
+                    ToastUtil.showShort(CreateConfActivity.this,"请输入会议名称");
                 }
                 else {
                     VNConfItem item = new VNConfItem();
@@ -69,7 +70,7 @@ public class CreateConfActivity extends Activity implements OnClickListener {
                     item.setmConfTheme(confTheme);
                     item.setmConfTime(confTime);
                     mCore.addConfItem(item);
-                    VNowApplication.the().showToast("会议创建成功！");
+                    ToastUtil.showShort(CreateConfActivity.this,"会议创建成功！");
                     CreateConfActivity.this.finish();
                 }
             }

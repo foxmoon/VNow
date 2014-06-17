@@ -1,9 +1,5 @@
 package com.nyist.vnow.fragment;
 
-import com.nyist.vnow.R;
-import com.nyist.vnow.core.VNowApplication;
-import com.nyist.vnow.ui.VNowVideoSigninActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.nyist.vnow.R;
+import com.nyist.vnow.core.VNowApplication;
+import com.nyist.vnow.ui.VNowVideoSigninActivity;
+import com.nyist.vnow.utils.ToastUtil;
 
 public class VNowFragmentSecretary extends Fragment {
     private ImageView mBtnVdoSignIn;
@@ -38,12 +39,12 @@ public class VNowFragmentSecretary extends Fragment {
             // TODO Auto-generated method stub
             int id = v.getId();
             if (id == R.id.btn_video_sign_in) {
-                if (null != VNowApplication.the().getBDLocation()) {
+                if (null != VNowApplication.getInstance().getBDLocation()) {
                     Intent intent = new Intent(getActivity(), VNowVideoSigninActivity.class);
                     startActivity(intent);
                 }
                 else {
-                    VNowApplication.the().showToast("正在为您定位...请10秒后重试");
+                    ToastUtil.getInstance(getActivity()).showShort("正在为您定位...请10秒后重试");
                 }
             }
         }

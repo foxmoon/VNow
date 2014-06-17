@@ -21,7 +21,7 @@ public class VNowApplication extends Application implements
     private LocationManagerProxy aMapLocManager = null;
     private AMapLocation mLocation;
 
-    public static VNowApplication the() {
+    public static VNowApplication getInstance() {
         return mInstance;
     }
 
@@ -50,7 +50,6 @@ public class VNowApplication extends Application implements
 
     @Override
     public void onCreate() {
-        // TODO Auto-generated method stub
         super.onCreate();
         aMapLocManager = LocationManagerProxy.getInstance(this);
         startLocation();
@@ -61,10 +60,6 @@ public class VNowApplication extends Application implements
         // TODO Auto-generated method stub
         super.onTerminate();
         stoptLocation();
-    }
-
-    public void showToast(String msg) {
-        Toast.makeText(mInstance, msg, Toast.LENGTH_SHORT).show();
     }
 
     // setting params-------

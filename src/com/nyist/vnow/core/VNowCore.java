@@ -214,7 +214,7 @@ public class VNowCore {
      * @param fileType
      */
     public synchronized void doHttpWebUpLoad(String newName, String oldName, String type, String remark, String shareUUID, String fileType) {
-        AMapLocation location = VNowApplication.the().getBDLocation();
+        AMapLocation location = VNowApplication.getInstance().getBDLocation();
         if (null == location)
             return;
         double[] ltResult = bd_encrypt(location.getLatitude(), location.getLongitude());
@@ -324,7 +324,7 @@ public class VNowCore {
      * @param version
      */
     public synchronized void doQueryColleagueList() {
-        int currentVersion = VNowApplication.the().getSetting
+        int currentVersion = VNowApplication.getInstance().getSetting
                 (mContext.getString(R.string.colleage_update_version) + mMySelf.uuid, 0);
         mIVNowAPI.queryColleagueList(mMySelf.uuid, currentVersion, mMySelf.company_code);
     }
@@ -335,7 +335,7 @@ public class VNowCore {
      * @param version
      */
     public synchronized void doQueryFriendList() {
-        int currentVersion = VNowApplication.the().getSetting
+        int currentVersion = VNowApplication.getInstance().getSetting
                 (mContext.getString(R.string.friend_update_version) + mMySelf.uuid, 0);
         mIVNowAPI.queryFriendList(mMySelf.uuid, currentVersion);
     }
@@ -346,7 +346,7 @@ public class VNowCore {
      * @param version
      */
     public synchronized void doQueryGroupList() {
-        int currentVersion = VNowApplication.the().getSetting
+        int currentVersion = VNowApplication.getInstance().getSetting
                 (mContext.getString(R.string.group_update_version) + mMySelf.uuid, 0);
         mIVNowAPI.queryGroupList(mMySelf.uuid, currentVersion);
     }
@@ -478,8 +478,8 @@ public class VNowCore {
                 mMySelf.uuid = user.uuid;
                 mMySelf.company_code = user.company_code;
                 mIVNowAPI.dispatchApi(mDES.decrypt(mMySelf.phone), mMySelf.password);
-                VNowApplication.the().setSetting(mContext.getString(R.string.setting_login_user_phone), mMySelf.phone);
-                VNowApplication.the().setSetting(mContext.getString(R.string.setting_login_user_pwd), mMySelf.password);
+                VNowApplication.getInstance().setSetting(mContext.getString(R.string.setting_login_user_phone), mMySelf.phone);
+                VNowApplication.getInstance().setSetting(mContext.getString(R.string.setting_login_user_pwd), mMySelf.password);
                 loadWebData();
             }
             else
@@ -495,11 +495,11 @@ public class VNowCore {
                         jsonResult.indexOf("]") + 1);
                 mJsonUtil.parseColleageFromJson(jsonResult);
                 List<Colleage> cacheColleages = mJsonUtil.getColleageList();
-                int currentVersion = VNowApplication.the().getSetting(mContext.getString(R.string.colleage_update_version) + mMySelf.uuid,
+                int currentVersion = VNowApplication.getInstance().getSetting(mContext.getString(R.string.colleage_update_version) + mMySelf.uuid,
                         0);
                 int serverVersion = Integer.parseInt(cacheColleages.get(0).getG_updatenum());
                 if (serverVersion != currentVersion) {
-                    VNowApplication.the().setSetting(mContext.getString(R.string.colleage_update_version) + mMySelf.uuid, serverVersion);
+                    VNowApplication.getInstance().setSetting(mContext.getString(R.string.colleage_update_version) + mMySelf.uuid, serverVersion);
                 }
                 mTaskDao.reLoadColleage(mMySelf.uuid, cacheColleages);
             }
@@ -513,10 +513,10 @@ public class VNowCore {
                         jsonResult.indexOf("]") + 1);
                 mJsonUtil.parseGroupFromJson(jsonResult);
                 List<Group> cacheGroups = mJsonUtil.getGroupList();
-                int currentVersion = VNowApplication.the().getSetting(mContext.getString(R.string.group_update_version) + mMySelf.uuid, 0);
+                int currentVersion = VNowApplication.getInstance().getSetting(mContext.getString(R.string.group_update_version) + mMySelf.uuid, 0);
                 int serverVersion = Integer.parseInt(cacheGroups.get(0).getUpdatenum());
                 if (serverVersion != currentVersion) {
-                    VNowApplication.the().setSetting(mContext.getString(R.string.group_update_version) + mMySelf.uuid, serverVersion);
+                    VNowApplication.getInstance().setSetting(mContext.getString(R.string.group_update_version) + mMySelf.uuid, serverVersion);
                 }
                 mTaskDao.reLoadGroup(mMySelf.uuid, cacheGroups);
             }
@@ -530,10 +530,10 @@ public class VNowCore {
                         jsonResult.indexOf("]") + 1);
                 mJsonUtil.parseFriendFromJson(jsonResult);
                 List<Friend> cacheFriends = mJsonUtil.getFriendList();
-                int currentVersion = VNowApplication.the().getSetting(mContext.getString(R.string.friend_update_version) + mMySelf.uuid, 0);
+                int currentVersion = VNowApplication.getInstance().getSetting(mContext.getString(R.string.friend_update_version) + mMySelf.uuid, 0);
                 int serverVersion = Integer.parseInt(cacheFriends.get(0).getF_updatenum());
                 if (serverVersion != currentVersion) {
-                    VNowApplication.the().setSetting(mContext.getString(R.string.friend_update_version) + mMySelf.uuid, serverVersion);
+                    VNowApplication.getInstance().setSetting(mContext.getString(R.string.friend_update_version) + mMySelf.uuid, serverVersion);
                 }
                 mTaskDao.reLoadFriend(mMySelf.uuid, cacheFriends);
             }

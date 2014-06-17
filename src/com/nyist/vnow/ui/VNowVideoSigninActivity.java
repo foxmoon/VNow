@@ -45,6 +45,7 @@ import com.nyist.vnow.R;
 import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.core.VNowCore;
 import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.ToastUtil;
 import com.vnow.sdk.openapi.EventListener;
 
 public class VNowVideoSigninActivity extends Activity {
@@ -164,7 +165,7 @@ public class VNowVideoSigninActivity extends Activity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vnow_video_sign_in);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         mCallBackListener = new MyEventListener();
         mLLayoutOperators = (LinearLayout) findViewById(R.id.llayout_operators);
         mLLayoutPicture = (LinearLayout) findViewById(R.id.llayout_picture_operators);
@@ -211,7 +212,7 @@ public class VNowVideoSigninActivity extends Activity {
         // TODO Auto-generated method stub
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (mIsStartRcd || mIsTakePic) {
-                VNowApplication.the().showToast("正在签到，不能退出！");
+                ToastUtil.showShort(VNowVideoSigninActivity.this, "正在签到，不能退出！");
                 return true;
             }
         }
@@ -811,12 +812,12 @@ public class VNowVideoSigninActivity extends Activity {
             if (bSuccess) {
                 mHandler.sendEmptyMessage(UPLOAD_FINISHED);
                 mBtnPicture.setEnabled(true);
-                VNowApplication.the().showToast("签到成功！");
+                ToastUtil.showShort(VNowVideoSigninActivity.this, "签到成功!");
                 finish();
             }
             else {
                 mHandler.sendEmptyMessage(UPLOAD_FINISHED);
-                VNowApplication.the().showToast("签到失败！");
+                ToastUtil.showShort(VNowVideoSigninActivity.this, "签到失败!");
             }
             mBtnFinishPic.setVisibility(View.VISIBLE);
         }
@@ -833,7 +834,7 @@ public class VNowVideoSigninActivity extends Activity {
                 }
             }
             else {
-                VNowApplication.the().showToast("签到失败！");
+                ToastUtil.showShort(VNowVideoSigninActivity.this, "签到失败！");
             }
             super.onResponseConfUpLoadFile(handID, progress, filePath, isSuccess);
         }

@@ -17,6 +17,7 @@ import com.nyist.vnow.core.VNowCore;
 import com.nyist.vnow.ui.VNowHostActivity;
 import com.nyist.vnow.utils.ActionEvent;
 import com.nyist.vnow.utils.SIMCardInfo;
+import com.nyist.vnow.utils.ToastUtil;
 
 public class VNowFragmentRegist extends Fragment implements OnClickListener {
     private ImageButton mImgBtnBack;
@@ -36,7 +37,7 @@ public class VNowFragmentRegist extends Fragment implements OnClickListener {
             Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         View view = inflater.inflate(R.layout.vnow_regist, container, false);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         mSimCardInfo = new SIMCardInfo(getActivity());
         initUI(view);
         return view;
@@ -66,7 +67,7 @@ public class VNowFragmentRegist extends Fragment implements OnClickListener {
         String code = mEdCmpCode.getText().toString().trim();
         if (userName.length() == 0 || password.length() == 0 || rePassword.length() == 0 || phone.length() == 0
                 || emial.length() == 0) {
-            VNowApplication.the().showToast(getString(R.string.str_regist_error_info));
+            ToastUtil.getInstance(getActivity()).showShort(getString(R.string.str_regist_error_info));
             return;
         }
         if (password.length() < 6 || !password.equals(rePassword)) {

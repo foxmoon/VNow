@@ -42,7 +42,7 @@ public class VNowFragmentLogin extends Fragment implements OnClickListener {
             Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         View view = inflater.inflate(R.layout.vnow_login, container, false);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         mDes = new DES();
         initUI(view);
         return view;
@@ -65,8 +65,8 @@ public class VNowFragmentLogin extends Fragment implements OnClickListener {
     }
 
     public void autoLogin() {
-        String strPhone = VNowApplication.the().getSetting(getString(R.string.setting_login_user_phone), null);
-        String strpws = VNowApplication.the().getSetting(getString(R.string.setting_login_user_pwd), null);
+        String strPhone = VNowApplication.getInstance().getSetting(getString(R.string.setting_login_user_phone), null);
+        String strpws = VNowApplication.getInstance().getSetting(getString(R.string.setting_login_user_pwd), null);
         if (null != strPhone && null != strpws) {
             mEdUserName.setText(mDes.decrypt(strPhone));
             mEdPwd.setText(strpws);

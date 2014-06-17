@@ -40,6 +40,7 @@ import com.nyist.vnow.ui.ConfActivity;
 import com.nyist.vnow.utils.CharacterParser;
 import com.nyist.vnow.utils.DES;
 import com.nyist.vnow.utils.PinyinComparator;
+import com.nyist.vnow.utils.ToastUtil;
 import com.nyist.vnow.view.SideBar;
 import com.nyist.vnow.view.SideBar.OnTouchingLetterChangedListener;
 import com.nyist.vnow.view.ViEPullToRefreshListView;
@@ -117,29 +118,29 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
             }
             else if (msg.what == DEL_FRIEND_SUCCESS) {
                 mCore.doQueryFriendList();
-                VNowApplication.the().showToast(
+                ToastUtil.getInstance(getActivity()).showShort(
                         getString(R.string.str_del_friend_success));
             }
             else if (msg.what == DEL_FRIEND_FAILED) {
-                VNowApplication.the().showToast(
+                ToastUtil.getInstance(getActivity()).showShort(
                         getString(R.string.str_del_friend_failed));
             }
             else if (msg.what == MODIFY_FRIEND_SUCCESS) {
                 mCore.doQueryFriendList();
-                VNowApplication.the().showToast(
+                ToastUtil.getInstance(getActivity()).showShort(
                         getString(R.string.str_modify_friend_success));
             }
             else if (msg.what == MODIFY_FRIEND_FAILED) {
-                VNowApplication.the().showToast(
+                ToastUtil.getInstance(getActivity()).showShort(
                         getString(R.string.str_modify_friend_failed));
             }
             else if (msg.what == ADD_FRIEND_SUCCESS) {
                 mCore.doQueryFriendList();
-                VNowApplication.the().showToast(
+                ToastUtil.getInstance(getActivity()).showShort(
                         getString(R.string.str_add_friend_success));
             }
             else if (msg.what == ADD_FRIEND_FAILED) {
-                VNowApplication.the().showToast(
+                ToastUtil.getInstance(getActivity()).showShort(
                         getString(R.string.str_add_friend_failed));
             }
         };
@@ -159,7 +160,7 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new PinyinComparator();
         mCallBackListener = new MyEventListener();
@@ -400,7 +401,7 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
                         // TODO Auto-generated method stub
                         if (dlg.getFriendName().equals("")
                                 || dlg.getFriendPhone().equals("")) {
-                            VNowApplication.the().showToast(
+                            ToastUtil.getInstance(getActivity()).showShort(
                                     getString(R.string.str_modify_not_null));
                             return;
                         }
@@ -457,7 +458,7 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
                         // TODO Auto-generated method stub
                         if (dlg.getFriendName().equals("")
                                 || dlg.getFriendPhone().equals("")) {
-                            VNowApplication.the().showToast(
+                            ToastUtil.getInstance(getActivity()).showShort(
                                     getString(R.string.str_modify_not_null));
                             return;
                         }
@@ -580,15 +581,15 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
             // TODO Auto-generated method stub
             super.onResponseAddFriend(bSuccess, reason);
             if (bSuccess) {
-                int currentVersion = VNowApplication.the().getSetting
+                int currentVersion = VNowApplication.getInstance().getSetting
                         (getString(R.string.friend_update_version) + mCore.getMySelf().uuid, 0);
-                VNowApplication.the().setSetting(getString
+                VNowApplication.getInstance().setSetting(getString
                         (R.string.friend_update_version) + mCore.getMySelf().uuid, currentVersion - 1);
                 mMainHandler.sendEmptyMessage(ADD_FRIEND_SUCCESS);
             }
             else {
                 if (reason == -1) {
-                    VNowApplication.the().showToast(getString(R.string.str_add_friend_error_nobody));
+                    ToastUtil.getInstance(getActivity()).showShort(getString(R.string.str_add_friend_error_nobody));
                 }
                 else {
                     mMainHandler.sendEmptyMessage(ADD_FRIEND_FAILED);

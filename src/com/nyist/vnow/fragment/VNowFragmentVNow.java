@@ -22,10 +22,10 @@ import com.nyist.vnow.adapter.VNowRctContactAdapter;
 import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.core.VNowCore;
 import com.nyist.vnow.dialog.VNowAlertDlg;
-import com.nyist.vnow.struct.Colleage;
 import com.nyist.vnow.struct.VNowRctContact;
 import com.nyist.vnow.ui.ConfActivity;
 import com.nyist.vnow.ui.One2oneActivity;
+import com.nyist.vnow.utils.ToastUtil;
 import com.vnow.sdk.openapi.EventListener;
 
 public class VNowFragmentVNow extends Fragment implements OnClickListener {
@@ -58,7 +58,7 @@ public class VNowFragmentVNow extends Fragment implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         mCallBackListener = new MyEventListener();
     }
 
@@ -225,18 +225,18 @@ public class VNowFragmentVNow extends Fragment implements OnClickListener {
                 // Intent openCameraIntent = new Intent(getActivity(),
                 // CreateConfActivity.class);
                 // startActivityForResult(openCameraIntent, 0);
-                VNowApplication.the().showToast("该版本暂未提供此功能");
+                ToastUtil.getInstance(getActivity()).showShort("该版本暂未提供此功能");
             }
                 break;
             case R.id.vnow_join_conf: {
-                VNowApplication.the().showToast("该版本暂未提供此功能");
+                ToastUtil.getInstance(getActivity()).showShort("该版本暂未提供此功能");
             }
                 break;
             case R.id.vnow_rollback_conf: {
                 // Intent openCameraIntent = new Intent(getActivity(),
                 // BackConfActivity.class);
                 // startActivityForResult(openCameraIntent, 0);
-                VNowApplication.the().showToast("该版本暂未提供此功能");
+                ToastUtil.getInstance(getActivity()).showShort("该版本暂未提供此功能");
             }
                 break;
         }

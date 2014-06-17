@@ -35,7 +35,7 @@ public class VNMoreActivity extends Activity implements OnClickListener {
         AlphaAnimation alphaAnim = new AlphaAnimation(0.0f, 1.0f);
         alphaAnim.setDuration(300);
         view.setAnimation(alphaAnim);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         loadSatrtUI();
     }
 
@@ -51,7 +51,7 @@ public class VNMoreActivity extends Activity implements OnClickListener {
         mTvVersion = (TextView) findViewById(R.id.version_info);
         mBtnBack.setOnClickListener(this);
         mBtnCheck.setOnClickListener(this);
-        mTvVersion.setText(VNowApplication.the().getVersion());
+        mTvVersion.setText(VNowApplication.getInstance().getVersion());
     }
 
     @Override

@@ -344,7 +344,7 @@ public class IVNowAPI {
     public int queryColleagueList(String uuid, int version, String code) {
         if (mIVNowFramework != null) {
             if (null == CommonUtil._httpUrl)
-                CommonUtil.set_httpUrl(VNowApplication.the().getSetting("media_server_ip",
+                CommonUtil.set_httpUrl(VNowApplication.getInstance().getSetting("media_server_ip",
                         mContext.getString(R.string.setting_defult_server_ip)));
             StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
             sBuffer.append("coll/").append(uuid)

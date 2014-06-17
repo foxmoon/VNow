@@ -12,6 +12,7 @@ import com.nyist.vnow.fragment.VNowFragmentSecretary;
 import com.nyist.vnow.fragment.VNowFragmentVNow;
 import com.nyist.vnow.listener.CoreCallBack;
 import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.ToastUtil;
 import com.vnow.sdk.openapi.IVNowAPI;
 
 import android.os.Bundle;
@@ -42,9 +43,9 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.vnow_main);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         if (null != savedInstanceState) {
-            CommonUtil.set_httpUrl(VNowApplication.the().getSetting(
+            CommonUtil.set_httpUrl(VNowApplication.getInstance().getSetting(
                     getString(R.string.setting_media_server_ip),
                     getString(R.string.setting_defult_server_ip)));
             mTabFlag = savedInstanceState.getInt("tabFlag");
@@ -57,14 +58,14 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
             mCore.getMySelf().name = list.get(4);
             mCore.getMySelf().company_code = list.get(5);
             VNowApplication
-                    .the()
+                    .getInstance()
                     .getCore()
                     .doLogin(mCore.getMySelf().phone,
                             mCore.getMySelf().password, true);
         }
         initUI();
         mCore.setCoreListener(this);
-        int soundValue = VNowApplication.the().getSetting(getString(R.string.setting_video_sound_red), 240);
+        int soundValue = VNowApplication.getInstance().getSetting(getString(R.string.setting_video_sound_red), 240);
         mCore.doechoDelaySet(soundValue);
         mCore.checkUpVersion(this, true);
     }
@@ -85,11 +86,11 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
     public void onBackPressed() {
         // TODO Auto-generated method stub
         if ((System.currentTimeMillis() - mExitTime) > 1500) {
-            VNowApplication.the().showToast(getString(R.string.str_click_exit));
+            ToastUtil.showShort(VNowMainActivity.this, R.string.str_click_exit);
             mExitTime = System.currentTimeMillis();
         }
         else {
-            VNowApplication.the().getCore().doLogout();
+            VNowApplication.getInstance().getCore().doLogout();
             // VNowApplication.the().destroyCore();
             // System.exit(0);
             super.onBackPressed();

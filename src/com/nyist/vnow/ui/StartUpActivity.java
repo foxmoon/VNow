@@ -86,7 +86,7 @@ public class StartUpActivity extends Activity {
             @Override
             protected void onPostExecute(Void result) {
                 super.onPostExecute(result);
-                if (!VNowApplication.the().getSetting("islogin", false)) {
+                if (!VNowApplication.getInstance().getSetting("islogin", false)) {
                     Intent intent = new Intent(StartUpActivity.this, VNowHostActivity.class);
                     StartUpActivity.this.startActivity(intent);
                     // overridePendingTransition(R.anim.translucent_enter,

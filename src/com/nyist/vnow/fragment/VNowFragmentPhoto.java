@@ -39,7 +39,7 @@ public class VNowFragmentPhoto extends Fragment {
             Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         mMyView = inflater.inflate(R.layout.vnow_list_photo, container, false);
-        mCore = VNowApplication.the().getCore();
+        mCore = VNowApplication.getInstance().getCore();
         initUI();
         return mMyView;
     }

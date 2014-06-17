@@ -62,7 +62,7 @@ public class UpdateSoftManager {
                     installApk();
                     break;
                 case APK_EXIST:
-                    VNowApplication.the().showToast(mContext.getString(R.string.str_apk_already_exist));
+                    ToastUtil.getInstance(mContext).showShort(mContext.getString(R.string.str_apk_already_exist));
                     installApk();
                 default:
                     break;
