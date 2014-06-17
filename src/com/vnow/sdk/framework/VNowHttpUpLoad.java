@@ -34,117 +34,124 @@ import android.util.Log;
  * 
  */
 public class VNowHttpUpLoad {
-	private final static String TAG = "VNowHttpUpLoad";
-	private HttpUpLoadCallback mCallback = null;
-	private String mStrURI = "";
-	private String mStrContex = "";
-	private String mStrFileName = "";
-	private String mStrParams = ""; 
+    private final static String TAG = "VNowHttpUpLoad";
+    private HttpUpLoadCallback mCallback = null;
+    private String mStrURI = "";
+    private String mStrContex = "";
+    private String mStrFileName = "";
+    private String mStrParams = "";
 
-	public void SetCallback(HttpUpLoadCallback callback, String strContex) {
-		mCallback = callback;
-		mStrContex = strContex;
-	}
+    public void SetCallback(HttpUpLoadCallback callback, String strContex) {
+        mCallback = callback;
+        mStrContex = strContex;
+    }
 
-	public void SetURI(String strURI) {
-		mStrURI = strURI;
-	}
+    public void SetURI(String strURI) {
+        mStrURI = strURI;
+    }
 
-	public void SetLocalFileName(String strFileName) {
-		mStrFileName = strFileName;
-	}
-	
-	public void SetParam(String strParams) {
-		mStrParams = strParams;
-	}
+    public void SetLocalFileName(String strFileName) {
+        mStrFileName = strFileName;
+    }
 
-	public int startUpLoad() {
-		if ("".equals(mStrURI) || "".equals(mStrFileName)) {
-			return -1;
-		}
+    public void SetParam(String strParams) {
+        mStrParams = strParams;
+    }
 
-		new Thread() {
-			public void run() {
-				int TIME_OUT = 60 * 1000; // ³¬Ê±Ê±¼ä
-				String CHARSET = "utf-8"; // ÉèÖÃ±àÂë
-				//String RequestURL = "http://192.168.32.170:8080/remote/file/req_upload_file.html";
-				String BOUNDARY = UUID.randomUUID().toString(); // ±ß½ç±êÊ¶ Ëæ»úÉú³É// String PREFIX// = "--" ,// LINE_END =// "\r\n";
-				String CONTENT_TYPE = "multipart/form-data"; // ÄÚÈÝÀàÐÍ
-				String PREFIX = "--", LINE_END = "\r\n";
-				//String file = "/mnt/sdcard/20140520124636.jpg";
-				try {
-					URL url = new URL(mStrURI);
-					HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-					conn.setReadTimeout(TIME_OUT);
-					conn.setConnectTimeout(TIME_OUT);
-					conn.setDoInput(true); // ÔÊÐíÊäÈëÁ÷
-					conn.setDoOutput(true); // ÔÊÐíÊä³öÁ÷
-					conn.setUseCaches(false); // ²»ÔÊÐíÊ¹ÓÃ»º´æ
-					conn.setRequestMethod("POST"); // ÇëÇó·½Ê½
-					conn.setRequestProperty("Charset", CHARSET);
-					// ÉèÖÃ±àÂë
-					conn.setRequestProperty("connection", "keep-alive");
-					conn.setRequestProperty("Content-Type", CONTENT_TYPE+ ";boundary=" + BOUNDARY);
-					if (mStrFileName != null && "".equals(mStrFileName) == false) {
-						/** * µ±ÎÄ¼þ²»Îª¿Õ£¬°ÑÎÄ¼þ°ü×°²¢ÇÒÉÏ´« */
-						OutputStream outputSteam = conn.getOutputStream();
-						DataOutputStream dos = new DataOutputStream(outputSteam);
-						StringBuffer sb = new StringBuffer();
-						sb.append(PREFIX);
-						sb.append(BOUNDARY);
-						sb.append(LINE_END);
-						/**
-						 * ÕâÀïÖØµã×¢Òâ£º nameÀïÃæµÄÖµÎª·þÎñÆ÷¶ËÐèÒªkey Ö»ÓÐÕâ¸ökey ²Å¿ÉÒÔµÃµ½¶ÔÓ¦µÄÎÄ¼þ
-						 * filenameÊÇÎÄ¼þµÄÃû×Ö£¬°üº¬ºó×ºÃûµÄ ±ÈÈç:abc.png
-						 */
-						sb.append("Content-Disposition: form-data; name=\"" + mStrParams + "\"; filename=\""+ mStrFileName + "\"" + LINE_END);
-						sb.append("Content-Type: application/octet-stream; charset="+ CHARSET + LINE_END);
-						sb.append(LINE_END);
-						dos.write(sb.toString().getBytes());
-						InputStream is = new FileInputStream(mStrFileName);
-						byte[] bytes = new byte[4096];
-						int len = 0;
-						while ((len = is.read(bytes)) != -1) {
-							dos.write(bytes, 0, len);
-						}
-						is.close();
-						dos.write(LINE_END.getBytes());
-						byte[] end_data = (PREFIX + BOUNDARY + PREFIX + LINE_END).getBytes();
-						dos.write(end_data);
-						dos.flush();
-						/**
-						 * »ñÈ¡ÏìÓ¦Âë 200=³É¹¦ µ±ÏìÓ¦³É¹¦£¬»ñÈ¡ÏìÓ¦µÄÁ÷
-						 */
-						int res = conn.getResponseCode();
-						Log.e(TAG, "response code:" + res);
-						if (res == 200) {
-							BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));// ÉèÖÃ±àÂë,·ñÔòÖÐÎÄÂÒÂë
-							String line = "";
-			            	String strResult = "";
-							while ((line = reader.readLine()) != null) {
-								strResult += line;
-							}
-							reader.close();
+    public int startUpLoad() {
+        if ("".equals(mStrURI) || "".equals(mStrFileName)) {
+            return -1;
+        }
+        new Thread() {
+            public void run() {
+                int TIME_OUT = 60 * 1000; // ï¿½ï¿½Ê±Ê±ï¿½ï¿½
+                String CHARSET = "utf-8"; // ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½
+                // String RequestURL =
+                // "http://192.168.32.170:8080/remote/file/req_upload_file.html";
+                String BOUNDARY = UUID.randomUUID().toString(); // ï¿½ß½ï¿½ï¿½Ê¶
+                                                                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½//
+                                                                // String
+                                                                // PREFIX// =
+                                                                // "--" ,//
+                                                                // LINE_END =//
+                                                                // "\r\n";
+                String CONTENT_TYPE = "multipart/form-data"; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                String PREFIX = "--", LINE_END = "\r\n";
+                // String file = "/mnt/sdcard/20140520124636.jpg";
+                try {
+                    URL url = new URL(mStrURI);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setReadTimeout(TIME_OUT);
+                    conn.setConnectTimeout(TIME_OUT);
+                    conn.setDoInput(true); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    conn.setDoOutput(true); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                    conn.setUseCaches(false); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½Ã»ï¿½ï¿½ï¿½
+                    conn.setRequestMethod("POST"); // ï¿½ï¿½ï¿½ï¿½Ê½
+                    conn.setRequestProperty("Charset", CHARSET);
+                    // ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½
+                    conn.setRequestProperty("connection", "keep-alive");
+                    conn.setRequestProperty("Content-Type", CONTENT_TYPE + ";boundary=" + BOUNDARY);
+                    if (mStrFileName != null && "".equals(mStrFileName) == false) {
+                        /** * ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Îªï¿½Õ£ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½×°ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ */
+                        OutputStream outputSteam = conn.getOutputStream();
+                        DataOutputStream dos = new DataOutputStream(outputSteam);
+                        StringBuffer sb = new StringBuffer();
+                        sb.append(PREFIX);
+                        sb.append(BOUNDARY);
+                        sb.append(LINE_END);
+                        /**
+                         * ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½×¢ï¿½â£º nameï¿½ï¿½ï¿½ï¿½ï¿½ÖµÎªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªkey Ö»ï¿½ï¿½ï¿½ï¿½ï¿½key
+                         * ï¿½Å¿ï¿½ï¿½ÔµÃµï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½Ä¼ï¿½ filenameï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½ï¿½×ºï¿½ï¿½ï¿½
+                         * ï¿½ï¿½ï¿½ï¿½:abc.png
+                         */
+                        sb.append("Content-Disposition: form-data; name=\"" + mStrParams + "\"; filename=\"" + mStrFileName + "\""
+                                + LINE_END);
+                        sb.append("Content-Type: application/octet-stream; charset=" + CHARSET + LINE_END);
+                        sb.append(LINE_END);
+                        dos.write(sb.toString().getBytes());
+                        InputStream is = new FileInputStream(mStrFileName);
+                        byte[] bytes = new byte[4096];
+                        int len = 0;
+                        while ((len = is.read(bytes)) != -1) {
+                            dos.write(bytes, 0, len);
+                        }
+                        is.close();
+                        dos.write(LINE_END.getBytes());
+                        byte[] end_data = (PREFIX + BOUNDARY + PREFIX + LINE_END).getBytes();
+                        dos.write(end_data);
+                        dos.flush();
+                        /**
+                         * ï¿½ï¿½È¡ï¿½ï¿½Ó¦ï¿½ï¿½ 200=ï¿½É¹ï¿½ ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½É¹ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½
+                         */
+                        int res = conn.getResponseCode();
+                        Log.e(TAG, "response code:" + res);
+                        if (res == 200) {
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));// ï¿½ï¿½ï¿½Ã±ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+                            String line = "";
+                            String strResult = "";
+                            while ((line = reader.readLine()) != null) {
+                                strResult += line;
+                            }
+                            reader.close();
+                            Log.d("", strResult);
+                            mCallback.onHttpUpLoadResult(mStrContex, strResult);
+                            return;
+                        }
+                        else {
+                            mCallback.onHttpUpLoadResult(mStrContex, "{\"result\":0}");
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    mCallback.onHttpUpLoadResult(mStrContex, "{\"result\":0}");
+                }
+            }
+        }.start();
+        return 0;
+    }
 
-			            	Log.d("", strResult);
-			            	mCallback.onHttpUpLoadResult(mStrContex, strResult);
-							return;
-						}
-						else {
-			            	mCallback.onHttpUpLoadResult(mStrContex, "{\"result\":0}");
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-	            	mCallback.onHttpUpLoadResult(mStrContex, "{\"result\":0}");
-				}
-			}
-		}.start();
-
-		return 0;
-	}
-
-	public interface HttpUpLoadCallback {
-		public void onHttpUpLoadResult(String strContex, String strResult);
-	}
+    public interface HttpUpLoadCallback {
+        public void onHttpUpLoadResult(String strContex, String strResult);
+    }
 }

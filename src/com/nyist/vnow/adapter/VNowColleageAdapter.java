@@ -15,144 +15,140 @@ import android.widget.TextView;
 import com.nyist.vnow.R;
 import com.nyist.vnow.struct.Colleage;
 
-public class VNowColleageAdapter extends BaseAdapter implements SectionIndexer{
-	private List<Colleage> mListColleages;
-	private Context mContext;
+public class VNowColleageAdapter extends BaseAdapter implements SectionIndexer {
+    private List<Colleage> mListColleages;
+    private Context mContext;
 
-	final static class ViewHolder {
-		ImageView imgHead;
-		TextView txtName;
-		TextView txtCatalog;
-		TextView txtMsg;
-		LinearLayout llayoutContent;
-	}
+    final static class ViewHolder {
+        ImageView imgHead;
+        TextView txtName;
+        TextView txtCatalog;
+        TextView txtMsg;
+        LinearLayout llayoutContent;
+    }
 
-	public VNowColleageAdapter(Context context, List<Colleage> list) {
-		mContext = context;
-		this.mListColleages = list;
-	}
-	
-	/**
-	 * µ±ListViewÊý¾Ý·¢Éú±ä»¯Ê±,µ÷ÓÃ´Ë·½·¨À´¸üÐÂListView
-	 * @param list
-	 */
-	public void updateListView(List<Colleage> list){
-		this.mListColleages = list;
-		notifyDataSetChanged();
-	}
+    public VNowColleageAdapter(Context context, List<Colleage> list) {
+        mContext = context;
+        this.mListColleages = list;
+    }
 
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return mListColleages.size();
-	}
+    /**
+     * ï¿½ï¿½ListViewï¿½ï¿½Ý·ï¿½ï¿½ï¿½ä»¯Ê±,ï¿½ï¿½ï¿½Ã´Ë·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ListView
+     * 
+     * @param list
+     */
+    public void updateListView(List<Colleage> list) {
+        this.mListColleages = list;
+        notifyDataSetChanged();
+    }
 
-	@Override
-	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public int getCount() {
+        // TODO Auto-generated method stub
+        return mListColleages.size();
+    }
 
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return position;
-	}
+    @Override
+    public Object getItem(int position) {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public boolean areAllItemsEnabled() {
-		return false;
-	}
+    @Override
+    public long getItemId(int position) {
+        // TODO Auto-generated method stub
+        return position;
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		
-		ViewHolder viewHolder = null;
-		final Colleage mContent = mListColleages.get(position);
-		if (convertView == null) {
-			viewHolder = new ViewHolder();
-			convertView = LayoutInflater.from(mContext).inflate(R.layout.avc_list_contacts_item, null);
-			viewHolder.imgHead = (ImageView) convertView
-					.findViewById(R.id.img_contact_head);
-			viewHolder.txtName = (TextView) convertView
-					.findViewById(R.id.txt_contact_name);
-			viewHolder.txtCatalog = (TextView) convertView
-					.findViewById(R.id.txt_contact_catalog);
-			viewHolder.txtMsg = (TextView) convertView
-					.findViewById(R.id.txt_contact_msg);
-			viewHolder.llayoutContent = (LinearLayout) convertView
-					.findViewById(R.id.llayout_item_content);
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
 
-			convertView.setTag(viewHolder);
-			convertView.setTag(viewHolder);
-		} else {
-			viewHolder = (ViewHolder) convertView.getTag();
-		}
-		
-		//¸ù¾Ýposition»ñÈ¡·ÖÀàµÄÊ××ÖÄ¸µÄChar asciiÖµ
-		int section = getSectionForPosition(position);
-		
-		//Èç¹ûµ±Ç°Î»ÖÃµÈÓÚ¸Ã·ÖÀàÊ××ÖÄ¸µÄCharµÄÎ»ÖÃ £¬ÔòÈÏÎªÊÇµÚÒ»´Î³öÏÖ
-		if(position == getPositionForSection(section)){
-			viewHolder.txtCatalog.setVisibility(View.VISIBLE);
-			viewHolder.llayoutContent.setPadding(0, 5, 0, 5);
-			viewHolder.txtCatalog.setText(mContent.getmSortLetters());
-		}else{
-			viewHolder.txtCatalog.setVisibility(View.GONE);
-		}
-	
-		viewHolder.txtName.setText(mListColleages.get(position).getG_name());
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder viewHolder = null;
+        final Colleage mContent = mListColleages.get(position);
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.avc_list_contacts_item, null);
+            viewHolder.imgHead = (ImageView) convertView
+                    .findViewById(R.id.img_contact_head);
+            viewHolder.txtName = (TextView) convertView
+                    .findViewById(R.id.txt_contact_name);
+            viewHolder.txtCatalog = (TextView) convertView
+                    .findViewById(R.id.txt_contact_catalog);
+            viewHolder.txtMsg = (TextView) convertView
+                    .findViewById(R.id.txt_contact_msg);
+            viewHolder.llayoutContent = (LinearLayout) convertView
+                    .findViewById(R.id.llayout_item_content);
+            convertView.setTag(viewHolder);
+            convertView.setTag(viewHolder);
+        }
+        else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+        // ï¿½ï¿½ï¿½positionï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½Char asciiÖµ
+        int section = getSectionForPosition(position);
+        // ï¿½ï¿½ï¿½Ç°Î»ï¿½Ãµï¿½ï¿½Ú¸Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½Charï¿½ï¿½Î»ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½Çµï¿½Ò»ï¿½Î³ï¿½ï¿½ï¿½
+        if (position == getPositionForSection(section)) {
+            viewHolder.txtCatalog.setVisibility(View.VISIBLE);
+            viewHolder.llayoutContent.setPadding(0, 5, 0, 5);
+            viewHolder.txtCatalog.setText(mContent.getmSortLetters());
+        }
+        else {
+            viewHolder.txtCatalog.setVisibility(View.GONE);
+        }
+        viewHolder.txtName.setText(mListColleages.get(position).getG_name());
+        // if (mListColleages.get(position).getG_head() != null) {
+        // // viewHolder.imgHead.setImageBitmap(mListColleages.get(position)
+        // // .getG_head());
+        // } else {
+        // viewHolder.imgHead.setImageResource(R.drawable.userhead);
+        // }
+        return convertView;
+    }
 
-//		if (mListColleages.get(position).getG_head() != null) {
-////			viewHolder.imgHead.setImageBitmap(mListColleages.get(position)
-////					.getG_head());
-//		} else {
-//			viewHolder.imgHead.setImageResource(R.drawable.userhead);
-//		}
-		return convertView;
-	}
+    /**
+     * ï¿½ï¿½ï¿½ListViewï¿½Äµï¿½Ç°Î»ï¿½Ã»ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½Char asciiÖµ
+     */
+    public int getSectionForPosition(int position) {
+        return mListColleages.get(position).getmSortLetters().charAt(0);
+    }
 
-	/**
-	 * ¸ù¾ÝListViewµÄµ±Ç°Î»ÖÃ»ñÈ¡·ÖÀàµÄÊ××ÖÄ¸µÄChar asciiÖµ
-	 */
-	public int getSectionForPosition(int position) {
-		return mListColleages.get(position).getmSortLetters().charAt(0);
-	}
+    /**
+     * ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½Char asciiÖµï¿½ï¿½È¡ï¿½ï¿½ï¿½Ò»ï¿½Î³ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½Î»ï¿½ï¿½
+     */
+    public int getPositionForSection(int section) {
+        for (int i = 0; i < getCount(); i++) {
+            String sortStr = mListColleages.get(i).getmSortLetters();
+            char firstChar = sortStr.toUpperCase().charAt(0);
+            if (firstChar == section) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
-	/**
-	 * ¸ù¾Ý·ÖÀàµÄÊ××ÖÄ¸µÄChar asciiÖµ»ñÈ¡ÆäµÚÒ»´Î³öÏÖ¸ÃÊ××ÖÄ¸µÄÎ»ÖÃ
-	 */
-	public int getPositionForSection(int section) {
-		for (int i = 0; i < getCount(); i++) {
-			String sortStr = mListColleages.get(i).getmSortLetters();
-			char firstChar = sortStr.toUpperCase().charAt(0);
-			if (firstChar == section) {
-				return i;
-			}
-		}
-		
-		return -1;
-	}
-	
-	/**
-	 * ÌáÈ¡Ó¢ÎÄµÄÊ××ÖÄ¸£¬·ÇÓ¢ÎÄ×ÖÄ¸ÓÃ#´úÌæ¡£
-	 * 
-	 * @param str
-	 * @return
-	 */
-	private String getAlpha(String str) {
-		String  sortStr = str.trim().substring(0, 1).toUpperCase();
-		// ÕýÔò±í´ïÊ½£¬ÅÐ¶ÏÊ××ÖÄ¸ÊÇ·ñÊÇÓ¢ÎÄ×ÖÄ¸
-		if (sortStr.matches("[A-Z]")) {
-			return sortStr;
-		} else {
-			return "#";
-		}
-	}
+    /**
+     * ï¿½ï¿½È¡Ó¢ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½Ó¢ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½#ï¿½ï¿½ï¿½æ¡£
+     * 
+     * @param str
+     * @return
+     */
+    private String getAlpha(String str) {
+        String sortStr = str.trim().substring(0, 1).toUpperCase();
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½Ç·ï¿½ï¿½ï¿½Ó¢ï¿½ï¿½ï¿½ï¿½Ä¸
+        if (sortStr.matches("[A-Z]")) {
+            return sortStr;
+        }
+        else {
+            return "#";
+        }
+    }
 
-	@Override
-	public Object[] getSections() {
-		return null;
-	}
-
+    @Override
+    public Object[] getSections() {
+        return null;
+    }
 }

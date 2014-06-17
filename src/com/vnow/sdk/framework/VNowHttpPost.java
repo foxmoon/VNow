@@ -22,72 +22,74 @@ import android.util.Log;
  * 
  * @author WangLr
  * @description VNow��HTTP������Post������
- *
+ * 
  */
 public class VNowHttpPost {
-	private final static String TAG = "VNowHttpPost";
-	private HttpPostCallback mCallback = null;
-	private String mStrURI = "";
-	private String mStrContex = "";
-	private List<NameValuePair> mParams = null; 
+    private final static String TAG = "VNowHttpPost";
+    private HttpPostCallback mCallback = null;
+    private String mStrURI = "";
+    private String mStrContex = "";
+    private List<NameValuePair> mParams = null;
 
-	public void SetCallback(HttpPostCallback callback, String strContex) {
-		mCallback = callback;
-		mStrContex = strContex;
-	}
+    public void SetCallback(HttpPostCallback callback, String strContex) {
+        mCallback = callback;
+        mStrContex = strContex;
+    }
 
-	public void SetURI(String strURI) {
-		mStrURI = strURI;
-	}
+    public void SetURI(String strURI) {
+        mStrURI = strURI;
+    }
 
-	public void SetParam(List<NameValuePair> params) {
-		mParams = params;
-	}
-	
-	public int startPost() {
-		if ("".equals(mStrURI) || mParams == null) {
-			return -1;
-		}
+    public void SetParam(List<NameValuePair> params) {
+        mParams = params;
+    }
 
-		new Thread() {
-			public void run() {
-			    HttpPost httpRequest = null;
-		        httpRequest = new HttpPost(mStrURI); 
-		        try {
-		            httpRequest.setEntity(new UrlEncodedFormEntity(mParams, HTTP.UTF_8));
-		            DefaultHttpClient httpClient = new DefaultHttpClient();
-		            //httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, 6000); 
-		            //httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT, 10000);
-		            HttpResponse httpResponse = httpClient.execute(httpRequest); 
-		            if (httpResponse.getStatusLine().getStatusCode() == 200) { 
-		            	String strResult = EntityUtils.toString(httpResponse.getEntity());
-		            	Log.d("", strResult);
-		            	
-		            	mCallback.onHttpPostResult(mStrContex, strResult);
-		            }
-		            else {
-		            	Log.d("", "Error Response"+httpResponse.getStatusLine().toString());
-		            }
-		        } catch (ClientProtocolException e) {
-		        	//Log.d("", e.getMessage().toString());
-		        	//e.printStackTrace();
-	            	mCallback.onHttpPostResult(mStrContex, "{\"result\":0}");
-		        } catch (IOException e) {
-		        	//Log.d("", e.getMessage().toString());
-		        	//e.printStackTrace();
-	            	mCallback.onHttpPostResult(mStrContex, "{\"result\":0}");
-		        } catch (Exception e) {
-		        	//Log.d("", e.getMessage().toString());
-		        	//e.printStackTrace();
-	            	mCallback.onHttpPostResult(mStrContex, "{\"result\":0}");
-		        }
-			}
-		}.start();
-		
-		return 0;
-	}
-	
-	public interface HttpPostCallback {
-		public void onHttpPostResult(String strContex, String strResult);
-	}
+    public int startPost() {
+        if ("".equals(mStrURI) || mParams == null) {
+            return -1;
+        }
+        new Thread() {
+            public void run() {
+                HttpPost httpRequest = null;
+                httpRequest = new HttpPost(mStrURI);
+                try {
+                    httpRequest.setEntity(new UrlEncodedFormEntity(mParams, HTTP.UTF_8));
+                    DefaultHttpClient httpClient = new DefaultHttpClient();
+                    // httpClient.getParams().setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,
+                    // 6000);
+                    // httpClient.getParams().setParameter(CoreConnectionPNames.SO_TIMEOUT,
+                    // 10000);
+                    HttpResponse httpResponse = httpClient.execute(httpRequest);
+                    if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                        String strResult = EntityUtils.toString(httpResponse.getEntity());
+                        Log.d("", strResult);
+                        mCallback.onHttpPostResult(mStrContex, strResult);
+                    }
+                    else {
+                        Log.d("", "Error Response" + httpResponse.getStatusLine().toString());
+                    }
+                }
+                catch (ClientProtocolException e) {
+                    // Log.d("", e.getMessage().toString());
+                    // e.printStackTrace();
+                    mCallback.onHttpPostResult(mStrContex, "{\"result\":0}");
+                }
+                catch (IOException e) {
+                    // Log.d("", e.getMessage().toString());
+                    // e.printStackTrace();
+                    mCallback.onHttpPostResult(mStrContex, "{\"result\":0}");
+                }
+                catch (Exception e) {
+                    // Log.d("", e.getMessage().toString());
+                    // e.printStackTrace();
+                    mCallback.onHttpPostResult(mStrContex, "{\"result\":0}");
+                }
+            }
+        }.start();
+        return 0;
+    }
+
+    public interface HttpPostCallback {
+        public void onHttpPostResult(String strContex, String strResult);
+    }
 }

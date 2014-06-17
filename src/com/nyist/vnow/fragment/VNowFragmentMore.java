@@ -20,103 +20,101 @@ import com.vnow.sdk.openapi.EventListener;
 import com.vnow.sdk.openapi.IVNowAPI;
 
 public class VNowFragmentMore extends Fragment implements OnClickListener {
-	private RelativeLayout mLayoutStore;
-	private RelativeLayout mLayoutSet;
-	private RelativeLayout mLayoutIntrduce;
-	private RelativeLayout mLayoutAbout;
-	
-	private VNowCore mCore;
-	
-	private MyEventListener mCallBackListener;
-	private IVNowAPI mVNowAPI;
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onCreate(savedInstanceState);
-		mCore = VNowApplication.the().getCore();
-		mCallBackListener = new MyEventListener();
-		mVNowAPI = IVNowAPI.createIVNowAPI();
-	}
+    private RelativeLayout mLayoutStore;
+    private RelativeLayout mLayoutSet;
+    private RelativeLayout mLayoutIntrduce;
+    private RelativeLayout mLayoutAbout;
+    private VNowCore mCore;
+    private MyEventListener mCallBackListener;
+    private IVNowAPI mVNowAPI;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		View view = inflater.inflate(R.layout.vnow_fragment_more, container,
-				false);
-		initUI(view);
-		return view;
-	}
-	
-	@Override
-	public void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
-		mVNowAPI.setEventListener(mCallBackListener);
-	}
-	
-	@Override
-	public void onPause() {
-		// TODO Auto-generated method stub
-		super.onPause();
-		mVNowAPI.removeEventListener(mCallBackListener);
-	}
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onCreate(savedInstanceState);
+        mCore = VNowApplication.the().getCore();
+        mCallBackListener = new MyEventListener();
+        mVNowAPI = IVNowAPI.createIVNowAPI();
+    }
 
-	private void initUI(View view) {
-		mLayoutStore = (RelativeLayout) view
-				.findViewById(R.id.rlayout_my_store);
-		mLayoutSet = (RelativeLayout) view
-				.findViewById(R.id.rlayout_app_setting);
-		mLayoutIntrduce = (RelativeLayout) view
-				.findViewById(R.id.rlayout_recommend_friend);
-		mLayoutAbout = (RelativeLayout) view
-				.findViewById(R.id.rlayout_more_about);
-		mLayoutStore.setOnClickListener(this);
-		mLayoutSet.setOnClickListener(this);
-		mLayoutIntrduce.setOnClickListener(this);
-		mLayoutAbout.setOnClickListener(this);
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        View view = inflater.inflate(R.layout.vnow_fragment_more, container,
+                false);
+        initUI(view);
+        return view;
+    }
 
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		int id = v.getId();
-		switch (id) {
-		case R.id.rlayout_my_store:
-			VNowApplication.the().showToast(
-					getString(R.string.str_more_my_store));
-			break;
-		case R.id.rlayout_app_setting:
-			Intent intent = new Intent(getActivity(),SystemSetActivity.class);
-			startActivity(intent);
-			break;
-		case R.id.rlayout_recommend_friend:
-			VNowApplication.the().showToast(
-					getString(R.string.str_more_recommend_friend));
-			break;
-		case R.id.rlayout_more_about:
-			Intent moreIntent = new Intent(getActivity(),VNMoreActivity.class);
-			startActivity(moreIntent);
-			break;
-		}
-	}
-	
-	
-	private class MyEventListener extends EventListener {
-		@Override
-		public void onResponseLogout(boolean bSuccess) {
-			// TODO Auto-generated method stub
-			super.onResponseLogout(bSuccess);
-			if (bSuccess) {
-				VNowApplication.the().showToast("已注销！");
-				Intent intent = new Intent(getActivity(),
-						VNowHostActivity.class);
-				startActivity(intent);
-				getActivity().finish();
-			} else {
-				VNowApplication.the().showToast("注销失败！");
-			}
-		}
-	}
+    @Override
+    public void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        mVNowAPI.setEventListener(mCallBackListener);
+    }
+
+    @Override
+    public void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        mVNowAPI.removeEventListener(mCallBackListener);
+    }
+
+    private void initUI(View view) {
+        mLayoutStore = (RelativeLayout) view
+                .findViewById(R.id.rlayout_my_store);
+        mLayoutSet = (RelativeLayout) view
+                .findViewById(R.id.rlayout_app_setting);
+        mLayoutIntrduce = (RelativeLayout) view
+                .findViewById(R.id.rlayout_recommend_friend);
+        mLayoutAbout = (RelativeLayout) view
+                .findViewById(R.id.rlayout_more_about);
+        mLayoutStore.setOnClickListener(this);
+        mLayoutSet.setOnClickListener(this);
+        mLayoutIntrduce.setOnClickListener(this);
+        mLayoutAbout.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        // TODO Auto-generated method stub
+        int id = v.getId();
+        switch (id) {
+            case R.id.rlayout_my_store:
+                VNowApplication.the().showToast(
+                        getString(R.string.str_more_my_store));
+                break;
+            case R.id.rlayout_app_setting:
+                Intent intent = new Intent(getActivity(), SystemSetActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.rlayout_recommend_friend:
+                VNowApplication.the().showToast(
+                        getString(R.string.str_more_recommend_friend));
+                break;
+            case R.id.rlayout_more_about:
+                Intent moreIntent = new Intent(getActivity(), VNMoreActivity.class);
+                startActivity(moreIntent);
+                break;
+        }
+    }
+
+    private class MyEventListener extends EventListener {
+        @Override
+        public void onResponseLogout(boolean bSuccess) {
+            // TODO Auto-generated method stub
+            super.onResponseLogout(bSuccess);
+            if (bSuccess) {
+                VNowApplication.the().showToast("已注销！");
+                Intent intent = new Intent(getActivity(),
+                        VNowHostActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+            else {
+                VNowApplication.the().showToast("注销失败！");
+            }
+        }
+    }
 }

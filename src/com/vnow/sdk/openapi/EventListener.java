@@ -4,150 +4,177 @@ import android.util.Log;
 
 import com.nyist.vnow.struct.User;
 
-
-
 public class EventListener {
-	private final String TAG = "EventListener";
+    private final String TAG = "EventListener";
 
-	public void onResponseRegister(boolean bSuccess,String uuid) {
-		Log.i(TAG, "onResponseRegister");
-	}
-	public void onResponseLogin(boolean bSuccess, User user) {
-		Log.i(TAG, "onResponseLogin");
-	}
-	public void onResponseLogout(boolean bSuccess) {
-		Log.i(TAG, "onResponseLogout");
-	}
-	public void onResponseCall(boolean bSuccess) {
-		Log.i(TAG, "onResponseCall");
-	}
-	public void onResponseCallFailed(String resion) {
-		Log.i(TAG, "onResponseCallFailed");
-	}
-	public void onAnswerCall(boolean bSuccess) {
-		
-	}
-	public void onResponseHangup(boolean bSuccess) {
-		Log.i(TAG, "onResponseHangup");
-	}
-	public void onResponseCreateRoom(boolean bSuccess) {
-		Log.i(TAG, "onResponseCreateRoom");
-	}
-	public void onResponseModifyRoom(boolean bSuccess) {
-		Log.i(TAG, "onResponseModifyRoom");
-	}
-	public void onResponseDestroyRoom(boolean bSuccess) {
-		Log.i(TAG, "onResponseDestroyRoom");
-	}
-	public void onResponseEnterRoom(boolean bSuccess) {
-		Log.i(TAG, "onResponseEnterRoom");
-	}
-	public void onResponseExitRoom(boolean bSuccess) {
-		Log.i(TAG, "onResponseExitRoom");
-	}
-	public void onResponseQueryMyRoom(boolean bSuccess) {
-		Log.i(TAG, "onResponseQueryMyRoom");
-	}
-	public void onResponseQueryRoomUsrList(boolean bSuccess) {
-		Log.i(TAG, "onResponseQueryRoomUsrList");
-	}
-	public void onResponseQueryCallHistory(boolean bSuccess) {
-		Log.i(TAG, "onResponseQueryCallHistory");
-	}
-	public void onResponseMuteAll(boolean bSuccess) {
-		Log.i(TAG, "onResponseMuteAll");
-	}
-	public void onResponseMuteOther(boolean bSuccess) {
-		Log.i(TAG, "onResponseMuteOther");
-	}
-	public void onResponseInviteToRoom(boolean bSuccess) {
-		Log.i(TAG, "onResponseInviteToRoom");
-	}
-	public void onResponseKickFromRoom(boolean bSuccess) {
-		Log.i(TAG, "onResponseKickFromRoom");
-	}
-	public void onResponseUploadFile(boolean bSuccess) {
-		Log.i(TAG, "onResponseUploadFile");
-	}
-	public void onResponseUploadFileProgress(boolean bSuccess) {
-		Log.i(TAG, "onResponseUploadFileProgress");
-	}
-	public void onResponseDownloadFile(boolean bSuccess) {
-		Log.i(TAG, "onResponseDownloadFile");
-	}
-	public void onResponseDownloadFileProgress(boolean bSuccess) {
-		Log.i(TAG, "onResponseDownloadFileProgress");
-	}
-	public void onResponseQueryColleageList(boolean bSuccess,String jsonResult) {
-		Log.i(TAG, "onResponseQueryColleageList");
-	}
-	public void onResponseQueryFriendList(boolean bSuccess,String jsonResult) {
-		Log.i(TAG, "onResponseQueryFriendList");
-	}
-	public void onResponseQueryUserInfo(boolean bSuccess) {
-		Log.i(TAG, "onResponseQueryUserInfo");
-	}
-	public void onResponseAddFriend(boolean bSuccess,int reason) {
-		Log.i(TAG, "onResponseAddFriend");
-	}
-	public void onResponseModifyFriend(boolean bSuccess){
-		Log.i(TAG, "onResponseModifyFriend");
-	}
-	public void onResponseDelFriend(boolean bSuccess) {
-		Log.i(TAG, "onResponseDelFriend");
-	}
-	public void onResponseQueryGroupList(boolean bSuccess,String jsonResult) {
-		Log.i(TAG, "onResponseQueryGroupList");
-	}
-	public void onResponseCreateGroup(boolean bSuccess) {
-		Log.i(TAG, "onResponseCreateGroup");
-	}
-	
-	public void onResponseModifyGroup(boolean bSuccess){
-		Log.i(TAG, "onResponseModifyGroup");
-	}
-	public void onResponseDelGroup(boolean bSuccess) {
-		Log.i(TAG, "onResponseDelGroup");
-	}
-	public void onResponseGetGroupUser(boolean bSuccess) {
-		Log.i(TAG, "onResponseGetGroupUser");
-	}
-	public void onResponseAddGroupUser(boolean bSuccess,int reason) {
-		Log.i(TAG, "onResponseAddGroupUser");
-	}
-	public void onResponseDelGroupUser(boolean bSuccess) {
-		Log.i(TAG, "onResponseDelGroupUser");
-	}
-	
-	public void onResponseUploadFileHttp(boolean bSuccess,String resUrl,String fileType) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void onResponseCallIn(String fromName) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void onResponseApiStatus(String status) {
-		// TODO Auto-generated method stub
-		
-	}
-	public void onResponseCapture(String picPath,boolean isSuccsee) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void onResponseVdoRecode(String vdoPath,boolean isSuccsee) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public void onResponseSynTransport(String contentUrl,String srcID,boolean isSuccess){
-		
-	}
-	public void onResponseConfUpLoadFile(String handID, String progress,
-			String filePath, boolean isSuccess) {
-		// TODO Auto-generated method stub
-	}
-	
-	
+    public void onResponseRegister(boolean bSuccess, String uuid) {
+        Log.i(TAG, "onResponseRegister");
+    }
+
+    public void onResponseLogin(boolean bSuccess, User user) {
+        Log.i(TAG, "onResponseLogin");
+    }
+
+    public void onResponseLogout(boolean bSuccess) {
+        Log.i(TAG, "onResponseLogout");
+    }
+
+    public void onResponseCall(boolean bSuccess) {
+        Log.i(TAG, "onResponseCall");
+    }
+
+    public void onResponseCallFailed(String resion) {
+        Log.i(TAG, "onResponseCallFailed");
+    }
+
+    public void onAnswerCall(boolean bSuccess) {
+    }
+
+    public void onResponseHangup(boolean bSuccess) {
+        Log.i(TAG, "onResponseHangup");
+    }
+
+    public void onResponseCreateRoom(boolean bSuccess) {
+        Log.i(TAG, "onResponseCreateRoom");
+    }
+
+    public void onResponseModifyRoom(boolean bSuccess) {
+        Log.i(TAG, "onResponseModifyRoom");
+    }
+
+    public void onResponseDestroyRoom(boolean bSuccess) {
+        Log.i(TAG, "onResponseDestroyRoom");
+    }
+
+    public void onResponseEnterRoom(boolean bSuccess) {
+        Log.i(TAG, "onResponseEnterRoom");
+    }
+
+    public void onResponseExitRoom(boolean bSuccess) {
+        Log.i(TAG, "onResponseExitRoom");
+    }
+
+    public void onResponseQueryMyRoom(boolean bSuccess) {
+        Log.i(TAG, "onResponseQueryMyRoom");
+    }
+
+    public void onResponseQueryRoomUsrList(boolean bSuccess) {
+        Log.i(TAG, "onResponseQueryRoomUsrList");
+    }
+
+    public void onResponseQueryCallHistory(boolean bSuccess) {
+        Log.i(TAG, "onResponseQueryCallHistory");
+    }
+
+    public void onResponseMuteAll(boolean bSuccess) {
+        Log.i(TAG, "onResponseMuteAll");
+    }
+
+    public void onResponseMuteOther(boolean bSuccess) {
+        Log.i(TAG, "onResponseMuteOther");
+    }
+
+    public void onResponseInviteToRoom(boolean bSuccess) {
+        Log.i(TAG, "onResponseInviteToRoom");
+    }
+
+    public void onResponseKickFromRoom(boolean bSuccess) {
+        Log.i(TAG, "onResponseKickFromRoom");
+    }
+
+    public void onResponseUploadFile(boolean bSuccess) {
+        Log.i(TAG, "onResponseUploadFile");
+    }
+
+    public void onResponseUploadFileProgress(boolean bSuccess) {
+        Log.i(TAG, "onResponseUploadFileProgress");
+    }
+
+    public void onResponseDownloadFile(boolean bSuccess) {
+        Log.i(TAG, "onResponseDownloadFile");
+    }
+
+    public void onResponseDownloadFileProgress(boolean bSuccess) {
+        Log.i(TAG, "onResponseDownloadFileProgress");
+    }
+
+    public void onResponseQueryColleageList(boolean bSuccess, String jsonResult) {
+        Log.i(TAG, "onResponseQueryColleageList");
+    }
+
+    public void onResponseQueryFriendList(boolean bSuccess, String jsonResult) {
+        Log.i(TAG, "onResponseQueryFriendList");
+    }
+
+    public void onResponseQueryUserInfo(boolean bSuccess) {
+        Log.i(TAG, "onResponseQueryUserInfo");
+    }
+
+    public void onResponseAddFriend(boolean bSuccess, int reason) {
+        Log.i(TAG, "onResponseAddFriend");
+    }
+
+    public void onResponseModifyFriend(boolean bSuccess) {
+        Log.i(TAG, "onResponseModifyFriend");
+    }
+
+    public void onResponseDelFriend(boolean bSuccess) {
+        Log.i(TAG, "onResponseDelFriend");
+    }
+
+    public void onResponseQueryGroupList(boolean bSuccess, String jsonResult) {
+        Log.i(TAG, "onResponseQueryGroupList");
+    }
+
+    public void onResponseCreateGroup(boolean bSuccess) {
+        Log.i(TAG, "onResponseCreateGroup");
+    }
+
+    public void onResponseModifyGroup(boolean bSuccess) {
+        Log.i(TAG, "onResponseModifyGroup");
+    }
+
+    public void onResponseDelGroup(boolean bSuccess) {
+        Log.i(TAG, "onResponseDelGroup");
+    }
+
+    public void onResponseGetGroupUser(boolean bSuccess) {
+        Log.i(TAG, "onResponseGetGroupUser");
+    }
+
+    public void onResponseAddGroupUser(boolean bSuccess, int reason) {
+        Log.i(TAG, "onResponseAddGroupUser");
+    }
+
+    public void onResponseDelGroupUser(boolean bSuccess) {
+        Log.i(TAG, "onResponseDelGroupUser");
+    }
+
+    public void onResponseUploadFileHttp(boolean bSuccess, String resUrl, String fileType) {
+        // TODO Auto-generated method stub
+    }
+
+    public void onResponseCallIn(String fromName) {
+        // TODO Auto-generated method stub
+    }
+
+    public void onResponseApiStatus(String status) {
+        // TODO Auto-generated method stub
+    }
+
+    public void onResponseCapture(String picPath, boolean isSuccsee) {
+        // TODO Auto-generated method stub
+    }
+
+    public void onResponseVdoRecode(String vdoPath, boolean isSuccsee) {
+        // TODO Auto-generated method stub
+    }
+
+    public void onResponseSynTransport(String contentUrl, String srcID, boolean isSuccess) {
+    }
+
+    public void onResponseConfUpLoadFile(String handID, String progress,
+            String filePath, boolean isSuccess) {
+        // TODO Auto-generated method stub
+    }
 }

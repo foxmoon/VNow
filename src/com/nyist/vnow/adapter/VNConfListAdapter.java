@@ -14,65 +14,65 @@ import com.nyist.vnow.R;
 import com.nyist.vnow.struct.VNConfItem;
 
 public class VNConfListAdapter extends BaseAdapter {
-	private List<VNConfItem> mStoreData;
-	private LayoutInflater mLayoutInflater;
-	class ListHolder {   
-	        ImageView confIcon;   
-	        TextView confName; 
-	        TextView confTheme;
-	        TextView confTime;
-	    } 
-	
-	public VNConfListAdapter(Context context,List<VNConfItem> data){
-		this.mStoreData = data;
-		this.mLayoutInflater = (LayoutInflater) context   
-        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	}
-	
-	
-	@Override
-	public int getCount() {
-		// TODO Auto-generated method stub
-		return mStoreData.size();
-	}
+    private List<VNConfItem> mStoreData;
+    private LayoutInflater mLayoutInflater;
 
-	@Override
-	public Object getItem(int position) {
-		// TODO Auto-generated method stub
-		return mStoreData.get(position);
-	}
+    class ListHolder {
+        ImageView confIcon;
+        TextView confName;
+        TextView confTheme;
+        TextView confTime;
+    }
 
-	@Override
-	public long getItemId(int position) {
-		// TODO Auto-generated method stub
-		return position;
-	}
+    public VNConfListAdapter(Context context, List<VNConfItem> data) {
+        this.mStoreData = data;
+        this.mLayoutInflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
-		ListHolder holder = null;   
-        if (convertView == null) {   
-            convertView = mLayoutInflater.inflate(   
-                    R.layout.item_conf, null);   
-            holder = new ListHolder();   
-            holder.confIcon = (ImageView) convertView   
-                    .findViewById(R.id.item_store_image);   
+    @Override
+    public int getCount() {
+        // TODO Auto-generated method stub
+        return mStoreData.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        // TODO Auto-generated method stub
+        return mStoreData.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        // TODO Auto-generated method stub
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        // TODO Auto-generated method stub
+        ListHolder holder = null;
+        if (convertView == null) {
+            convertView = mLayoutInflater.inflate(
+                    R.layout.item_conf, null);
+            holder = new ListHolder();
+            holder.confIcon = (ImageView) convertView
+                    .findViewById(R.id.item_store_image);
             holder.confName = (TextView) convertView.findViewById(R.id.item_store_name);
             holder.confTheme = (TextView) convertView.findViewById(R.id.item_store_address);
             holder.confTime = (TextView) convertView.findViewById(R.id.item_store_type);
-            convertView.setTag(holder); 
-        } else {   
-            holder = (ListHolder) convertView.getTag();   
-        }   
-        //显示列表信息
-        VNConfItem item = mStoreData.get(position);   
+            convertView.setTag(holder);
+        }
+        else {
+            holder = (ListHolder) convertView.getTag();
+        }
+        // 显示列表信息
+        VNConfItem item = mStoreData.get(position);
         if (item != null) {
-            holder.confName.setText("会议名称："+item.getmConfName()); 
-        	holder.confTheme.setText("主题："+item.getmConfTheme());
-            holder.confTime.setText("时间："+item.getmConfTime());
-        }   
-		return convertView;
-	}
-
+            holder.confName.setText("会议名称：" + item.getmConfName());
+            holder.confTheme.setText("主题：" + item.getmConfTheme());
+            holder.confTime.setText("时间：" + item.getmConfTime());
+        }
+        return convertView;
+    }
 }
