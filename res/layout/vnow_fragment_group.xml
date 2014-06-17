@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_create_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:background="@drawable/btn_search_contact"
+            android:text="@string/str_create_group"
+            android:textColor="@color/text_gray"
+            android:textSize="@dimen/SmallTextSize" 
+            android:layout_marginRight="15dp"/>
+
+        <Button
+            android:id="@+id/btn_modify_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1.5"
+            android:background="@drawable/btn_search_contact"
+            android:text="@string/str_modify"
+            android:textColor="@color/text_gray"
+            android:textSize="@dimen/SmallTextSize"
+            android:visibility="gone" />
+
+        <CheckBox
+            android:id="@+id/check_del_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:background="@drawable/bg_del_top"
+            android:button="@null"
+            android:gravity="center"
+            android:text="@string/str_delete_contact"
+            android:textColor="@color/check_gary_blue"
+            android:textSize="@dimen/SmallTextSize" />
+    </LinearLayout>
+
+    <com.nyist.vnow.view.ViEPullToRefreshListView
+        android:id="@+id/group_list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@drawable/divider_group"
+        android:dividerHeight="-1dp"
+        android:drawSelectorOnTop="false"
+        android:listSelector="@color/transparent"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:scrollbars="none"
+        android:stackFromBottom="false" >
+    </com.nyist.vnow.view.ViEPullToRefreshListView>
+
+</LinearLayout>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    >
+     <RelativeLayout
+        android:id="@+id/rlayout_main_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bar_top" >
+<ImageButton 
+   	        android:id="@+id/btn_back"
+   	        android:layout_width="wrap_content"
+   	        android:layout_height="wrap_content"
+   	        android:src="@drawable/btn_title_back_bg"
+   	        android:background="@null"
+   	        android:layout_centerVertical="true"
+   	        android:scaleType="centerInside"
+   	        android:layout_margin="10dp"
+   	        />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" >
+
+            <TextView
+                android:id="@+id/txt_main_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="关于"
+                android:textColor="@color/list_white"
+                android:textSize="@dimen/LargestTextSize"
+                android:padding="10dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:textSize="18sp"
+        android:textColor="@color/txt_black"
+        android:text="@string/str_more_version"
+        />
+    <ImageView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/line_alert_gray"
+        />
+     <TextView 
+         android:id="@+id/version_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:textSize="18sp"
+        android:textColor="@color/txt_black"
+        android:text="@string/str_sound_back"
+        />
+     
+     <LinearLayout 
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:gravity="center"
+         android:orientation="vertical"
+         android:layout_marginBottom="70dp"
+         >
+     <Button
+        android:id="@+id/btn_check"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:background="@drawable/btn_logout_style"
+        android:text="@string/soft_update_check"
+        android:textColor="@android:color/holo_blue_light"
+        android:textSize="20sp"
+        android:padding="10dp" />
+     </LinearLayout>
+    
+</LinearLayout>

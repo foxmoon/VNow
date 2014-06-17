@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="transparent">#00000000</color>
+    <color name="list_gray">#a3a3a3</color>
+    
+    <color name="list_white">#f7f7f7</color>
+    <color name="white">#FFFFFF</color>
+    <color name="blue_green">#0681ff</color>
+    
+    <color name="bg_gray">#f1f1f1</color>
+    <color name="bg_white">#73e4e4e4</color>
+    <color name="main_theme_blue">#237ED3</color>
+    
+    <color name="setting_light_grey">#cecfd1</color>
+    <color name="setting_darker_grey">#ffa8abad</color>
+    <color name="setting_grey_pressed">#EEEEEE</color>
+    
+    <color name="list_light_gray">#dde1e4</color>
+    <color name="text_gray">#7c7c7c</color>
+    <color name="text_blue">#1E9AFA</color>
+    <color name="txt_black">#000000</color>
+    <color name="contact_name_color">#2d2d2d</color>
+    <color name="key_board_lines">#d2d2d2</color>
+    
+    <!-- conf color -->
+    <color name="conf_bg_gary">#84868b</color>
+    <color name="conf_title_bg">#E58f9396</color>
+    <color name="conf_title_txt_color">#00ee1c</color>
+    <color name="conf_txt_file_name_color">#e4e4e4</color>
+    <color name="light_color_gray">#B2B2B2</color>
+    <color name="gray_bg">#a8a8a8</color>
+    
+</resources>

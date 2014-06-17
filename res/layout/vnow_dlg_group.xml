@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/llayout_dlg_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/txt_dlg_titile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/str_dlg_create_group"
+            android:textColor="#8f9295"
+            android:textSize="@dimen/LargestTextSize" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="5dp"
+            android:background="#8f9295" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llayout_dlg_group_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/txt_dlg_group_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="@string/str_dlg_group_name"
+            android:textColor="#8f9295"
+            android:textSize="@dimen/LargerTextSize" />
+
+        <EditText
+            android:id="@+id/edit_dlg_group_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_big_edit"
+            android:padding="2dp"
+            android:singleLine="true"
+            android:textColor="#8f9295" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/llayout_dlg_group_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp" >
+
+        <TextView
+            android:id="@+id/txt_dlg_group_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:text="@string/str_dlg_group_desc"
+            android:textColor="#8f9295"
+            android:textSize="@dimen/LargerTextSize" />
+
+        <EditText
+            android:id="@+id/edit_dlg_group_desc"
+            android:layout_width="match_parent"
+            android:layout_height="146dp"
+            android:layout_toRightOf="@+id/txt_dlg_group_desc"
+            android:background="@drawable/bg_big_edit"
+            android:padding="2dp"
+            android:textColor="#8f9295" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/btn_dlg_group_ok"
+            android:layout_width="80dp"
+            android:layout_height="39dp"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/btn_blue_bg"
+            android:text="@string/str_dlg_create" />
+
+        <Button
+            android:id="@+id/btn_dlg_group_cancel"
+            android:layout_width="80dp"
+            android:layout_height="39dp"
+            android:layout_marginLeft="25dp"
+            android:background="@drawable/btn_common"
+            android:text="@string/str_dlg_cancel" />
+    </LinearLayout>
+
+</LinearLayout>

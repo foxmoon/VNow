@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/rlayout_main_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_bar_top" >
+<ImageButton 
+   	        android:id="@+id/btn_back"
+   	        android:layout_width="wrap_content"
+   	        android:layout_height="wrap_content"
+   	        android:src="@drawable/btn_title_back_bg"
+   	        android:background="@null"
+   	        android:layout_centerVertical="true"
+   	        android:scaleType="centerInside"
+   	        android:layout_margin="10dp"
+   	        />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" >
+
+            <TextView
+                android:id="@+id/txt_main_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="会议创建"
+                android:textColor="@color/list_white"
+                android:textSize="@dimen/LargestTextSize"
+                android:padding="10dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <Button 
+   	        android:id="@+id/conf_create_btn"
+   	        android:layout_width="wrap_content"
+   	        android:layout_height="wrap_content"
+   	        android:text="创建"
+   	        android:textColor="@color/white"
+   	        android:layout_margin="5dp"
+   	        android:layout_alignParentRight="true"
+   	        />
+    </RelativeLayout>
+<LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="15dp"
+    >
+        <EditText 
+            android:id="@+id/conf_name"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/setting_light_grey"
+    android:textSize="20sp"
+    android:padding="5dp"
+    android:hint="会议名称"
+    />
+<EditText 
+    android:id="@+id/conf_theme"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:background="@color/setting_light_grey"
+    android:textSize="20sp"
+    android:padding="5dp"
+    android:hint="会议主题"
+    />
+    <EditText 
+        android:id="@+id/conf_time"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:background="@color/setting_light_grey"
+    android:textSize="20sp"
+    android:padding="5dp"
+    android:hint="会议开始时间"
+    />
+        </LinearLayout>
+</LinearLayout>

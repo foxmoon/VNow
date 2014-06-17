@@ -1,0 +1,654 @@
+package com.nyist.vnow.fragment;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.nyist.vnow.R;
+import com.nyist.vnow.adapter.VNowFriendAdapter;
+import com.nyist.vnow.adapter.VNowFriendAdapter.DelFriendListener;
+import com.nyist.vnow.core.VNowApplication;
+import com.nyist.vnow.core.VNowCore;
+import com.nyist.vnow.dialog.AvcProgress;
+import com.nyist.vnow.dialog.VNowAlertDlg;
+import com.nyist.vnow.dialog.VNowEditFriendDlg;
+import com.nyist.vnow.struct.Colleage;
+import com.nyist.vnow.struct.Friend;
+import com.nyist.vnow.struct.VNowRctContact;
+import com.nyist.vnow.ui.ConfActivity;
+import com.nyist.vnow.utils.CharacterParser;
+import com.nyist.vnow.utils.DES;
+import com.nyist.vnow.utils.PinyinComparator;
+import com.nyist.vnow.view.SideBar;
+import com.nyist.vnow.view.SideBar.OnTouchingLetterChangedListener;
+import com.nyist.vnow.view.ViEPullToRefreshListView;
+import com.nyist.vnow.view.ViEPullToRefreshListView.OnRefreshListener;
+import com.vnow.sdk.openapi.EventListener;
+import com.vnow.sdk.openapi.IVNowAPI;
+
+public class VnowFragmentContactOther extends Fragment implements DelFriendListener {
+	private final int LOAD_FRIEND_FINISH = 0x301;
+	private final int LOAD_FRIEND_GET_MORE = 0x302;
+	private final int DEL_FRIEND_SUCCESS = 0x303;
+	private final int DEL_FRIEND_FAILED = 0x304;
+	private final int MODIFY_FRIEND_SUCCESS = 0x305;
+	private final int MODIFY_FRIEND_FAILED = 0x306;
+	private final int ADD_FRIEND_SUCCESS = 0x307;
+	private final int ADD_FRIEND_FAILED = 0x308;
+
+	private VNowCore mCore;
+
+	private MyEventListener mCallBackListener;
+	private IVNowAPI mVNowAPI;
+
+	private ViEPullToRefreshListView mListviewFriends;
+	private SideBar mIndexBar;
+	private TextView mTxtContactIndex;
+	private AvcProgress mProgressLoading;
+	private EditText mEditSearch;
+	private CheckBox mCheckDelMode;
+	private Button mBtnAddContacts;
+	
+	private boolean HasGetFriend = false;
+	private String _delF_phone;
+	private List<Friend> mListFriends = null;
+	private VNowAlertDlg mDialog;
+	/**
+	 * 汉字转换成拼音的类
+	 */
+	private CharacterParser characterParser;
+
+	/**
+	 * 根据拼音来排列ListView里面的数据类
+	 */
+	private PinyinComparator pinyinComparator;
+	private VNowFriendAdapter mAdapterFriend;
+
+	private Handler mMainHandler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			if (msg.what == LOAD_FRIEND_FINISH) {
+				mListviewFriends.setVisibility(View.VISIBLE);
+				mIndexBar.setVisibility(View.VISIBLE);
+				mListFriends.clear();
+				stopProgress();
+				if (mCore.getFriendList().size() > 0) {
+					mListFriends.addAll(filledData(mCore.getFriendList()));
+					Collections.sort(mListFriends, pinyinComparator);
+					if(null == mAdapterFriend){
+						mAdapterFriend = new VNowFriendAdapter(getActivity(),
+								mListFriends, VnowFragmentContactOther.this);
+						mAdapterFriend.setmIsDel(mCheckDelMode.isChecked());
+						mListviewFriends.setAdapter(mAdapterFriend);
+						mListviewFriends
+								.setOnItemClickListener(mListItemClickListener);
+					}else{
+						mAdapterFriend.notifyDataSetChanged();
+					}
+				}else{
+					if(null != mAdapterFriend){
+							mAdapterFriend.updateListView(mListFriends);
+							mAdapterFriend.notifyDataSetChanged();
+					}
+					mCheckDelMode.setChecked(false);
+				}
+				mListviewFriends.onRefreshComplete();
+			} else if (msg.what == LOAD_FRIEND_GET_MORE) {
+				mListviewFriends.onRefreshComplete();
+				if(null != mAdapterFriend)
+					mAdapterFriend.notifyDataSetChanged();
+			} else if (msg.what == DEL_FRIEND_SUCCESS) {
+				mCore.doQueryFriendList();
+				VNowApplication.the().showToast(
+						getString(R.string.str_del_friend_success));
+			} else if (msg.what == DEL_FRIEND_FAILED) {
+				VNowApplication.the().showToast(
+						getString(R.string.str_del_friend_failed));
+			} else if (msg.what == MODIFY_FRIEND_SUCCESS) {
+				mCore.doQueryFriendList();
+				VNowApplication.the().showToast(
+						getString(R.string.str_modify_friend_success));
+			} else if (msg.what == MODIFY_FRIEND_FAILED) {
+				VNowApplication.the().showToast(
+						getString(R.string.str_modify_friend_failed));
+			} else if (msg.what == ADD_FRIEND_SUCCESS) {
+				mCore.doQueryFriendList();
+				VNowApplication.the().showToast(
+						getString(R.string.str_add_friend_success));
+			} else if (msg.what == ADD_FRIEND_FAILED) {
+				VNowApplication.the().showToast(
+						getString(R.string.str_add_friend_failed));
+			}
+		};
+	};
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		View view = inflater.inflate(R.layout.vnow_fragment_contact_others,
+				container, false);
+		initGroupContactsShowUI(view);
+		return view;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		mCore = VNowApplication.the().getCore();
+		characterParser = CharacterParser.getInstance();
+		pinyinComparator = new PinyinComparator();
+		mCallBackListener = new MyEventListener();
+		mVNowAPI = IVNowAPI.createIVNowAPI();
+
+	}
+
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		mVNowAPI.setEventListener(mCallBackListener);
+		
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+	}
+	
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		mListFriends = new ArrayList<Friend>();
+		initFriendData();
+		super.onStart();
+	}
+
+	@Override
+	public void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		mVNowAPI.removeEventListener(mCallBackListener);
+	}
+
+	
+	@Override
+	public void onStop() {
+		// TODO Auto-generated method stub
+		if(null!=mDialog)
+			mDialog.dismiss();
+		if(null!=mListFriends)
+			mListFriends.clear();
+		mListFriends = null;
+		mAdapterFriend = null;
+		super.onStop();
+	}
+	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		stopProgress();
+	}
+
+	/**
+	 * the method to init add friends show view
+	 */
+	private void initGroupContactsShowUI(View view) {
+		mListviewFriends = (ViEPullToRefreshListView) view
+				.findViewById(R.id.listview_add_friends);
+		mIndexBar = (SideBar) view.findViewById(R.id.sidebar_add_friends);
+		mCheckDelMode = (CheckBox) view.findViewById(R.id.check_del_other);
+		mEditSearch = (EditText) view
+				.findViewById(R.id.edit_text_contacts_search);
+		mTxtContactIndex = (TextView) view.findViewById(R.id.dialog);
+		mBtnAddContacts = (Button) view.findViewById(R.id.btn_add_contacts);
+		mTxtContactIndex.setVisibility(View.GONE);
+
+		mIndexBar.setTextView(mTxtContactIndex);
+
+		mListviewFriends.setVisibility(View.GONE);
+		mIndexBar.setVisibility(View.GONE);
+		mBtnAddContacts.setOnClickListener(mBtnOnClickListener);
+		mListviewFriends.setOnItemLongClickListener(mItemLongClickListener);
+		mListviewFriends.setonRefreshListener(mRefreshListener);
+		// 设置右侧触摸监听
+		mIndexBar
+				.setOnTouchingLetterChangedListener(mTouchingLetterChangedListener);
+
+		// 根据输入框输入值的改变来过滤搜索
+		mEditSearch.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// 当输入框里面的值为空，更新为原来的列表，否则为过滤数据列表
+				filterData(s.toString());
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
+
+		mCheckDelMode.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				// TODO Auto-generated method stub
+				
+				if (isChecked) {
+					mCheckDelMode.setText(R.string.str_cancel_delete_contact);
+				} else {
+					mCheckDelMode.setText(R.string.str_delete_contact);
+				}
+				if(null != mAdapterFriend){
+					mAdapterFriend.setmIsDel(isChecked);
+					mAdapterFriend.notifyDataSetChanged();
+				}
+			}
+		});
+	}
+
+	/**
+	 * the method to init the contacts from phone
+	 */
+	private void initFriendData() {
+		if (mCore.getFriendList().size() <= 0) {
+			if (!HasGetFriend) {
+				startProgress();
+			}		
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					if (mCore.getFriendList().size() == 0) {
+						mCore.doQueryFriendList();
+					}
+					
+				}
+			}).start();
+		} else {
+			mMainHandler.sendEmptyMessage(LOAD_FRIEND_FINISH);
+		}
+	}
+
+	/**
+	 * the method to start the progressbar when load data
+	 */
+	private void startProgress() {
+		if (null == mProgressLoading) {
+			mProgressLoading = new AvcProgress(getActivity(),
+					R.style.navSettingDialogTheme);
+			mProgressLoading.show();
+			mProgressLoading.setCancelable(true);
+			mProgressLoading.startProgress(getString(R.string.str_contact_loading));
+		} else {
+			mProgressLoading.stopProgress();
+			mProgressLoading = null;
+		}
+	}
+
+	/**
+	 * the method to stop the progressbar when loaded data
+	 */
+	private void stopProgress() {
+		if (null != mProgressLoading) {
+			mProgressLoading.stopProgress();
+			mProgressLoading = null;
+		}
+	}
+
+	/**
+	 * 为ListView填充数据
+	 * 
+	 * @param objects
+	 * @return
+	 */
+	private List<Friend> filledData(List<Friend> list) {
+		List<Friend> mSortList = new ArrayList<Friend>();
+
+		for (int i = 0; i < list.size(); i++) {
+			Friend friend = new Friend();
+			friend.setF_name(list.get(i).getF_name());
+			friend.setF_a_uuid(list.get(i).getF_a_uuid());
+			friend.setF_createtime(list.get(i).getF_createtime());
+			friend.setF_head(list.get(i).getF_head());
+			friend.setF_phone(list.get(i).getF_phone());
+			friend.setF_updatenum(list.get(i).getF_updatenum());
+			friend.setF_uuid(list.get(i).getF_uuid());
+			// 汉字转换成拼音
+			String pinyin = characterParser.getSelling(list.get(i).getF_name());
+			if(pinyin.length()!=0){
+				String sortString = pinyin.substring(0, 1).toUpperCase();
+				friend.setmPyName(pinyin);
+				// 正则表达式，判断首字母是否是英文字母
+				if (sortString.matches("[A-Z]")) {
+					friend.setmSortLetters(sortString.toUpperCase());
+				} else {
+					friend.setmSortLetters("#");
+				}
+			}else{
+				friend.setmSortLetters("#");
+			}
+			mSortList.add(friend);
+		}
+		return mSortList;
+
+	}
+
+	/**
+	 * 根据输入框中的值来过滤数据并更新ListView
+	 * 
+	 * @param filterStr
+	 */
+	private void filterData(String filterStr) {
+		List<Friend> filterDateList = new ArrayList<Friend>();
+
+		if (TextUtils.isEmpty(filterStr)) {
+			if(null == mListFriends)
+				return;
+			filterDateList.addAll(mListFriends);
+		} else {
+			filterDateList.clear();
+			for (Friend friend : mListFriends) {
+				String name = friend.getF_name();
+				if (name.indexOf(filterStr.toString()) != -1
+						|| characterParser.getSelling(name).startsWith(
+								filterStr.toString())) {
+					filterDateList.add(friend);
+				}
+			}
+		}
+
+		// 根据a-z进行排序
+		Collections.sort(filterDateList, pinyinComparator);
+		if(null != mAdapterFriend)
+			mAdapterFriend.updateListView(filterDateList);
+	}
+	
+	private void showAddFriendDlg() {
+		final VNowEditFriendDlg dlg = new VNowEditFriendDlg(getActivity(),
+				R.style.navComSettingDialogTheme);		
+		dlg.show();
+		dlg.setTitle(getString(R.string.str_add_friend));
+		dlg.setOKButton(getString(R.string.str_add),
+				new VNowEditFriendDlg.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int i) {
+						// TODO Auto-generated method stub
+						if (dlg.getFriendName().equals("")
+								|| dlg.getFriendPhone().equals("")) {
+							VNowApplication.the().showToast(
+									getString(R.string.str_modify_not_null));
+							return;
+						} else {
+							mCore.doAddFriend(dlg.getFriendPhone(), URLEncoder.encode(dlg.getFriendName()));
+						}
+					}
+				});
+		dlg.setCancelButton(getString(R.string.str_dlg_cancel),
+				new VNowEditFriendDlg.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int i) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+	}
+	
+	/**
+	 * the method to show recent chat message dialog when you long clik recent
+	 * chat listview item
+	 * 
+	 * @param longClickPos
+	 */
+	private void showItemLongClickDialog(final int longClickPos) {
+		final Friend item = mListFriends.get(longClickPos);
+		String[] choices = new String[1];
+		choices[0] = getString(R.string.str_modify);
+
+		new AlertDialog.Builder(getActivity()).setTitle(item.getF_name())
+				.setItems(choices, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+						case 0: {
+							showEditFriendDlg(item);
+						}
+							break;
+						default:
+							break;
+						}
+					}
+				}).show();
+	}
+	
+	private void showEditFriendDlg(final Friend friend) {
+		final VNowEditFriendDlg dlg = new VNowEditFriendDlg(getActivity(),
+				R.style.navComSettingDialogTheme);		
+		dlg.show();
+		dlg.setEditFriendName(friend.getF_name());
+		dlg.setEditFriendPhone(new DES().decrypt(friend.getF_phone()));
+		dlg.setOKButton(getString(R.string.str_modify),
+				new VNowEditFriendDlg.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int i) {
+						// TODO Auto-generated method stub
+						if (dlg.getFriendName().equals("")
+								|| dlg.getFriendPhone().equals("")) {
+							VNowApplication.the().showToast(
+									getString(R.string.str_modify_not_null));
+							return;
+						} else {
+							mCore.doModifyFrient(dlg.getFriendPhone(),
+									dlg.getFriendName(), friend.getF_uuid());
+						}
+					}
+				});
+		dlg.setCancelButton(getString(R.string.str_dlg_cancel),
+				new VNowEditFriendDlg.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int i) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+	}
+
+	OnTouchingLetterChangedListener mTouchingLetterChangedListener = new OnTouchingLetterChangedListener() {
+
+		@Override
+		public void onTouchingLetterChanged(String s) {
+			// TODO Auto-generated method stub
+			if (null != mAdapterFriend) {
+				int position = mAdapterFriend.getPositionForSection(s.charAt(0));
+				if (position != -1) {
+					mListviewFriends.setSelection(position);
+				}
+			}		
+		}
+	};
+	
+	private View.OnClickListener mBtnOnClickListener = new View.OnClickListener() {
+		
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			int id = v.getId();
+			if (id == R.id.btn_add_contacts) {
+//				Intent intent = new Intent(getActivity(), VNowAddContactActivity.class);
+//				startActivity(intent);
+				showAddFriendDlg();
+			}
+		}
+	};
+	
+	private void showCallDlg(final Friend friend){
+		if(null != mDialog){
+			mDialog.dismiss();
+			mDialog = null;
+		}
+		mDialog = new VNowAlertDlg(getActivity(), R.style.navComSettingDialogTheme);
+		mDialog.show();
+		mDialog.setTitle(R.string.str_alert_tip);
+		mDialog.setContent(getString(R.string.str_call_title).replace("${CALL_NUM}", friend.getF_name()));
+		mDialog.setOKButton(getString(R.string.str_call),
+				new VNowAlertDlg.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int i) {
+						// TODO Auto-generated method stub
+						Intent intent = new Intent(getActivity(), ConfActivity.class);
+						intent.putExtra("callNumber", friend.getF_phone());
+						intent.putExtra("callName", friend.getF_name());
+						intent.putExtra("isCallin", false);
+						
+						VNowRctContact rctItem = new VNowRctContact();
+						rctItem.setmStrUserId(mCore.getMySelf().uuid);
+						rctItem.setmStrUserName(mCore.getMySelf().name);
+						rctItem.setmStrConPhone(friend.getF_phone());
+						rctItem.setmStrContactName(friend.getF_name());
+						rctItem.setmCallTime(System.currentTimeMillis());
+						rctItem.setmIsCallIn(false);
+						mCore.insertCallHistory(rctItem);
+						startActivity(intent);
+					}
+				});
+		mDialog.setCancelButton(getString(R.string.str_cancel),
+				new VNowAlertDlg.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int i) {
+						
+						// TODO Auto-generated method stub
+					}
+				});
+	}
+
+	private AdapterView.OnItemClickListener mListItemClickListener = new AdapterView.OnItemClickListener() {
+
+		@Override
+		public void onItemClick(AdapterView<?> adapter, View view,
+				int position, long id) {
+			showCallDlg(mListFriends.get(position-1));
+		}
+	};
+	
+	private AdapterView.OnItemLongClickListener mItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+
+		@Override
+		public boolean onItemLongClick(AdapterView<?> adapter, View view,
+				int position, long id) {
+			// TODO Auto-generated method stub
+			showItemLongClickDialog(position -1);
+			return false;
+		}
+	};
+	
+	private OnRefreshListener mRefreshListener = new OnRefreshListener() {
+
+		@Override
+		public void onRefresh() {
+			// TODO Auto-generated method stub
+			mCore.doQueryFriendList();
+		}
+	};
+
+	// web 接口回调
+	private class MyEventListener extends EventListener {
+		@Override
+		public void onResponseQueryFriendList(boolean bSuccess,
+				String jsonResult) {
+			// TODO Auto-generated method stub
+			super.onResponseQueryFriendList(bSuccess, jsonResult);
+			HasGetFriend = true;
+			mMainHandler.sendMessageDelayed(mMainHandler.obtainMessage(LOAD_FRIEND_FINISH), 200);
+			
+		}
+		
+		@Override
+		public void onResponseAddFriend(boolean bSuccess,int reason) {
+			// TODO Auto-generated method stub
+			super.onResponseAddFriend(bSuccess,reason);
+			if (bSuccess) {
+				int currentVersion = VNowApplication.the().getSetting
+						(getString(R.string.friend_update_version)+mCore.getMySelf().uuid, 0);
+				VNowApplication.the().setSetting(getString
+						(R.string.friend_update_version)+mCore.getMySelf().uuid,currentVersion-1);
+				mMainHandler.sendEmptyMessage(ADD_FRIEND_SUCCESS);
+			} else {
+				if(reason == -1){
+					VNowApplication.the().showToast(getString(R.string.str_add_friend_error_nobody));
+				}else{
+					mMainHandler.sendEmptyMessage(ADD_FRIEND_FAILED);
+				}
+			}
+		}
+		
+		@Override
+		public void onResponseModifyFriend(boolean bSuccess) {
+			// TODO Auto-generated method stub
+			super.onResponseModifyFriend(bSuccess);
+			if (bSuccess) {
+				mMainHandler.sendEmptyMessage(MODIFY_FRIEND_SUCCESS);
+			} else {
+				mMainHandler.sendEmptyMessage(MODIFY_FRIEND_FAILED);
+			}
+		}
+		
+		@Override
+		public void onResponseDelFriend(boolean bSuccess) {
+			// TODO Auto-generated method stub
+			super.onResponseDelFriend(bSuccess);
+			if (bSuccess) {
+				if(null!=_delF_phone)
+					mCore.deleteDBFriendItem(_delF_phone);
+				mMainHandler.sendEmptyMessage(DEL_FRIEND_SUCCESS);
+			} else {
+				mMainHandler.sendEmptyMessage(DEL_FRIEND_FAILED);
+			}
+			_delF_phone = null;
+		}
+	}
+
+	@Override
+	public void onDelFriend(String phone, String uuid) {
+		// TODO Auto-generated method stub
+		mCore.doDelFriend(phone, uuid);
+		_delF_phone = phone;
+	}
+}
