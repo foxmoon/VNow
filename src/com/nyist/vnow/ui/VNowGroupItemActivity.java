@@ -91,22 +91,22 @@ public class VNowGroupItemActivity extends Activity implements DelGroupUserListe
                     break;
                 case ADD_GROUP_USER_SUCCESS: {
                     mCore.doQueryGroupList();
-                    ToastUtil.showShort(VNowGroupItemActivity.this, R.string.str_add_grp_user_success);
+                    ToastUtil.getInstance(VNowGroupItemActivity.this).showShort(getString(R.string.str_add_grp_user_success));
                 }
                     break;
                 case ADD_GROUP_USER_FAILED: {
-                    ToastUtil.showShort(VNowGroupItemActivity.this,
-                            R.string.str_add_grp_user_failed);
+                    ToastUtil.getInstance(VNowGroupItemActivity.this).showShort(getString(
+                            R.string.str_add_grp_user_failed));
                 }
                     break;
                 case DEL_GROUP_USER_SUCCESS: {
                     mCore.doQueryGroupList();
-                    ToastUtil.showShort(VNowGroupItemActivity.this,
-                            R.string.str_del_group_success);
+                    ToastUtil.getInstance(VNowGroupItemActivity.this).showShort(getString(
+                            R.string.str_del_group_success));
                 }
                     break;
                 case DEL_GROUP_USER_FAILED: {
-                    ToastUtil.showShort(VNowGroupItemActivity.this, R.string.str_del_group_field);
+                    ToastUtil.getInstance(VNowGroupItemActivity.this).showShort(getString( R.string.str_del_group_field));
                 }
                     break;
             }
@@ -275,7 +275,7 @@ public class VNowGroupItemActivity extends Activity implements DelGroupUserListe
                         // TODO Auto-generated method stub
                         if (dlg.getFriendName().equals("")
                                 || dlg.getFriendPhone().equals("")) {
-                            ToastUtil.showShort(VNowGroupItemActivity.this, R.string.str_modify_not_null);
+                            ToastUtil.getInstance(VNowGroupItemActivity.this).showShort(getString( R.string.str_modify_not_null));
                             return;
                         }
                         else {
@@ -369,7 +369,7 @@ public class VNowGroupItemActivity extends Activity implements DelGroupUserListe
                 mMainHandler.sendEmptyMessage(ADD_GROUP_USER_SUCCESS);
             }
             else if (reason == -1) {
-                ToastUtil.showShort(VNowGroupItemActivity.this, R.string.str_add_grp_user_error_nobody);
+                ToastUtil.getInstance(VNowGroupItemActivity.this).showShort(getString( R.string.str_add_grp_user_error_nobody));
             }
             else
                 mMainHandler.sendEmptyMessage(ADD_GROUP_USER_FAILED);

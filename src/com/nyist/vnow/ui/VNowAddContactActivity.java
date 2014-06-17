@@ -49,15 +49,15 @@ public class VNowAddContactActivity extends Activity {
                 finish();
             }
             else if (id == R.id.btn_add_search) {
-                ToastUtil.showShort(VNowAddContactActivity.this,"search");
+                ToastUtil.getInstance(VNowAddContactActivity.this).showShort("search");
             }
             else if (id == R.id.rlayout_add_phone_contact) {
-                ToastUtil.showShort(VNowAddContactActivity.this,"phone_contact");
+                ToastUtil.getInstance(VNowAddContactActivity.this).showShort("phone_contact");
                 Intent intent = new Intent(VNowAddContactActivity.this, One2oneActivity.class);
                 startActivity(intent);
             }
             else if (id == R.id.rlayout_add_qq_contact) {
-                ToastUtil.showShort(VNowAddContactActivity.this,"qq_contact");
+                ToastUtil.getInstance(VNowAddContactActivity.this).showShort("qq_contact");
             }
         }
     };

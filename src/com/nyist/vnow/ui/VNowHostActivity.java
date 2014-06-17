@@ -118,7 +118,7 @@ public class VNowHostActivity extends FragmentActivity {
     private class MyEventListener extends EventListener {
         public void onResponseRegister(boolean bSuccess, String uuid) {
             if (bSuccess) {
-                ToastUtil.showShort(VNowHostActivity.this, R.string.str_regist_success);
+                ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_regist_success));
                 VNowApplication
                         .getInstance()
                         .getCore()
@@ -128,7 +128,7 @@ public class VNowHostActivity extends FragmentActivity {
                                 true);
             }
             else
-                ToastUtil.showShort(VNowHostActivity.this,R.string.str_regist_field);
+                ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_regist_field));
         }
 
         public void onResponseLogin(boolean bSuccess, User user) {
@@ -138,12 +138,12 @@ public class VNowHostActivity extends FragmentActivity {
                 if (null != VNowApplication.getInstance().getCore().getApiStatus()) {
                     startActivity(intent);
                     VNowHostActivity.this.finish();
-                    ToastUtil.showShort(VNowHostActivity.this,R.string.str_login_success);
+                    ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_login_success));
                 }
             }
             else {
                 mLoginFragment.loginError();
-                ToastUtil.showShort(VNowHostActivity.this,R.string.str_login_field);
+                ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_login_field));
                 mCore.checkUpVersion(VNowHostActivity.this, true);
             }
         }
@@ -162,7 +162,7 @@ public class VNowHostActivity extends FragmentActivity {
                 if (null != VNowApplication.getInstance().getCore().getApiStatus()) {
                     startActivity(intent);
                     VNowHostActivity.this.finish();
-                    ToastUtil.showShort(VNowHostActivity.this,R.string.str_login_success);
+                    ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_login_success));
                 }
             }
             else if (status.equals("5") || status.equals("7")) {

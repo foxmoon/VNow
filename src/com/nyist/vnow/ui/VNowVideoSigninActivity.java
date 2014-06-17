@@ -212,7 +212,7 @@ public class VNowVideoSigninActivity extends Activity {
         // TODO Auto-generated method stub
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if (mIsStartRcd || mIsTakePic) {
-                ToastUtil.showShort(VNowVideoSigninActivity.this, "正在签到，不能退出！");
+                ToastUtil.getInstance(VNowVideoSigninActivity.this).showShort("正在签到，不能退出！");
                 return true;
             }
         }
@@ -812,12 +812,12 @@ public class VNowVideoSigninActivity extends Activity {
             if (bSuccess) {
                 mHandler.sendEmptyMessage(UPLOAD_FINISHED);
                 mBtnPicture.setEnabled(true);
-                ToastUtil.showShort(VNowVideoSigninActivity.this, "签到成功!");
+                ToastUtil.getInstance(VNowVideoSigninActivity.this).showShort("签到成功!");
                 finish();
             }
             else {
                 mHandler.sendEmptyMessage(UPLOAD_FINISHED);
-                ToastUtil.showShort(VNowVideoSigninActivity.this, "签到失败!");
+                ToastUtil.getInstance(VNowVideoSigninActivity.this).showShort("签到失败!");
             }
             mBtnFinishPic.setVisibility(View.VISIBLE);
         }
@@ -834,7 +834,7 @@ public class VNowVideoSigninActivity extends Activity {
                 }
             }
             else {
-                ToastUtil.showShort(VNowVideoSigninActivity.this, "签到失败！");
+                ToastUtil.getInstance(VNowVideoSigninActivity.this).showShort("签到失败！");
             }
             super.onResponseConfUpLoadFile(handID, progress, filePath, isSuccess);
         }

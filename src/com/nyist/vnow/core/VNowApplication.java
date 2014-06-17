@@ -17,9 +17,14 @@ import android.widget.Toast;
 public class VNowApplication extends Application implements
         AMapLocationListener, Runnable {
     private static VNowApplication mInstance;
+    public static int mAppState;
     private VNowCore mCore;
     private LocationManagerProxy aMapLocManager = null;
     private AMapLocation mLocation;
+
+    public synchronized static void setAppState(int state) {
+        mAppState = state;
+    }
 
     public static VNowApplication getInstance() {
         return mInstance;
@@ -51,6 +56,7 @@ public class VNowApplication extends Application implements
     @Override
     public void onCreate() {
         super.onCreate();
+        mAppState = -1;
         aMapLocManager = LocationManagerProxy.getInstance(this);
         startLocation();
     }
@@ -85,39 +91,6 @@ public class VNowApplication extends Application implements
 
     public void setSetting(String key, int value) {
         VNowSetting.the(mInstance).setSetting(key, value);
-    }
-
-    /**
-     * the method to get the current version of this app
-     * 
-     * @return
-     */
-    public String getVersion() {
-        final String unknown = "Unknown";
-        try {
-            return mInstance.getPackageManager().getPackageInfo(
-                    mInstance.getPackageName(), 0).versionName;
-        }
-        catch (NameNotFoundException ex) {}
-        return unknown;
-    }
-
-    /**
-     * the method to get the application package name
-     * 
-     * @return
-     */
-    public String getPkgName() {
-        return getPackageName();
-    }
-
-    /**
-     * the method to get the device id
-     * 
-     * @return
-     */
-    public String getDeviceId() {
-        return Secure.getString(getContentResolver(), Secure.ANDROID_ID);
     }
 
     public AMapLocation getBDLocation() {

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.nyist.vnow.R;
 import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.core.VNowCore;
+import com.nyist.vnow.utils.DeviceUtil;
 
 public class VNMoreActivity extends Activity implements OnClickListener {
     private ImageButton mBtnBack;
@@ -51,7 +52,7 @@ public class VNMoreActivity extends Activity implements OnClickListener {
         mTvVersion = (TextView) findViewById(R.id.version_info);
         mBtnBack.setOnClickListener(this);
         mBtnCheck.setOnClickListener(this);
-        mTvVersion.setText(VNowApplication.getInstance().getVersion());
+        mTvVersion.setText(DeviceUtil.getVersion(this));
     }
 
     @Override

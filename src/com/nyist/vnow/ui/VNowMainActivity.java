@@ -86,7 +86,7 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
     public void onBackPressed() {
         // TODO Auto-generated method stub
         if ((System.currentTimeMillis() - mExitTime) > 1500) {
-            ToastUtil.showShort(VNowMainActivity.this, R.string.str_click_exit);
+            ToastUtil.getInstance(VNowMainActivity.this).showShort(getString(R.string.str_click_exit));
             mExitTime = System.currentTimeMillis();
         }
         else {

@@ -219,7 +219,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
         }
         if (null != mFileUpdateView
                 && mFileUpdateView.getVisibility() == View.VISIBLE) {
-            ToastUtil.showShort(ConfActivity.this, "正在传输文件，不能退出！");
+            ToastUtil.getInstance(ConfActivity.this).showShort("正在传输文件，不能退出！");
         }
         else {
             showExitDlg();
@@ -350,7 +350,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
                     });
         }
         else {
-            ToastUtil.showShort(ConfActivity.this, R.string.str_waiting_anser);
+            ToastUtil.getInstance(ConfActivity.this).showShort(getString(R.string.str_waiting_anser));
         }
     }
 
@@ -491,7 +491,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
                 }
             }
             else {
-                ToastUtil.showShort(ConfActivity.this, R.string.str_insert_list_fialed);
+                ToastUtil.getInstance(ConfActivity.this).showShort(getString(R.string.str_insert_list_fialed));
             }
             mBtnUploadCapture.setEnabled(true);
         }
@@ -522,13 +522,13 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
                     map.put(fileName,
                             map.get(fileName) == null ? 1 : map.get(fileName) + 1);
                     if (map.get(fileName) <= 1) {
-                        ToastUtil.showShort(ConfActivity.this, R.string.str_uppic_again);
+                        ToastUtil.getInstance(ConfActivity.this).showShort(getString(R.string.str_uppic_again));
                         mCore.doUpLoadFileConf(captrue.getPhotoPath());
                     }
                     else {
                         mPhotoFragment.updateImgList();
                         mPhotoFragment.flashAdapter();
-                        ToastUtil.showShort(ConfActivity.this, R.string.str_uppic_fialed);
+                        ToastUtil.getInstance(ConfActivity.this).showShort(getString(R.string.str_uppic_fialed));
                     }
                 }
             }
@@ -552,7 +552,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
                     }
                 }
                 else if (fileType.equals("mp4")) {
-                    ToastUtil.showShort(ConfActivity.this, R.string.str_upvideo_success);
+                    ToastUtil.getInstance(ConfActivity.this).showShort(getString(R.string.str_upvideo_success));
                 }
             }
             else {
@@ -562,9 +562,9 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
                     map.put(fileName,
                             map.get(fileName) == null ? 1 : map.get(fileName) + 1);
                     if (map.get(fileName) <= 1) {
-                        ToastUtil.showShort(ConfActivity.this, R.string.str_uppic_again);
+                        ToastUtil.getInstance(ConfActivity.this).showShort(getString(R.string.str_uppic_again));
                         if (null == captrue.getNewPath()) {
-                            ToastUtil.showShort(ConfActivity.this, R.string.str_uppic_fialed);
+                            ToastUtil.getInstance(ConfActivity.this).showShort(getString(R.string.str_uppic_fialed));
                             mPhotoFragment.updateImgList();
                             return;
                         }
@@ -572,7 +572,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
                     }
                     else {
                         mPhotoFragment.updateImgList();
-                        ToastUtil.showShort(ConfActivity.this, R.string.str_uppic_fialed);
+                        ToastUtil.getInstance(ConfActivity.this).showShort(getString(R.string.str_uppic_fialed));
                     }
                 }
             }
@@ -592,13 +592,13 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
         public void onResponseVdoRecode(String vdoPath, boolean isSuccsee) {
             // TODO Auto-generated method stub
             if (isSuccsee) {
-                ToastUtil.showShort(ConfActivity.this,
+                ToastUtil.getInstance(ConfActivity.this).showShort(
                         "本地视频已录制完成" + vdoPath);
                 mVideoName = vdoPath.substring(vdoPath.lastIndexOf(".") + 1);
                 mCore.doUpLoadFileConf(vdoPath);
             }
             else {
-                ToastUtil.showShort(ConfActivity.this,
+                ToastUtil.getInstance(ConfActivity.this).showShort(
                         "本地视频已录制失败！");
             }
         }
@@ -645,7 +645,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
                 mFileAdapter.notifyDataSetChanged();
             }
             else {
-                ToastUtil.showShort(ConfActivity.this, "目前已经在根目录");
+                ToastUtil.getInstance(ConfActivity.this).showShort( "目前已经在根目录");
             }
         }
         catch (Exception e) {
@@ -693,7 +693,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
             loadFileUpdateUI();
         }
         else {
-            ToastUtil.showShort(ConfActivity.this, "该文件已经在上传列表中!");
+            ToastUtil.getInstance(ConfActivity.this).showShort( "该文件已经在上传列表中!");
         }
     }
 

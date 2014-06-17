@@ -1,8 +1,9 @@
 package com.nyist.vnow.utils;
 
+
 /**
- * @author Stay
- * @version create time：Jan 18, 2013 12:14:41 PM
+ * @author harry
+ * @version Creat on 2014-6-17下午12:01:44
  */
 public class Constants {
 	public static final String KEY_ACCOUNT = "key_account";

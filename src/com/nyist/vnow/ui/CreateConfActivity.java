@@ -62,7 +62,7 @@ public class CreateConfActivity extends Activity implements OnClickListener {
                 String confTheme = mEdConfTheme.getText().toString().trim();
                 String confTime = mEdConfTime.getText().toString().trim();
                 if (confName.length() == 0) {
-                    ToastUtil.showShort(CreateConfActivity.this,"请输入会议名称");
+                    ToastUtil.getInstance(CreateConfActivity.this).showShort("请输入会议名称");
                 }
                 else {
                     VNConfItem item = new VNConfItem();
@@ -70,7 +70,7 @@ public class CreateConfActivity extends Activity implements OnClickListener {
                     item.setmConfTheme(confTheme);
                     item.setmConfTime(confTime);
                     mCore.addConfItem(item);
-                    ToastUtil.showShort(CreateConfActivity.this,"会议创建成功！");
+                    ToastUtil.getInstance(CreateConfActivity.this).showShort("会议创建成功！");
                     CreateConfActivity.this.finish();
                 }
             }

@@ -1,5 +1,7 @@
 package com.nyist.vnow.utils;
 
+import com.nyist.vnow.R;
+
 import android.app.Activity;
 import android.content.Context;
 import android.text.Spanned;
@@ -10,15 +12,15 @@ import android.widget.Toast;
 
 public class ToastUtil {
     private Toast mToast;
-    private static ToastUtil sInstance;
+    private static ToastUtil mInstance;
     public static int SHORT = Toast.LENGTH_SHORT;
     public static int LONG = Toast.LENGTH_LONG;
 
     public static ToastUtil getInstance(Context context) {
-        if (sInstance == null) {
-            sInstance = new ToastUtil(context);
+        if (mInstance == null) {
+            mInstance = new ToastUtil(context);
         }
-        return sInstance;
+        return mInstance;
     }
 
     private ToastUtil(Context context) {
@@ -28,9 +30,9 @@ public class ToastUtil {
     public Toast makeToast(Context context) {
         if (mToast == null) {
             mToast = new Toast(context);
-//            LayoutInflater inflater = LayoutInflater.from(context);
-//            View view = inflater.inflate(R.layout.toast, null);
-//            mToast.setView(view);
+            LayoutInflater inflater = LayoutInflater.from(context);
+            View view = inflater.inflate(R.layout.toast, null);
+            mToast.setView(view);
             mToast.setDuration(Toast.LENGTH_LONG);
             mToast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0,
                     100);
@@ -108,80 +110,80 @@ public class ToastUtil {
         mToast.setDuration(Toast.LENGTH_LONG);
         mToast.show();
     }
-
-    public interface MessageFilter
-    {
-        String filter(String msg);
-    }
-
-    public static MessageFilter msgFilter;
-
-    public static void showShort(
-            final Activity activity, final String message
-            )
-    {
-        final String msg = msgFilter != null ? msgFilter
-                .filter(message) : message;
-        activity.runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                Toast toast = Toast.makeText(activity, msg,
-                        Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        });
-    }
-
-    /**
-     * 长时间显示Toast消息，并保证运行在UI线程中
-     * 
-     * @param activity
-     *            Activity
-     * @param message
-     *            消息内容
-     */
-    public static void showLong(final Activity activity,
-            final String message)
-    {
-        final String msg = msgFilter != null ? msgFilter
-                .filter(message) : message;
-        activity.runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                Toast.makeText(activity, msg,
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    /**
-     * 以较长时间显示Toast消息
-     * 
-     * @param activity
-     *            Activity
-     * @param msgResID
-     *            消息资源ID
-     */
-    public static void showLong(Activity activity, int msgResID)
-    {
-        showLong(activity,
-                activity.getResources().getString(msgResID));
-    }
-
-
-    /**
-     * 以较短时间显示Toast消息
-     * 
-     * @param activity
-     *            Activity
-     * @param msgResID
-     *            消息资源ID
-     */
-    public static void showShort(Activity activity, int msgResID)
-    {
-        showShort(activity,
-                activity.getResources().getString(msgResID));
-    }
+//
+//    public interface MessageFilter
+//    {
+//        String filter(String msg);
+//    }
+//
+//    public static MessageFilter msgFilter;
+//
+//    public static void showShort(
+//            final Activity activity, final String message
+//            )
+//    {
+//        final String msg = msgFilter != null ? msgFilter
+//                .filter(message) : message;
+//        activity.runOnUiThread(new Runnable()
+//        {
+//            public void run()
+//            {
+//                Toast toast = Toast.makeText(activity, msg,
+//                        Toast.LENGTH_SHORT);
+//                toast.show();
+//            }
+//        });
+//    }
+//
+//    /**
+//     * 长时间显示Toast消息，并保证运行在UI线程中
+//     * 
+//     * @param activity
+//     *            Activity
+//     * @param message
+//     *            消息内容
+//     */
+//    public static void showLong(final Activity activity,
+//            final String message)
+//    {
+//        final String msg = msgFilter != null ? msgFilter
+//                .filter(message) : message;
+//        activity.runOnUiThread(new Runnable()
+//        {
+//            public void run()
+//            {
+//                Toast.makeText(activity, msg,
+//                        Toast.LENGTH_LONG).show();
+//            }
+//        });
+//    }
+//
+//    /**
+//     * 以较长时间显示Toast消息
+//     * 
+//     * @param activity
+//     *            Activity
+//     * @param msgResID
+//     *            消息资源ID
+//     */
+//    public static void showLong(Activity activity, int msgResID)
+//    {
+//        showLong(activity,
+//                activity.getResources().getString(msgResID));
+//    }
+//
+//
+//    /**
+//     * 以较短时间显示Toast消息
+//     * 
+//     * @param activity
+//     *            Activity
+//     * @param msgResID
+//     *            消息资源ID
+//     */
+//    public static void showShort(Activity activity, int msgResID)
+//    {
+//        showShort(activity,
+//                activity.getResources().getString(msgResID));
+//    }
 }
