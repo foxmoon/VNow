@@ -12,23 +12,19 @@ public class AvcProgress extends Dialog {
 
     public AvcProgress(Context context) {
         super(context);
-        // TODO Auto-generated constructor stub
     }
 
     public AvcProgress(Context context, int theme) {
         super(context, theme);
-        // TODO Auto-generated constructor stub
     }
 
     public AvcProgress(Context context, boolean cancelable,
             OnCancelListener cancelListener) {
         super(context, true, cancelListener);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.avc_dlg_progress);
         initUI();

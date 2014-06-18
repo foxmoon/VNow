@@ -215,7 +215,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
         // TODO Auto-generated method stub
         super.onDestroy();
         mCore.doP2pHangup();
-        distoryChannel();
+        destoryChannel();
         unregisterReceiver(mScreenOffReceiver);
         // Remove any of the keyguard messages just in case
         mHandler.removeMessages(0);
@@ -284,7 +284,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
         mStatus = STOP_TIME;
     }
 
-    private void distoryChannel() {
+    private void destoryChannel() {
         mCore.doRemoveEventListener(mMyListener);
         mCore.dosetRemoteVidSurface(null);
         if (mCheckVideo.isChecked())
@@ -320,7 +320,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
                     public void onClick(DialogInterface dialog, int i) {
                         // TODO Auto-generated method stub
                         mCore.doP2pHangup();
-                        distoryChannel();
+                        destoryChannel();
                     }
                 });
         ((VNowAlertDlg) mDialog).setCancelButton(getString(R.string.str_cancel),
@@ -355,7 +355,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
                         public void onClick(DialogInterface dialog, int i) {
                             // TODO Auto-generated method stub
                             mCore.doP2pHangup();
-                            distoryChannel();
+                            destoryChannel();
                             ConfActivity.this.finish();
                         }
                     });
@@ -465,7 +465,7 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
 
         public void onResponseHangup(boolean bSuccess) {
             if (mP2pCallView.getVisibility() == View.GONE) {
-                distoryChannel();
+                destoryChannel();
             }
             else {
                 if (mIsCallin) {

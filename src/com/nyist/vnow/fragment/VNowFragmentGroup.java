@@ -155,13 +155,13 @@ public class VNowFragmentGroup extends Fragment implements DelListener {
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
-        initGroupData();
     }
 
     @Override
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        initGroupData();
         mVNowAPI.setEventListener(mCallBackListener);
     }
 
@@ -406,8 +406,7 @@ public class VNowFragmentGroup extends Fragment implements DelListener {
             if (id == R.id.btn_create_group) {
                 showGrpDlg();
             }
-            else if (id == R.id.btn_modify_group) {
-            }
+            else if (id == R.id.btn_modify_group) {}
         }
     };
     private OnRefreshListener mRefreshListener = new OnRefreshListener() {

@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.nyist.vnow.R;
-import com.nyist.vnow.adapter.ContentFrameAdapter;
+import com.nyist.vnow.adapter.ContactFragmentAdapter;
 import com.viewpagerindicator.TabPageIndicator;
 import com.viewpagerindicator.UnderlinePageIndicatorEx;
 
@@ -20,38 +20,29 @@ public class VNowFragmentContacts extends Fragment {
     ViewPager mViewPager;
     TabPageIndicator mTabPageIndicator;
     UnderlinePageIndicatorEx mUnderlinePageIndicator;
-    private ContentFrameAdapter mContentAdapter;
+    private ContactFragmentAdapter mContentAdapter;
     private List<String> mTitleList;
     private List<Fragment> mListFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         View view = inflater.inflate(R.layout.vnow_fragment_contacts, container, false);
         mViewPager = (ViewPager) view.findViewById(R.id.pager);
-        // mViewPager.setAdapter(mContentAdapter);
         mTabPageIndicator = (TabPageIndicator) view.findViewById(R.id.indicator);
-        // mTabPageIndicator.setViewPager(mViewPager);
         mUnderlinePageIndicator = (UnderlinePageIndicatorEx) view.findViewById(R.id.underline_indicator);
-        // mUnderlinePageIndicator.setViewPager(mViewPager);
-        // mUnderlinePageIndicator.setFades(false);
-        //
-        // mTabPageIndicator.setOnPageChangeListener(mUnderlinePageIndicator);
         return view;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
-        doInitAllData();
+        initChildFragments();
         mViewPager.setAdapter(mContentAdapter);
         mTabPageIndicator.setViewPager(mViewPager);
         mUnderlinePageIndicator.setViewPager(mViewPager);
@@ -62,6 +53,11 @@ public class VNowFragmentContacts extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        /*
+         * Fragment在detached之后都会被reset掉，但是它并没有对ChildFragmentManager做reset，
+         * 所以会造成ChildFragmentManager的状态错误。
+         * 解决方案在Fragment被detached的时候要去重置ChildFragmentManager
+         */
         try {
             Field childFragmentManager = Fragment.class
                     .getDeclaredField("mChildFragmentManager");
@@ -76,7 +72,7 @@ public class VNowFragmentContacts extends Fragment {
         }
     }
 
-    void doInitAllData() {
+    void initChildFragments() {
         mTitleList = new ArrayList<String>();
         String[] arrStrings = getResources().getStringArray(
                 R.array.vnow_contacts);
@@ -88,7 +84,7 @@ public class VNowFragmentContacts extends Fragment {
         mListFragment.add(new VNowFragmentColleague());
         mListFragment.add(new VNowFragmentGroup());
         mListFragment.add(new VnowFragmentContactOther());
-        mContentAdapter = new ContentFrameAdapter(mListFragment,
+        mContentAdapter = new ContactFragmentAdapter(mListFragment,
                 getChildFragmentManager());
         mContentAdapter.setTitleList(mTitleList);
     }

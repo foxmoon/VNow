@@ -42,11 +42,18 @@ public class ConfenceActivity extends BaseActivity {
 
     @Override
     protected void initializeData() {
+        creatChannel();
+        LogTag.e("mVideoParams", mVideoParams);
+    }
+
+    /**
+     * 部署视频通话环境
+     */
+    private void creatChannel() {
         mCore = VNowApplication.newInstance().getCore();
         mEventListener = new MyEventListener();
         mCore.doSetEventListener(mEventListener);
         mVideoParams = Session.newInstance(ConfenceActivity.this).getVideoParams();
-        LogTag.e("mVideoParams", mVideoParams);
     }
 
     @Override
@@ -93,11 +100,18 @@ public class ConfenceActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        destoryChannel();
+        finish();
+    }
+
+    /**
+     * 销毁视频通话环境
+     */
+    private void destoryChannel() {
         mCore.doP2pHangup();
         mCore.doRemoveEventListener(mEventListener);
         mCore.dosetRemoteVidSurface(null);
         mCore.doCloseLocalVideo();
-        finish();
     }
 
     private class MyEventListener extends EventListener {

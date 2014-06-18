@@ -37,7 +37,7 @@ import com.nyist.vnow.utils.PinyinComparator;
 import com.nyist.vnow.view.SideBar;
 import com.nyist.vnow.view.SideBar.OnTouchingLetterChangedListener;
 
-public class VNowFragmentPhoneContacts extends Fragment {
+public class VNowFragmentPhoneContacts extends BaseFragment {
     private final int LOAD_FRIENDS_FINISH = 0x301;
     private ListView mListviewContact;
     private SideBar mIndexBar;
@@ -86,6 +86,8 @@ public class VNowFragmentPhoneContacts extends Fragment {
         View view = inflater.inflate(R.layout.vnow_fragment_phone_contacts,
                 container, false);
         mListContacts = new ArrayList<VNowFriend>();
+        mAdapterContacts = new VNowPhoneContactAdapter(
+                getActivity(), mListContacts);
         initPhoneContactsShowUI(view);
         return view;
     };
@@ -146,8 +148,7 @@ public class VNowFragmentPhoneContacts extends Fragment {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
-            }
+                    int after) {}
 
             @Override
             public void afterTextChanged(Editable s) {}
@@ -295,9 +296,11 @@ public class VNowFragmentPhoneContacts extends Fragment {
         @Override
         public void onTouchingLetterChanged(String s) {
             // TODO Auto-generated method stub
-            int position = mAdapterContacts.getPositionForSection(s.charAt(0));
-            if (position != -1) {
-                mListviewContact.setSelection(position);
+            if (!TextUtils.isEmpty(s)) {
+                int position = mAdapterContacts.getPositionForSection(s.charAt(0));
+                if (position != -1) {
+                    mListviewContact.setSelection(position);
+                }
             }
         }
     };
@@ -362,4 +365,7 @@ public class VNowFragmentPhoneContacts extends Fragment {
             return false;
         }
     };
+
+    @Override
+    public void fetchObjectData() {}
 }

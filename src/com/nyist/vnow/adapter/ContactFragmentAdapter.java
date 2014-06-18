@@ -6,11 +6,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-public class ContentFrameAdapter extends FragmentPagerAdapter {
+/**
+ * 通讯录fragment适配器
+ * @author harry
+ * @version Creat on 2014-6-18下午4:13:55
+ */
+public class ContactFragmentAdapter extends FragmentPagerAdapter {
     private List<String> mTitleList;
     private List<Fragment> mlistFragment;
 
-    public ContentFrameAdapter(List<Fragment> list, FragmentManager fm) {
+    public ContactFragmentAdapter(List<Fragment> list, FragmentManager fm) {
         super(fm);
         mlistFragment = list;
     }
@@ -21,7 +26,6 @@ public class ContentFrameAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int pos) {
-        // TODO Auto-generated method stub
         if (mlistFragment == null) {
             return null;
         }
@@ -30,7 +34,6 @@ public class ContentFrameAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         if (null != mlistFragment) {
             return mlistFragment.size();
         }

@@ -86,7 +86,9 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
             if (msg.what == LOAD_FRIEND_FINISH) {
                 mListviewFriends.setVisibility(View.VISIBLE);
                 mIndexBar.setVisibility(View.VISIBLE);
-                mListFriends.clear();
+                if (mListFriends != null) {
+                    mListFriends.clear();
+                }
                 stopProgress();
                 if (mCore.getFriendList().size() > 0) {
                     mListFriends.addAll(filledData(mCore.getFriendList()));
@@ -248,8 +250,7 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
-            }
+                    int after) {}
 
             @Override
             public void afterTextChanged(Editable s) {}
@@ -583,7 +584,7 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
             super.onResponseAddFriend(bSuccess, reason);
             if (bSuccess) {
                 int currentVersion = Session.newInstance(getActivity()).getFriendVersion(mCore.getMySelf().uuid);
-                Session.newInstance(getActivity()).setFriendVersion( mCore.getMySelf().uuid, currentVersion - 1);
+                Session.newInstance(getActivity()).setFriendVersion(mCore.getMySelf().uuid, currentVersion - 1);
                 mMainHandler.sendEmptyMessage(ADD_FRIEND_SUCCESS);
             }
             else {
