@@ -34,7 +34,7 @@ public class CreateConfActivity extends Activity implements OnClickListener {
         AlphaAnimation alphaAnim = new AlphaAnimation(0.0f, 1.0f);
         alphaAnim.setDuration(300);
         view.setAnimation(alphaAnim);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         loadSatrtUI();
     }
 

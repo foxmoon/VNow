@@ -43,7 +43,7 @@ public class VNowFragmentFile extends Fragment implements FileListener {
             Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         View view = inflater.inflate(R.layout.vnow_login, container, false);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         initUI(view);
         return view;
     }

@@ -40,6 +40,7 @@ import com.nyist.vnow.ui.ConfActivity;
 import com.nyist.vnow.utils.CharacterParser;
 import com.nyist.vnow.utils.DES;
 import com.nyist.vnow.utils.PinyinComparator;
+import com.nyist.vnow.utils.Session;
 import com.nyist.vnow.utils.ToastUtil;
 import com.nyist.vnow.view.SideBar;
 import com.nyist.vnow.view.SideBar.OnTouchingLetterChangedListener;
@@ -160,7 +161,7 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new PinyinComparator();
         mCallBackListener = new MyEventListener();
@@ -581,10 +582,8 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
             // TODO Auto-generated method stub
             super.onResponseAddFriend(bSuccess, reason);
             if (bSuccess) {
-                int currentVersion = VNowApplication.getInstance().getSetting
-                        (getString(R.string.friend_update_version) + mCore.getMySelf().uuid, 0);
-                VNowApplication.getInstance().setSetting(getString
-                        (R.string.friend_update_version) + mCore.getMySelf().uuid, currentVersion - 1);
+                int currentVersion = Session.newInstance(getActivity()).getFriendVersion(mCore.getMySelf().uuid);
+                Session.newInstance(getActivity()).setFriendVersion( mCore.getMySelf().uuid, currentVersion - 1);
                 mMainHandler.sendEmptyMessage(ADD_FRIEND_SUCCESS);
             }
             else {

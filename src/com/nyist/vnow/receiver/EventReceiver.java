@@ -10,6 +10,7 @@ import android.util.Log;
 import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.struct.VNowRctContact;
 import com.nyist.vnow.ui.ConfActivity;
+import com.nyist.vnow.ui.ConfenceActivity;
 import com.nyist.vnow.utils.DES;
 import com.nyist.vnow.utils.ToastUtil;
 
@@ -32,15 +33,15 @@ public class EventReceiver extends BroadcastReceiver {
                 callIntent.putExtra("callName", strUserID);
                 callIntent.addFlags(callIntent.FLAG_ACTIVITY_NEW_TASK);
                 VNowRctContact rctItem = new VNowRctContact();
-                rctItem.setmStrUserId(VNowApplication.getInstance().getCore()
+                rctItem.setmStrUserId(VNowApplication.newInstance().getCore()
                         .getMySelf().uuid);
-                rctItem.setmStrUserName(VNowApplication.getInstance().getCore()
+                rctItem.setmStrUserName(VNowApplication.newInstance().getCore()
                         .getMySelf().name);
                 rctItem.setmStrConPhone((new DES()).encrypt(strUserID));
                 rctItem.setmStrContactName(strUserID);
                 rctItem.setmCallTime(System.currentTimeMillis());
                 rctItem.setmIsCallIn(true);
-                VNowApplication.getInstance().getCore().insertCallHistory(rctItem);
+                VNowApplication.newInstance().getCore().insertCallHistory(rctItem);
                 context.startActivity(callIntent);
                 ToastUtil.getInstance(mContext).showShort(strUserID + "呼入...");
             }

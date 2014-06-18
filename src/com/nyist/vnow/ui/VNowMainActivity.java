@@ -12,6 +12,7 @@ import com.nyist.vnow.fragment.VNowFragmentSecretary;
 import com.nyist.vnow.fragment.VNowFragmentVNow;
 import com.nyist.vnow.listener.CoreCallBack;
 import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.Session;
 import com.nyist.vnow.utils.ToastUtil;
 import com.vnow.sdk.openapi.IVNowAPI;
 
@@ -43,11 +44,9 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.vnow_main);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         if (null != savedInstanceState) {
-            CommonUtil.set_httpUrl(VNowApplication.getInstance().getSetting(
-                    getString(R.string.setting_media_server_ip),
-                    getString(R.string.setting_defult_server_ip)));
+            CommonUtil.set_httpUrl(Session.newInstance(this).getServiceIp());
             mTabFlag = savedInstanceState.getInt("tabFlag");
             ArrayList<String> list = savedInstanceState
                     .getStringArrayList("user");
@@ -58,14 +57,14 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
             mCore.getMySelf().name = list.get(4);
             mCore.getMySelf().company_code = list.get(5);
             VNowApplication
-                    .getInstance()
+                    .newInstance()
                     .getCore()
                     .doLogin(mCore.getMySelf().phone,
                             mCore.getMySelf().password, true);
         }
         initUI();
         mCore.setCoreListener(this);
-        int soundValue = VNowApplication.getInstance().getSetting(getString(R.string.setting_video_sound_red), 240);
+        int soundValue = Session.newInstance(VNowMainActivity.this).getVideoSound();
         mCore.doechoDelaySet(soundValue);
         mCore.checkUpVersion(this, true);
     }
@@ -90,7 +89,7 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
             mExitTime = System.currentTimeMillis();
         }
         else {
-            VNowApplication.getInstance().getCore().doLogout();
+            VNowApplication.newInstance().getCore().doLogout();
             // VNowApplication.the().destroyCore();
             // System.exit(0);
             super.onBackPressed();

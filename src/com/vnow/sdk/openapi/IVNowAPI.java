@@ -26,6 +26,7 @@ import com.nyist.vnow.struct.Room;
 import com.nyist.vnow.struct.User;
 import com.nyist.vnow.utils.CommonUtil;
 import com.nyist.vnow.utils.LogTag;
+import com.nyist.vnow.utils.Session;
 import com.vnow.sdk.framework.IVNowFramework;
 
 /**
@@ -133,6 +134,7 @@ public class IVNowAPI {
     }
 
     public int openLocalVideo(Surface previewSurface, String strParam) {
+        LogTag.e("openLocalVideo", mIVNowFramework.openLocalVideo(previewSurface, strParam));
         return mIVNowFramework.openLocalVideo(previewSurface, strParam);
     }
 
@@ -349,8 +351,7 @@ public class IVNowAPI {
     public int queryColleagueList(String uuid, int version, String code) {
         if (mIVNowFramework != null) {
             if (null == CommonUtil._httpUrl)
-                CommonUtil.set_httpUrl(VNowApplication.getInstance().getSetting("media_server_ip",
-                        mContext.getString(R.string.setting_defult_server_ip)));
+                CommonUtil.set_httpUrl(Session.newInstance(mContext).getServiceIp());
             StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
             sBuffer.append("coll/").append(uuid)
                     .append("/req_query_colleage_list/").append(version)

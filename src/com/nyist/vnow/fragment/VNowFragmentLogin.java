@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,6 +24,7 @@ import com.nyist.vnow.ui.ConfActivity;
 import com.nyist.vnow.ui.VNowHostActivity;
 import com.nyist.vnow.utils.ActionEvent;
 import com.nyist.vnow.utils.DES;
+import com.nyist.vnow.utils.Session;
 
 public class VNowFragmentLogin extends Fragment implements OnClickListener {
     private ImageView mImgHead;
@@ -42,7 +44,7 @@ public class VNowFragmentLogin extends Fragment implements OnClickListener {
             Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         View view = inflater.inflate(R.layout.vnow_login, container, false);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         mDes = new DES();
         initUI(view);
         return view;
@@ -65,9 +67,9 @@ public class VNowFragmentLogin extends Fragment implements OnClickListener {
     }
 
     public void autoLogin() {
-        String strPhone = VNowApplication.getInstance().getSetting(getString(R.string.setting_login_user_phone), null);
-        String strpws = VNowApplication.getInstance().getSetting(getString(R.string.setting_login_user_pwd), null);
-        if (null != strPhone && null != strpws) {
+        String strPhone = Session.newInstance(getActivity()).getUserPhone();
+        String strpws = Session.newInstance(getActivity()).getPassWord();
+        if (!TextUtils.isEmpty(strPhone) &&!TextUtils.isEmpty(strpws)) {
             mEdUserName.setText(mDes.decrypt(strPhone));
             mEdPwd.setText(strpws);
             AlphaAnimation anim = new AlphaAnimation(1, 0);

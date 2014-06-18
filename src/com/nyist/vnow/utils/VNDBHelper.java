@@ -2,7 +2,6 @@ package com.nyist.vnow.utils;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class VNDBHelper extends SQLiteOpenHelper {
@@ -14,14 +13,12 @@ public class VNDBHelper extends SQLiteOpenHelper {
     public static String VN_FRIEND = "vn_friend";
     public static String VN_GROUP = "vn_group";
 
-    // private SQLiteDatabase mDB;
     public VNDBHelper(Context context) {
         super(context, DB_NAME, null, VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // TODO Auto-generated method stub
         db.execSQL("create table if not exists "
                 + USER_TABLE_NAME
                 + " (_id integer primary key autoincrement,jStrName text,jStrTheme text,jStrTime text)");
@@ -45,7 +42,6 @@ public class VNDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Auto-generated method stub
         String sql = "drop table if exists " + USER_TABLE_NAME;
         String rctsql = "drop table if exists " + RCT_CALL_HISTORY;
         String colleagesql = "drop table if exists " + VN_COLLEAGE;

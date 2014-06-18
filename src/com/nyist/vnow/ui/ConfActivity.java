@@ -51,9 +51,15 @@ import com.nyist.vnow.fragment.VNowFragmentSynPic;
 import com.nyist.vnow.struct.FileUpdate;
 import com.nyist.vnow.struct.UploadCaptrue;
 import com.nyist.vnow.utils.DES;
+import com.nyist.vnow.utils.Session;
 import com.nyist.vnow.utils.ToastUtil;
 import com.vnow.sdk.openapi.EventListener;
 
+/**
+ * 接听和聊天界面
+ * @author harry
+ * @version Creat on 2014-6-18上午8:39:40
+ */
 public class ConfActivity extends FragmentActivity implements OnClickListener, FileListener {
     private final int CODE_OPEN_LOACLVODEO = 0x01;
     private int STOP_TIME = 0x02;
@@ -131,24 +137,13 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /* ===============提醒相关代码=================== */
-        final Window win = getWindow();
-        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-        // Turn on the screen unless we are being launched from the AlarmAlert
-        // subclass.
-        win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
-                | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
-        registerReceiver(mScreenOffReceiver, new IntentFilter(
-                Intent.ACTION_SCREEN_OFF));
-        /* ============================================= */
+        unLockScreen();
         final View view = View.inflate(this, R.layout.activity_conf, null);
         setContentView(view);
         AlphaAnimation alphaAnim = new AlphaAnimation(0.0f, 1.0f);
         alphaAnim.setDuration(300);
         view.setAnimation(alphaAnim);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         mMyListener = new MyEventListener();
         mCore.doSetEventListener(mMyListener);
         loadSatrtUI();
@@ -173,7 +168,23 @@ public class ConfActivity extends FragmentActivity implements OnClickListener, F
                 mCore.doP2pCall(mCallNum);
             mBtnAccept.setVisibility(View.GONE);
         }
-        mVideoParams = VNowApplication.getInstance().getSetting(getString(R.string.setting_video_show_params), "-30-320-240-300000-1");
+        mVideoParams = Session.newInstance(ConfActivity.this).getVideoParams();
+    }
+
+    /**
+     * 解锁屏幕
+     */
+    private void unLockScreen() {
+        final Window win = getWindow();
+        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+        // Turn on the screen unless we are being launched from the AlarmAlert
+        // subclass.
+        win.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+        registerReceiver(mScreenOffReceiver, new IntentFilter(
+                Intent.ACTION_SCREEN_OFF));
     }
 
     @Override

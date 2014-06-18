@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:panel="http://schemas.android.com/apk/res/com.nyist.vnow"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/conf_bg_gary"
@@ -76,28 +75,29 @@
                 android:id="@+id/conf_open_audio_tab"
                 style="@style/conf_check_tab_button"
                 android:drawableTop="@drawable/tab_open_audio"
-                android:visibility="gone"
-                android:text="@string/str_conf_open_audio" />
+                android:text="@string/str_conf_open_audio"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/conf_upload_capture_tab"
                 style="@style/conf_tab_button"
                 android:drawableTop="@drawable/btn_upload_capture"
-                android:text="@string/str_conf_upload_capture"
-                android:enabled="false" />
+                android:enabled="false"
+                android:text="@string/str_conf_upload_capture" />
 
             <Button
                 android:id="@+id/conf_upload_file_tab"
                 style="@style/conf_tab_button"
                 android:drawableTop="@drawable/btn_upload_file"
-                android:text="@string/str_conf_open_share"
-                 />
+                android:text="@string/str_conf_open_share" />
+
             <CheckBox
                 android:id="@+id/conf_upload_video_tab"
                 style="@style/conf_check_tab_button"
                 android:drawableTop="@drawable/tab_share_scrn"
-                android:text="@string/str_conf_upload_video"
-                android:enabled="false" />
+                android:enabled="false"
+                android:text="@string/str_conf_upload_video" />
+
             <CheckBox
                 android:id="@+id/conf_share_scrn_tab"
                 style="@style/conf_check_tab_button"
@@ -110,71 +110,69 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
-            android:orientation="horizontal" 
             android:gravity="center_vertical"
-            >
+            android:orientation="horizontal" >
+
             <Button
                 android:id="@+id/conf_hangup_btn"
                 style="@style/conf_tab_button"
                 android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
                 android:drawableTop="@drawable/btn_hangup"
                 android:text="@string/str_conf_hangup"
-                android:layout_marginRight="10dp"
                 android:textSize="13sp" />
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:layout_toLeftOf="@id/conf_hangup_btn"
                 android:layout_marginRight="10dp"
-                >
-                <Chronometer 
-                android:id="@+id/conf_last_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:layout_marginTop="10dp"
-                />
-            <TextView 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:layout_alignParentBottom="true"
-                android:text="@string/str_conf_time"
-                android:textColor="@color/white"
-                android:layout_marginBottom="7dp"
-                />
-                
+                android:layout_toLeftOf="@id/conf_hangup_btn" >
+
+                <Chronometer
+                    android:id="@+id/conf_last_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="7dp"
+                    android:text="@string/str_conf_time"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
             </RelativeLayout>
         </RelativeLayout>
-        </LinearLayout>
-        <include 
-            android:id="@+id/layout_2p2_call"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            layout="@layout/fragment_one2one_call"
-            />
-        
-   <fragment
-        android:name="com.nyist.vnow.fragment.VNowFragmentPhoto"
+    </LinearLayout>
+
+    <include
+        android:id="@+id/layout_2p2_call"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        layout="@layout/fragment_one2one_call" />
+
+    <fragment
         android:id="@+id/layout_right_panle"
+        android:name="com.nyist.vnow.fragment.VNowFragmentPhoto"
         android:layout_width="@dimen/frame_sub_with"
         android:layout_height="match_parent"
         android:layout_above="@+id/flayout_sub_view"
-        android:orientation="vertical"
         android:layout_alignParentRight="true"
-        android:visibility="gone"
-         />
-	    
+        android:orientation="vertical"
+        android:visibility="gone" />
+
     <include
         android:id="@+id/layout_right_include"
         android:layout_width="240dp"
         android:layout_height="300dp"
         android:layout_below="@+id/llayout_title"
-        android:layout_toLeftOf="@+id/layout_file_update"
         android:layout_marginBottom="2dp"
+        android:layout_toLeftOf="@+id/layout_file_update"
         layout="@layout/vnow_doc"
         android:visibility="gone" />
 
@@ -187,13 +185,13 @@
         android:layout_marginBottom="2dp"
         layout="@layout/vnow_file_update"
         android:visibility="invisible" />
+
     <fragment
-        android:name="com.nyist.vnow.fragment.VNowFragmentSynPic"
         android:id="@+id/layout_syn_pic"
+        android:name="com.nyist.vnow.fragment.VNowFragmentSynPic"
         android:layout_width="match_parent"
         android:layout_height="@dimen/frame_sub_high"
         android:layout_above="@id/layout_bottom_toolbar"
-        android:visibility="gone"
-         />
-    
+        android:visibility="gone" />
+
 </RelativeLayout>

@@ -18,6 +18,8 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import com.nyist.vnow.R;
 import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.core.VNowCore;
+import com.nyist.vnow.utils.Constants;
+import com.nyist.vnow.utils.Session;
 
 public class SystemSetActivity extends Activity implements OnClickListener {
     private ImageButton mBtnBack;
@@ -36,7 +38,7 @@ public class SystemSetActivity extends Activity implements OnClickListener {
         AlphaAnimation alphaAnim = new AlphaAnimation(0.0f, 1.0f);
         alphaAnim.setDuration(300);
         view.setAnimation(alphaAnim);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         loadSatrtUI();
     }
 
@@ -48,11 +50,11 @@ public class SystemSetActivity extends Activity implements OnClickListener {
         if (sound.length() > 0) {
             int value = Integer.parseInt(sound);
             if (value < 100 || value > 500) {
-                VNowApplication.getInstance().setSetting(getString(R.string.setting_video_sound_red), mValue);
+                Session.newInstance(SystemSetActivity.this).setVideoSound(mValue);
                 soundValue = mValue;
             }
             else {
-                VNowApplication.getInstance().setSetting(getString(R.string.setting_video_sound_red), value);
+                Session.newInstance(SystemSetActivity.this).setVideoSound(value);
                 soundValue = value;
             }
         }
@@ -67,7 +69,7 @@ public class SystemSetActivity extends Activity implements OnClickListener {
         mEdSoundRd = (EditText) findViewById(R.id.edit_sound_reduce);
         mBtnBack.setOnClickListener(this);
         mBtnLogout.setOnClickListener(this);
-        String mode = VNowApplication.getInstance().getSetting(getString(R.string.setting_video_show_params), "-30-320-240-300000-1");
+        String mode = Session.newInstance(SystemSetActivity.this).getVideoParams();
         if (mode.equals("-30-320-240-300000-1")) {
             mRadioGp.check(R.id.rbtn_mode1_show);
         }
@@ -77,7 +79,7 @@ public class SystemSetActivity extends Activity implements OnClickListener {
         else if (mode.equals("-30-1280-720-1500000-1")) {
             mRadioGp.check(R.id.rbtn_mode3_show);
         }
-        mValue = VNowApplication.getInstance().getSetting(getString(R.string.setting_video_sound_red), 240);
+        mValue = Session.newInstance(SystemSetActivity.this).getVideoSound();
         mEdSoundRd.setText("" + mValue);
         mEdSoundRd.addTextChangedListener(new TextWatcher() {
             @Override
@@ -108,15 +110,15 @@ public class SystemSetActivity extends Activity implements OnClickListener {
                 // TODO Auto-generated method stub
                 switch (checkedId) {
                     case R.id.rbtn_mode1_show: {
-                        VNowApplication.getInstance().setSetting(getString(R.string.setting_video_show_params), "-30-320-240-300000-1");
+                        Session.newInstance(SystemSetActivity.this).setVideoParams(Constants.DEFULT_VIDEO_PARAMS);
                     }
                         break;
                     case R.id.rbtn_mode2_show: {
-                        VNowApplication.getInstance().setSetting(getString(R.string.setting_video_show_params), "-30-640-480-800000-1");
+                        Session.newInstance(SystemSetActivity.this).setVideoParams(Constants.STANDARD_VIDEO_PARAMS);
                     }
                         break;
                     case R.id.rbtn_mode3_show: {
-                        VNowApplication.getInstance().setSetting(getString(R.string.setting_video_show_params), "-30-1280-720-1500000-1");
+                        Session.newInstance(SystemSetActivity.this).setVideoParams(Constants.HIGH_VIDEO_PARAMS);
                     }
                         break;
                 }
@@ -135,7 +137,7 @@ public class SystemSetActivity extends Activity implements OnClickListener {
                 break;
             case R.id.btn_logout: {
                 mCore.exitCore();
-                VNowApplication.getInstance().setSetting(getString(R.string.setting_login_user_pwd), null);
+                Session.newInstance(SystemSetActivity.this).setPassWord("");
                 Intent intent = new Intent(this,
                         VNowHostActivity.class);
                 startActivity(intent);

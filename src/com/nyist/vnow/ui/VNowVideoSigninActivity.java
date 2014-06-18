@@ -165,7 +165,7 @@ public class VNowVideoSigninActivity extends Activity {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vnow_video_sign_in);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         mCallBackListener = new MyEventListener();
         mLLayoutOperators = (LinearLayout) findViewById(R.id.llayout_operators);
         mLLayoutPicture = (LinearLayout) findViewById(R.id.llayout_picture_operators);

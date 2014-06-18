@@ -139,12 +139,12 @@ public class VNTaskDao {
         String name = getColleageName(_db, phoneNum);
         if (null == name) {
             String desNum = new DES().decrypt(phoneNum);
-            List<VNowFriend> list = VNowApplication.getInstance().getCore()
+            List<VNowFriend> list = VNowApplication.newInstance().getCore()
                     .getmListPhoneContacts();
             if (list.size() == 0) {
-                VNowApplication.getInstance().getCore().getPhoneContacts();
-                VNowApplication.getInstance().getCore().getSIMContacts();
-                list = VNowApplication.getInstance().getCore()
+                VNowApplication.newInstance().getCore().getPhoneContacts();
+                VNowApplication.newInstance().getCore().getSIMContacts();
+                list = VNowApplication.newInstance().getCore()
                         .getmListPhoneContacts();
             }
             for (int i = 0; i < list.size(); i++) {
@@ -427,8 +427,8 @@ public class VNTaskDao {
                     + userId + "' and uuid = '" + uuid + "'",
                     null);
         }
-        int serverVersion = VNowApplication.getInstance().getSetting(mContext.getString(R.string.group_update_version) + userId, 0);
-        VNowApplication.getInstance().setSetting(mContext.getString(R.string.group_update_version) + userId, serverVersion - 1);
+        int serverVersion = Session.newInstance(mContext).getGroupVersion(userId);
+        Session.newInstance(mContext).setGroupVersion(userId, serverVersion - 1);
         return -1;
     }
 
@@ -460,8 +460,8 @@ public class VNTaskDao {
                         null);
             }
         }
-        int serverVersion = VNowApplication.getInstance().getSetting(mContext.getString(R.string.group_update_version) + userId, 0);
-        VNowApplication.getInstance().setSetting(mContext.getString(R.string.group_update_version) + userId, serverVersion - versionMute);
+        int serverVersion = Session.newInstance(mContext).getGroupVersion(userId);
+        Session.newInstance(mContext).setGroupVersion(userId, serverVersion - versionMute);
     }
 
     public void deleteChild(String userId, String phone) {
@@ -479,8 +479,9 @@ public class VNTaskDao {
                         null);
             }
         }
-        int serverVersion = VNowApplication.getInstance().getSetting(mContext.getString(R.string.group_update_version) + userId, 0);
-        VNowApplication.getInstance().setSetting(mContext.getString(R.string.group_update_version) + userId, serverVersion - versionMute);
+        int serverVersion = Session.newInstance(mContext).getGroupVersion(userId);
+        Session.newInstance(mContext).setGroupVersion(userId, serverVersion - versionMute);
+
     }
 
     public int reLoadGroup(String userId, List<Group> newList) {

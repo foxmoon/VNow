@@ -5,8 +5,6 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.nyist.vnow.utils.UpdateSoftManager;
-import com.nyist.vnow.utils.VNowSetting;
-
 import android.app.Application;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Location;
@@ -26,7 +24,7 @@ public class VNowApplication extends Application implements
         mAppState = state;
     }
 
-    public static VNowApplication getInstance() {
+    public static VNowApplication newInstance() {
         return mInstance;
     }
 
@@ -66,31 +64,6 @@ public class VNowApplication extends Application implements
         // TODO Auto-generated method stub
         super.onTerminate();
         stoptLocation();
-    }
-
-    // setting params-------
-    public String getSetting(String key, String defultValue) {
-        return VNowSetting.the(mInstance).getSetting(key, defultValue);
-    }
-
-    public boolean getSetting(String key, boolean denfultValue) {
-        return VNowSetting.the(mInstance).getSetting(key, denfultValue);
-    }
-
-    public void setSetting(String key, String value) {
-        VNowSetting.the(mInstance).setSetting(key, value);
-    }
-
-    public void setSetting(String key, boolean value) {
-        VNowSetting.the(mInstance).setSetting(key, value);
-    }
-
-    public int getSetting(String key, int mode) {
-        return VNowSetting.the(mInstance).getSetting(key, mode);
-    }
-
-    public void setSetting(String key, int value) {
-        VNowSetting.the(mInstance).setSetting(key, value);
     }
 
     public AMapLocation getBDLocation() {

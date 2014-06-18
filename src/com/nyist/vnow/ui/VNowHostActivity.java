@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.Window;
 
 import com.nyist.vnow.R;
@@ -18,6 +19,7 @@ import com.nyist.vnow.struct.User;
 import com.nyist.vnow.struct.VNowRctContact;
 import com.nyist.vnow.utils.ActionEvent;
 import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.Session;
 import com.nyist.vnow.utils.ToastUtil;
 import com.vnow.sdk.openapi.EventListener;
 
@@ -35,9 +37,8 @@ public class VNowHostActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.vnow_host);
-        mCore = VNowApplication.getInstance().getCore();
-        CommonUtil.set_httpUrl(VNowApplication.getInstance().getSetting(getString(R.string.setting_media_server_ip),
-                getString(R.string.setting_defult_server_ip)));
+        mCore = VNowApplication.newInstance().getCore();
+        CommonUtil.set_httpUrl(Session.newInstance(this).getServiceIp());
         initUI();
     }
 
@@ -71,7 +72,7 @@ public class VNowHostActivity extends FragmentActivity {
             mCurrentEvent = ActionEvent.ACTION_LOGIN;
         }
         else {
-            VNowApplication.getInstance().getCore().doLogout();
+            VNowApplication.newInstance().getCore().doLogout();
             // VNowApplication.the().destroyCore();
             System.exit(0);
         }
@@ -104,10 +105,10 @@ public class VNowHostActivity extends FragmentActivity {
     }
 
     public void actionLogin() {
-        String strPhone = VNowApplication.getInstance().getSetting(getString(R.string.setting_login_user_phone), null);
-        String strpws = VNowApplication.getInstance().getSetting(getString(R.string.setting_login_user_pwd), null);
-        if (null != strPhone && null != strpws) {
-            VNowApplication.getInstance().getCore().doLogin(strPhone, strpws, true);
+        String strPhone = Session.newInstance(this).getUserPhone();
+        String strpws = Session.newInstance(this).getPassWord();
+        if (!TextUtils.isEmpty(strPhone) &&!TextUtils.isEmpty(strpws)) {
+            VNowApplication.newInstance().getCore().doLogin(strPhone, strpws, true);
         }
         else {
             mCore.checkUpVersion(this, true);
@@ -120,11 +121,11 @@ public class VNowHostActivity extends FragmentActivity {
             if (bSuccess) {
                 ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_regist_success));
                 VNowApplication
-                        .getInstance()
+                        .newInstance()
                         .getCore()
                         .doLogin(
-                                VNowApplication.getInstance().getCore().getMySelf().phone,
-                                VNowApplication.getInstance().getCore().getMySelf().password,
+                                VNowApplication.newInstance().getCore().getMySelf().phone,
+                                VNowApplication.newInstance().getCore().getMySelf().password,
                                 true);
             }
             else
@@ -135,7 +136,7 @@ public class VNowHostActivity extends FragmentActivity {
             if (bSuccess) {
                 Intent intent = new Intent();
                 intent.setClass(VNowHostActivity.this, VNowMainActivity.class);
-                if (null != VNowApplication.getInstance().getCore().getApiStatus()) {
+                if (null != VNowApplication.newInstance().getCore().getApiStatus()) {
                     startActivity(intent);
                     VNowHostActivity.this.finish();
                     ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_login_success));
@@ -148,8 +149,7 @@ public class VNowHostActivity extends FragmentActivity {
             }
         }
 
-        public void onResponseLogout(boolean bSuccess) {
-        }
+        public void onResponseLogout(boolean bSuccess) {}
 
         public void onResponseApiStatus(String status) {
             // TODO Auto-generated method stub
@@ -159,7 +159,7 @@ public class VNowHostActivity extends FragmentActivity {
             else if (status.equals("1")) {
                 Intent intent = new Intent();
                 intent.setClass(VNowHostActivity.this, VNowMainActivity.class);
-                if (null != VNowApplication.getInstance().getCore().getApiStatus()) {
+                if (null != VNowApplication.newInstance().getCore().getApiStatus()) {
                     startActivity(intent);
                     VNowHostActivity.this.finish();
                     ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_login_success));

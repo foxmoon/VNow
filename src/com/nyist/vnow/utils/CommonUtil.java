@@ -297,7 +297,7 @@ public class CommonUtil {
      * @return
      */
     public static String formatTime(long time) {
-        if (DateFormat.is24HourFormat(VNowApplication.getInstance()
+        if (DateFormat.is24HourFormat(VNowApplication.newInstance()
                 .getApplicationContext())) {
             return new SimpleDateFormat(TIME_24FORMAT).format(time);
         }
@@ -412,7 +412,7 @@ public class CommonUtil {
      */
     public static boolean checkWIFIor3G() {
         ConnectivityManager mConnectivity = (ConnectivityManager) VNowApplication
-                .getInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
+                .newInstance().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = mConnectivity.getActiveNetworkInfo();
         if (info == null || !mConnectivity.getBackgroundDataSetting()) {
             return false;

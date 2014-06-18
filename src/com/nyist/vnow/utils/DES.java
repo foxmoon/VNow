@@ -3,6 +3,11 @@ package com.nyist.vnow.utils;
 import java.security.Key;
 import javax.crypto.Cipher;
 
+/**
+ * 加密和解密的工具
+ * @author harry
+ * @version Creat on 2014-6-17下午5:32:11
+ */
 public class DES {
     private static String strDefaultKey = "!@v$N)W@8(!b&*!";
     private Cipher encryptCipher = null;

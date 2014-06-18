@@ -66,7 +66,7 @@ public class One2oneActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         final View view = View.inflate(this, R.layout.fragment_one2one, null);
         setContentView(view);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         mCallBackListener = new MyEventListener();
         loadSatrtUI();
         AlphaAnimation alphaAnim = new AlphaAnimation(0.0f, 1.0f);

@@ -24,6 +24,7 @@ import com.nyist.vnow.core.VNowCore;
 import com.nyist.vnow.dialog.VNowAlertDlg;
 import com.nyist.vnow.struct.VNowRctContact;
 import com.nyist.vnow.ui.ConfActivity;
+import com.nyist.vnow.ui.ConfenceActivity;
 import com.nyist.vnow.ui.One2oneActivity;
 import com.nyist.vnow.utils.ToastUtil;
 import com.vnow.sdk.openapi.EventListener;
@@ -58,7 +59,7 @@ public class VNowFragmentVNow extends Fragment implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         mCallBackListener = new MyEventListener();
     }
 
@@ -222,10 +223,9 @@ public class VNowFragmentVNow extends Fragment implements OnClickListener {
             }
                 break;
             case R.id.vnow_create_conf: {
-                // Intent openCameraIntent = new Intent(getActivity(),
-                // CreateConfActivity.class);
-                // startActivityForResult(openCameraIntent, 0);
-                ToastUtil.getInstance(getActivity()).showShort("该版本暂未提供此功能");
+                 Intent openConfIntent = new Intent(getActivity(),
+                         ConfenceActivity.class);
+                 startActivity(openConfIntent);
             }
                 break;
             case R.id.vnow_join_conf: {

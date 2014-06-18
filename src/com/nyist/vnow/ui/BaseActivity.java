@@ -50,7 +50,7 @@ public abstract class BaseActivity extends Activity {
 	
 	protected void restartApplication() {
 		finish();
-		Intent intent = new Intent(getApplicationContext(), StartUpActivity.class);
+		Intent intent = new Intent(getApplicationContext(), SplashActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		intent.putExtra(Constants.RESTART_APP, true);
 		startActivity(intent);

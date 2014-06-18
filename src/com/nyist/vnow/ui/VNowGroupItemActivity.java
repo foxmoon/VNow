@@ -118,7 +118,7 @@ public class VNowGroupItemActivity extends Activity implements DelGroupUserListe
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vnow_activity_group_user);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new PinyinComparator();
         mCallBackListener = new MyEventListener();

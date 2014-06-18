@@ -37,7 +37,7 @@ public class VNowFragmentRegist extends Fragment implements OnClickListener {
             Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         View view = inflater.inflate(R.layout.vnow_regist, container, false);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         mSimCardInfo = new SIMCardInfo(getActivity());
         initUI(view);
         return view;

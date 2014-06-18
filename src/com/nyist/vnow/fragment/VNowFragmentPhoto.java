@@ -36,7 +36,7 @@ public class VNowFragmentPhoto extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
     }
 
     @SuppressLint("NewApi")

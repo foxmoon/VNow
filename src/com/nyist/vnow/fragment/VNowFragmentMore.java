@@ -32,7 +32,7 @@ public class VNowFragmentMore extends Fragment implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
         mCallBackListener = new MyEventListener();
         mVNowAPI = IVNowAPI.newInstance();
     }

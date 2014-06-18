@@ -20,6 +20,7 @@ import com.nyist.vnow.core.VNowCore;
 import com.nyist.vnow.ui.VNowHostActivity;
 import com.nyist.vnow.utils.ActionEvent;
 import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.Session;
 import com.nyist.vnow.utils.ToastUtil;
 
 public class VNowFragmentSetSvr extends Fragment implements OnClickListener {
@@ -53,15 +54,14 @@ public class VNowFragmentSetSvr extends Fragment implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
-        mCore = VNowApplication.getInstance().getCore();
+        mCore = VNowApplication.newInstance().getCore();
     }
 
     private void initUI(View view) {
         mBtnSave = (Button) view.findViewById(R.id.btn_save);
         mEdServer = (EditText) view.findViewById(R.id.edit_server);
         mImgBtnBack = (ImageButton) view.findViewById(R.id.btn_back);
-        _lastServer = VNowApplication.getInstance().getSetting(getString(R.string.setting_media_server_ip),
-                getString(R.string.setting_defult_server_ip));
+        _lastServer = Session.newInstance(getActivity()).getServiceIp();
         mEdServer.setText(_lastServer);
         mBtnSave.setOnClickListener(this);
         mImgBtnBack.setOnClickListener(this);
@@ -73,7 +73,7 @@ public class VNowFragmentSetSvr extends Fragment implements OnClickListener {
             ToastUtil.getInstance(getActivity()).showShort(getString(R.string.str_set_error_server));
             return;
         }
-        VNowApplication.getInstance().setSetting(getString(R.string.setting_media_server_ip), server);
+        Session.newInstance(getActivity()).setServiceIp(server);
         CommonUtil.set_httpUrl(server);
         ToastUtil.getInstance(getActivity()).showShort(getString(R.string.str_set_save_server));
         if (!_lastServer.equals(server)) {

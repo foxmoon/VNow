@@ -39,7 +39,7 @@ public class VNowFragmentSecretary extends Fragment {
             // TODO Auto-generated method stub
             int id = v.getId();
             if (id == R.id.btn_video_sign_in) {
-                if (null != VNowApplication.getInstance().getBDLocation()) {
+                if (null != VNowApplication.newInstance().getBDLocation()) {
                     Intent intent = new Intent(getActivity(), VNowVideoSigninActivity.class);
                     startActivity(intent);
                 }
