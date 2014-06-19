@@ -30,7 +30,9 @@ import com.nyist.vnow.struct.Colleage;
 import com.nyist.vnow.struct.VNowRctContact;
 import com.nyist.vnow.ui.ConfActivity;
 import com.nyist.vnow.utils.CharacterParser;
+import com.nyist.vnow.utils.NetUtil;
 import com.nyist.vnow.utils.PinyinComparator;
+import com.nyist.vnow.utils.ToastUtil;
 import com.nyist.vnow.view.SideBar;
 import com.nyist.vnow.view.SideBar.OnTouchingLetterChangedListener;
 import com.nyist.vnow.view.ViEPullToRefreshListView;
@@ -169,8 +171,7 @@ public class VNowFragmentColleague extends Fragment {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
-            }
+                    int after) {}
 
             @Override
             public void afterTextChanged(Editable s) {}
@@ -190,7 +191,12 @@ public class VNowFragmentColleague extends Fragment {
                 public void run() {
                     // TODO Auto-generated method stub
                     if (mCore.getColleageList().size() == 0) {
-                        mCore.doQueryColleagueList();
+                        if (NetUtil.checkNet(getActivity())) {
+                            mCore.doQueryColleagueList();
+                        }
+                        else {
+                            ToastUtil.getInstance(getActivity()).showShort(getString(R.string.no_network));
+                        }
                     }
                 }
             }).start();

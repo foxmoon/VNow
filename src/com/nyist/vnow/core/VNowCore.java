@@ -503,9 +503,11 @@ public class VNowCore {
                     Session.newInstance(mContext).setColleageVersion(mMySelf.uuid,
                             serverVersion);
                 }
+                // 返回数据，写入数据库
                 mTaskDao.reLoadColleage(mMySelf.uuid, cacheColleages);
             }
             mListColleages.clear();
+            //再从数据库中读取出数据
             mListColleages = getDBColleageList();
         }
 

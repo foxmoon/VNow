@@ -150,6 +150,7 @@
     <string name="str_video_mode2">标准</string>
     <string name="str_video_mode3">高清</string>
     <string name="str_sign_remark">备注信息</string>
+    <string name="no_network">没有网络，请检查手机网络连接</string>
     <string name="title_activity_confence">ConfenceActivity</string>
 
 </resources>
