@@ -6,12 +6,42 @@ import com.nyist.vnow.struct.User;
 
 /**
  * 网络访问接口回调
+ * 
  * @author harry
  * @version Creat on 2014-6-17上午10:27:06
  */
 public class EventListener {
     private final String TAG = "EventListener";
 
+    public void onResponseCall(boolean bSuccess) {
+        Log.i(TAG, "onResponseCall");
+    }
+
+    public void onResponseCallFailed(String resion) {
+        Log.i(TAG, "onResponseCallFailed");
+    }
+
+    public void onAnswerCall(boolean bSuccess) {}
+
+    public void onResponseHangup(boolean bSuccess) {
+        Log.i(TAG, "onResponseHangup");
+    }
+
+    public void onResponseCallIn(String fromName) {}
+
+    public void onResponseApiStatus(String status) {}
+
+    public void onResponseCapture(String picPath, boolean isSuccsee) {}
+
+    public void onResponseVdoRecode(String vdoPath, boolean isSuccsee) {}
+
+    public void onResponseSynTransport(String contentUrl, String srcID, boolean isSuccess) {}
+
+    public void onResponseConfUpLoadFile(String handID, String progress,
+            String filePath, boolean isSuccess) {}
+    
+    
+    /************************************ Web事件回调 *************************************************/
     public void onResponseRegister(boolean bSuccess, String uuid) {
         Log.i(TAG, "onResponseRegister");
     }
@@ -22,21 +52,6 @@ public class EventListener {
 
     public void onResponseLogout(boolean bSuccess) {
         Log.i(TAG, "onResponseLogout");
-    }
-
-    public void onResponseCall(boolean bSuccess) {
-        Log.i(TAG, "onResponseCall");
-    }
-
-    public void onResponseCallFailed(String resion) {
-        Log.i(TAG, "onResponseCallFailed");
-    }
-
-    public void onAnswerCall(boolean bSuccess) {
-    }
-
-    public void onResponseHangup(boolean bSuccess) {
-        Log.i(TAG, "onResponseHangup");
     }
 
     public void onResponseCreateRoom(boolean bSuccess) {
@@ -103,11 +118,13 @@ public class EventListener {
         Log.i(TAG, "onResponseDownloadFileProgress");
     }
 
-    public void onResponseQueryColleageList(boolean bSuccess, String jsonResult) {
+    public void onResponseQueryColleageList(boolean bSuccess, String
+            jsonResult) {
         Log.i(TAG, "onResponseQueryColleageList");
     }
 
-    public void onResponseQueryFriendList(boolean bSuccess, String jsonResult) {
+    public void onResponseQueryFriendList(boolean bSuccess, String
+            jsonResult) {
         Log.i(TAG, "onResponseQueryFriendList");
     }
 
@@ -127,7 +144,8 @@ public class EventListener {
         Log.i(TAG, "onResponseDelFriend");
     }
 
-    public void onResponseQueryGroupList(boolean bSuccess, String jsonResult) {
+    public void onResponseQueryGroupList(boolean bSuccess, String jsonResult)
+    {
         Log.i(TAG, "onResponseQueryGroupList");
     }
 
@@ -155,31 +173,8 @@ public class EventListener {
         Log.i(TAG, "onResponseDelGroupUser");
     }
 
-    public void onResponseUploadFileHttp(boolean bSuccess, String resUrl, String fileType) {
-        // TODO Auto-generated method stub
-    }
-
-    public void onResponseCallIn(String fromName) {
-        // TODO Auto-generated method stub
-    }
-
-    public void onResponseApiStatus(String status) {
-        // TODO Auto-generated method stub
-    }
-
-    public void onResponseCapture(String picPath, boolean isSuccsee) {
-        // TODO Auto-generated method stub
-    }
-
-    public void onResponseVdoRecode(String vdoPath, boolean isSuccsee) {
-        // TODO Auto-generated method stub
-    }
-
-    public void onResponseSynTransport(String contentUrl, String srcID, boolean isSuccess) {
-    }
-
-    public void onResponseConfUpLoadFile(String handID, String progress,
-            String filePath, boolean isSuccess) {
+    public void onResponseUploadFileHttp(boolean bSuccess, String resUrl,
+            String fileType) {
         // TODO Auto-generated method stub
     }
 }

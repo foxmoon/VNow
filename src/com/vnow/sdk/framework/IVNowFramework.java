@@ -23,6 +23,7 @@ import com.vnow.sdk.core.IVNowCoreCallback;
 
 /**
  * 访问服务器方法的封装
+ * 
  * @author harry
  * @version Creat on 2014-6-17上午9:44:50
  */
@@ -43,9 +44,9 @@ public class IVNowFramework {
     private int mVideoFrameRate = 15;
     private int mVideoEncoderType = 0; // 0: stagefright 1: recorder
 
-    
     /**
      * 绑定VNowCoreService服务
+     * 
      * @param context
      */
     public void bindVNowService(Context context) {
@@ -87,39 +88,6 @@ public class IVNowFramework {
 
     public void setEventListener(IFrameworkEventListener listener) {
         mFrameworkEventListener = listener;
-    }
-
-    public int httpPost(String URI, List<NameValuePair> params, String strContex) {
-        VNowHttpPost httpPost = new VNowHttpPost();
-        httpPost.SetCallback(mHttpPostCallback, strContex);
-        httpPost.SetParam(params);
-        // httpPost.SetURI("http://192.168.5.163:8080/vnowService/remote/register/userregister/loginRegister");
-        // httpPost.SetURI("http://www.beijibear.com/android_post.php");
-        httpPost.SetURI(/* WebServerURL + */URI);
-        httpPost.startPost();
-        return 0;
-    }
-
-    public int httpGet(String URI, String strContex) {
-        VNowHttpGet httpGet = new VNowHttpGet();
-        httpGet.SetCallback(mHttpGetCallback, strContex);
-        // httpPost.SetURI("http://192.168.5.163:8080/vnowService/remote/register/userregister/loginRegister");
-        // httpPost.SetURI("http://www.beijibear.com/android_post.php");
-        httpGet.SetURI(/* WebServerURL + */URI);
-        httpGet.startGet();
-        return 0;
-    }
-
-    public int httpUpLoad(String URI, String strFileName, String strParams, String strContex) {
-        VNowHttpUpLoad httpUpLoad = new VNowHttpUpLoad();
-        httpUpLoad.SetCallback(mHttpUpLoadCallback, strContex);
-        // httpPost.SetURI("http://192.168.5.163:8080/vnowService/remote/register/userregister/loginRegister");
-        // httpPost.SetURI("http://www.beijibear.com/android_post.php");
-        httpUpLoad.SetURI(/* WebServerURL + */URI);
-        httpUpLoad.SetLocalFileName(strFileName);
-        httpUpLoad.SetParam(strParams);
-        httpUpLoad.startUpLoad();
-        return 0;
     }
 
     // //////////////////////////////////////////////////////////////////
@@ -273,6 +241,40 @@ public class IVNowFramework {
 
     private NVCoreServiceConnection connection = new NVCoreServiceConnection();
     private CoreCallback mCallback = new CoreCallback();
+
+    /************************************ Web访问和事件回调 *************************************************/
+    public int httpPost(String URI, List<NameValuePair> params, String strContex) {
+        VNowHttpPost httpPost = new VNowHttpPost();
+        httpPost.SetCallback(mHttpPostCallback, strContex);
+        httpPost.SetParam(params);
+        // httpPost.SetURI("http://192.168.5.163:8080/vnowService/remote/register/userregister/loginRegister");
+        // httpPost.SetURI("http://www.beijibear.com/android_post.php");
+        httpPost.SetURI(/* WebServerURL + */URI);
+        httpPost.startPost();
+        return 0;
+    }
+
+    public int httpGet(String URI, String strContex) {
+        VNowHttpGet httpGet = new VNowHttpGet();
+        httpGet.SetCallback(mHttpGetCallback, strContex);
+        // httpPost.SetURI("http://192.168.5.163:8080/vnowService/remote/register/userregister/loginRegister");
+        // httpPost.SetURI("http://www.beijibear.com/android_post.php");
+        httpGet.SetURI(/* WebServerURL + */URI);
+        httpGet.startGet();
+        return 0;
+    }
+
+    public int httpUpLoad(String URI, String strFileName, String strParams, String strContex) {
+        VNowHttpUpLoad httpUpLoad = new VNowHttpUpLoad();
+        httpUpLoad.SetCallback(mHttpUpLoadCallback, strContex);
+        // httpPost.SetURI("http://192.168.5.163:8080/vnowService/remote/register/userregister/loginRegister");
+        // httpPost.SetURI("http://www.beijibear.com/android_post.php");
+        httpUpLoad.SetURI(/* WebServerURL + */URI);
+        httpUpLoad.SetLocalFileName(strFileName);
+        httpUpLoad.SetParam(strParams);
+        httpUpLoad.startUpLoad();
+        return 0;
+    }
 
     // ////////////////////////////////////////////////////////////////
     // http callback

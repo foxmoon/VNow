@@ -30,7 +30,7 @@ import com.nyist.vnow.utils.Session;
 import com.vnow.sdk.framework.IVNowFramework;
 
 /**
- * 调用IVNowFramework方法的封装
+ * 调用IVNowFramework方法的封装,可以对其进行优化
  * 
  * @author harry
  * @version Creat on 2014-6-17上午9:45:22
@@ -154,89 +154,6 @@ public class IVNowAPI {
         return mIVNowFramework.dispatchApi(strCmd);
     }
 
-    /**
-     * 注册用户 /login/req_register/loginRegister/SafetyExit
-     * 
-     * @param user
-     * @return onResponseRegister()
-     */
-    public int register(User user) {
-        if (mIVNowFramework != null) {
-            ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-            params.add(new BasicNameValuePair("ad_phone", user.phone));
-            params.add(new BasicNameValuePair("ad_pass", user.password));
-            params.add(new BasicNameValuePair("ad_name", user.name));
-            params.add(new BasicNameValuePair("code", user.company_code));
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
-            sBuffer.append("login/req_register/loginRegister/SafetyExit.html");
-            System.out.println(sBuffer.toString() + "--------------------");
-            return mIVNowFramework.httpPost(sBuffer.toString(), params,
-                    Request.REQ_REGISTER);
-        }
-        return -1;
-    }
-
-    /**
-     * 登录
-     * 
-     * @param strPhone
-     *            注册手机号
-     * @param strPsw
-     *            注册密码
-     * @return onResponseLogin()
-     */
-    public int login(String strPhone, String strPsw) {
-        if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
-            sBuffer.append("login/").append(strPsw).append("/req_login/login/")
-                    .append(strPhone)
-                    .append("/")
-                    .append(CommonUtil._svrIP).append("/SafetyExit.html");
-            LogTag.d("login:", sBuffer.toString());
-            return mIVNowFramework.httpGet(sBuffer.toString(),
-                    Request.REQ_LOGIN);
-        }
-        return -1;
-    }
-
-    /**
-     * 注销
-     * 
-     * @param user
-     * @return onResponseLogout()
-     */
-    public int logout(User user) {
-        if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
-            sBuffer.append("login/").append(user.password)
-                    .append("/req_logout/login/").append(user.phone)
-                    .append("/").append(user.uuid).append("/")
-                    .append(user.password).append(".html");
-            return mIVNowFramework.httpGet(sBuffer.toString(),
-                    Request.REQ_LOGOUT);
-        }
-        return -1;
-    }
-
-    /**
-     * 注销
-     * 
-     * @param uuid
-     * @return onResponseLogout()
-     * 
-     *         userInfo/req_query_info/{uuid}
-     */
-    public int getMyselfInfo(String uuid) {
-        if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
-            sBuffer.append("userInfo/req_query_info/").append(uuid).append(".html;jsessionid=")
-                    .append(mSessionID);
-            return mIVNowFramework.httpGet(sBuffer.toString(),
-                    Request.REQ_LOGOUT);
-        }
-        return -1;
-    }
-
     public int call(String strUserID) {
         return -1;
     }
@@ -338,6 +255,318 @@ public class IVNowAPI {
     }
 
     /**
+     * framework访问回调
+     * 
+     * @author harry
+     * @version Creat on 2014-6-19上午9:59:25
+     */
+    private static class VNFrameworkEventListener implements
+            IVNowFramework.IFrameworkEventListener {
+        public void onEventNotify(String strEvent, String strResult) {
+            if (strEvent.equals("coremsg")) {
+                processCoreEvent(strResult);
+            }
+            // else {
+            // processEvent(strEvent, strResult);
+            // }
+        }
+    }
+
+    // ////////////////////////////////////////////////////////////////
+    // event process
+    private static void processCoreEvent(String strResult) {
+        System.out.println("processCoreEvent-->" + strResult);
+        handleXMLMsg(strResult);
+    }
+
+    private static boolean handleXMLMsg(String strMsg) {
+        ByteArrayInputStream tInputStringStream = null;
+        try {
+            if (strMsg != null && !strMsg.trim().equals("")) {
+                tInputStringStream = new ByteArrayInputStream(strMsg.getBytes());
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        XmlPullParser parser = Xml.newPullParser();
+        try {
+            parser.setInput(tInputStringStream, "UTF-8");
+            int eventType = parser.getEventType();
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                switch (eventType) {
+                    case XmlPullParser.START_DOCUMENT:
+                        break;
+                    case XmlPullParser.START_TAG:
+                        String name = parser.getName();
+                        if (name.equalsIgnoreCase("Info")) {
+                            name = parser.getAttributeValue(null, "EvtType");
+                            if (name != null && "apistatus".equals(name)) {
+                                String status = parser.getAttributeValue(null, "Status");
+                                onResponseApiStatus(status);
+                            }
+                            else if (name != null && "loginsta".equals(name)) {}
+                            else if (name != null && "callhungup".equals(name)) {
+                                onResponseHangup(name);
+                                // VNowAPI.closeLocalVideo();
+                                return true;
+                            }
+                            else if (name != null && "p2pcallrsp".equals(name)) {
+                                String result = parser.getAttributeValue(null, "Result");
+                                if (!result.equals("0")) {
+                                    onResponseCallFailed(result);
+                                }
+                            }
+                            else if (name != null && "callanswer".equals(name)) {
+                                onResponseAnswerCall(name);
+                            }
+                            else if (name != null && "p2pcallin".equals(name)) {
+                                String callFrom = parser.getAttributeValue(null, "CallerID");
+                                onResponseCallIn(callFrom);
+                            }
+                            else if (name != null && "callanswer".equals(name)) {}
+                            else if (name != null && "stopvidenc".equals(name)) {
+                                // 05-06 20:51:58.741: I/System.out(3491):
+                                // processCoreEvent--><root><Info
+                                // EvtType="takepicture"
+                                // path="/mnt/sdcard/20140506085158.jpg"Result="0"
+                                // /></root>
+                            }
+                            else if (name != null && "takepicture".equals(name)) {
+                                String result = parser.getAttributeValue(null, "Result");
+                                if (result.equals("0")) {
+                                    String picPath = parser.getAttributeValue(null, "path");
+                                    onResponseTakePicture(picPath, true);
+                                }
+                                else {
+                                    onResponseTakePicture(null, false);
+                                }
+                            }
+                            else if (name != null && "recfilepath".equals(name)) {
+                                String vdoPath = parser.getAttributeValue(null, "path");
+                                if (null != vdoPath) {
+                                    onResponseVdoRecode(vdoPath, true);
+                                }
+                                else {
+                                    onResponseVdoRecode(null, false);
+                                }
+                            }
+                            else if (name != null && "transparent".equals(name)) {
+                                String contentUrl = parser.getAttributeValue(null, "Content");
+                                String srcID = parser.getAttributeValue(null, "SrcID");
+                                if (null != contentUrl) {
+                                    onResponseSynTransparent(contentUrl, srcID, true);
+                                }
+                                else {
+                                    onResponseSynTransparent(null, null, false);
+                                }
+                            }
+                            else if (name != null && "ulfileprogress".equals(name)) {
+                                // <root> <Info EvtType="ulfileprogress"
+                                // Result="0"
+                                // Handle="12884901888" Progress="100"
+                                // FilePath="/ vnowfileul/2014/5/29/11/20592167040-3.h264"
+                                // /> </root>
+                                String result = parser.getAttributeValue(null, "Result");
+                                if (result.equals("0")) {
+                                    String picHandle = parser.getAttributeValue(null, "Handle");
+                                    String progress = parser.getAttributeValue(null, "Progress");
+                                    String filePath = parser.getAttributeValue(null, "FilePath");
+                                    onResponseConfUpLoadFile(picHandle, progress, filePath, true);
+                                }
+                                else {
+                                    onResponseConfUpLoadFile(null, null, null, false);
+                                }
+                            }
+                        }
+                        if (name.equalsIgnoreCase("loginlink")) {}
+                        break;
+                    case XmlPullParser.END_TAG:
+                        break;
+                }
+                eventType = parser.next();
+            }
+            tInputStringStream.close();
+        }
+        catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private static void onResponseCall(String name) {
+        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
+            EventListener listener = (EventListener) mListenerList.get(nIndex);
+            listener.onResponseCall(true);
+        }
+    }
+
+    private static void onResponseApiStatus(String status) {
+        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
+            System.out.println("EventListeneronseApiStatus");
+            EventListener listener = (EventListener) mListenerList.get(nIndex);
+            listener.onResponseApiStatus(status);
+        }
+    }
+
+    private static void onResponseCallIn(String fromName) {
+        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
+            EventListener listener = (EventListener) mListenerList.get(nIndex);
+            listener.onResponseCallIn(fromName);
+        }
+    }
+
+    private static void onResponseTakePicture(String picPath, boolean isSuccsee) {
+        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
+            EventListener listener = (EventListener) mListenerList.get(nIndex);
+            listener.onResponseCapture(picPath, isSuccsee);
+        }
+    }
+
+    private static void onResponseVdoRecode(String vdoPath, boolean isSuccsee) {
+        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
+            EventListener listener = (EventListener) mListenerList.get(nIndex);
+            listener.onResponseVdoRecode(vdoPath, isSuccsee);
+        }
+    }
+
+    private static void onResponseSynTransparent(String contentUrl, String srcID, boolean isSuccess) {
+        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
+            EventListener listener = (EventListener) mListenerList.get(nIndex);
+            listener.onResponseSynTransport(contentUrl, srcID, isSuccess);
+        }
+    }
+
+    private static void onResponseConfUpLoadFile(String handID, String Progress, String filePath, boolean isSuccess) {
+        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
+            EventListener listener = (EventListener) mListenerList.get(nIndex);
+            listener.onResponseConfUpLoadFile(handID, Progress, filePath, isSuccess);
+        }
+    }
+
+    private static void onResponseCallFailed(String resion) {
+        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
+            EventListener listener = (EventListener) mListenerList.get(nIndex);
+            listener.onResponseCallFailed(resion);
+        }
+    }
+
+    private static void onResponseAnswerCall(String name) {
+        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
+            EventListener listener = (EventListener) mListenerList.get(nIndex);
+            System.out.println("onResponseAnswerCall-->" + listener);
+            listener.onAnswerCall(true);
+        }
+    }
+
+    private static void onResponseHangup(String name) {
+        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
+            EventListener listener = (EventListener) mListenerList.get(nIndex);
+            listener.onResponseHangup(true);
+        }
+    }
+
+/***********************************Web事件回调********************************************************/
+    /**
+     * 注册用户 /login/req_register/loginRegister/SafetyExit
+     * 
+     * @param user
+     * @return onResponseRegister()
+     */
+    public int register(User user) {
+        if (mIVNowFramework != null) {
+            ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair("ad_phone", user.phone));
+            params.add(new BasicNameValuePair("ad_pass", user.password));
+            params.add(new BasicNameValuePair("ad_name", user.name));
+            params.add(new BasicNameValuePair("code", user.company_code));
+            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            sBuffer.append("login/req_register/loginRegister/SafetyExit.html");
+            System.out.println(sBuffer.toString() + "--------------------");
+            return mIVNowFramework.httpPost(sBuffer.toString(), params,
+                    Request.REQ_REGISTER);
+        }
+        return -1;
+    }
+
+    /**
+     * 登录
+     * 
+     * @param strPhone
+     *            注册手机号
+     * @param strPsw
+     *            注册密码
+     * @return onResponseLogin()
+     */
+    public int login(String strPhone, String strPsw) {
+        if (mIVNowFramework != null) {
+            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            sBuffer.append("login/").append(strPsw).append("/req_login/login/")
+                    .append(strPhone)
+                    .append("/")
+                    .append(CommonUtil._svrIP).append("/SafetyExit.html");
+            LogTag.d("login:", sBuffer.toString());
+            return mIVNowFramework.httpGet(sBuffer.toString(),
+                    Request.REQ_LOGIN);
+        }
+        return -1;
+    }
+
+    /**
+     * 注销
+     * 
+     * @param user
+     * @return onResponseLogout()
+     */
+    public int logout(User user) {
+        if (mIVNowFramework != null) {
+            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            sBuffer.append("login/").append(user.password)
+                    .append("/req_logout/login/").append(user.phone)
+                    .append("/").append(user.uuid).append("/")
+                    .append(user.password).append(".html");
+            return mIVNowFramework.httpGet(sBuffer.toString(),
+                    Request.REQ_LOGOUT);
+        }
+        return -1;
+    }
+
+    /**
+     * 注销
+     * 
+     * @param uuid
+     * @return onResponseLogout()
+     * 
+     *         userInfo/req_query_info/{uuid}
+     */
+    public int getMyselfInfo(String uuid) {
+        if (mIVNowFramework != null) {
+            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            sBuffer.append("userInfo/req_query_info/").append(uuid).append(".html;jsessionid=")
+                    .append(mSessionID);
+            return mIVNowFramework.httpGet(sBuffer.toString(),
+                    Request.REQ_LOGOUT);
+        }
+        return -1;
+    }
+
+    // /remote/file/req_upload_file
+    public int httpWebUpLoad(List<NameValuePair> value) {
+        if (mIVNowFramework != null) {
+            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            sBuffer.append("file/req_upload_file").append(".html;jsessionid=")
+                    .append(mSessionID);
+            return mIVNowFramework.httpPost(sBuffer.toString(), value,
+                    Request.REQ_UPLOAD_FILE_HTTP);
+        }
+        return -1;
+    }
+
+    /**
      * 查看同事列表
      * 
      * @param uuid
@@ -360,18 +589,19 @@ public class IVNowAPI {
             LogTag.d("queryColleagueList", sBuffer.toString());
             return mIVNowFramework.httpGet(sBuffer.toString(),
                     Request.REQ_QUERY_COLLEAGE_LIST);
-        }
-        return -1;
-    }
-
-    // /remote/file/req_upload_file
-    public int httpWebUpLoad(List<NameValuePair> value) {
-        if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
-            sBuffer.append("file/req_upload_file").append(".html;jsessionid=")
-                    .append(mSessionID);
-            return mIVNowFramework.httpPost(sBuffer.toString(), value,
-                    Request.REQ_UPLOAD_FILE_HTTP);
+//            Request request = new Request(sBuffer.toString(), RequestMethod.GET);
+//            request.setCallback(new StringCallback() {
+//                @Override
+//                public void onSuccess(String arg0) {
+//                    LogTag.e("onSuccess", arg0);
+//                }
+//
+//                @Override
+//                public void onFailure(AppException arg0) {
+//                    LogTag.e("onFailure", arg0);
+//                }
+//            });
+//            request.execute();
         }
         return -1;
     }
@@ -665,135 +895,12 @@ public class IVNowAPI {
         return -1;
     }
 
-    private static boolean handleXMLMsg(String strMsg) {
-        ByteArrayInputStream tInputStringStream = null;
-        try {
-            if (strMsg != null && !strMsg.trim().equals("")) {
-                tInputStringStream = new ByteArrayInputStream(strMsg.getBytes());
-            }
-        }
-        catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-            return false;
-        }
-        XmlPullParser parser = Xml.newPullParser();
-        try {
-            parser.setInput(tInputStringStream, "UTF-8");
-            int eventType = parser.getEventType();
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-                switch (eventType) {
-                    case XmlPullParser.START_DOCUMENT:
-                        break;
-                    case XmlPullParser.START_TAG:
-                        String name = parser.getName();
-                        if (name.equalsIgnoreCase("Info")) {
-                            name = parser.getAttributeValue(null, "EvtType");
-                            if (name != null && "apistatus".equals(name)) {
-                                String status = parser.getAttributeValue(null, "Status");
-                                onResponseApiStatus(status);
-                            }
-                            else if (name != null && "loginsta".equals(name)) {}
-                            else if (name != null && "callhungup".equals(name)) {
-                                onResponseHangup(name);
-                                // VNowAPI.closeLocalVideo();
-                                return true;
-                            }
-                            else if (name != null && "p2pcallrsp".equals(name)) {
-                                String result = parser.getAttributeValue(null, "Result");
-                                if (!result.equals("0")) {
-                                    onResponseCallFailed(result);
-                                }
-                            }
-                            else if (name != null && "callanswer".equals(name)) {
-                                onResponseAnswerCall(name);
-                            }
-                            else if (name != null && "p2pcallin".equals(name)) {
-                                String callFrom = parser.getAttributeValue(null, "CallerID");
-                                onResponseCallIn(callFrom);
-                            }
-                            else if (name != null && "callanswer".equals(name)) {}
-                            else if (name != null && "stopvidenc".equals(name)) {
-                                // 05-06 20:51:58.741: I/System.out(3491):
-                                // processCoreEvent--><root><Info
-                                // EvtType="takepicture"
-                                // path="/mnt/sdcard/20140506085158.jpg"Result="0"
-                                // /></root>
-                            }
-                            else if (name != null && "takepicture".equals(name)) {
-                                String result = parser.getAttributeValue(null, "Result");
-                                if (result.equals("0")) {
-                                    String picPath = parser.getAttributeValue(null, "path");
-                                    onResponseTakePicture(picPath, true);
-                                }
-                                else {
-                                    onResponseTakePicture(null, false);
-                                }
-                            }
-                            else if (name != null && "recfilepath".equals(name)) {
-                                String vdoPath = parser.getAttributeValue(null, "path");
-                                if (null != vdoPath) {
-                                    onResponseVdoRecode(vdoPath, true);
-                                }
-                                else {
-                                    onResponseVdoRecode(null, false);
-                                }
-                            }
-                            else if (name != null && "transparent".equals(name)) {
-                                String contentUrl = parser.getAttributeValue(null, "Content");
-                                String srcID = parser.getAttributeValue(null, "SrcID");
-                                if (null != contentUrl) {
-                                    onResponseSynTransparent(contentUrl, srcID, true);
-                                }
-                                else {
-                                    onResponseSynTransparent(null, null, false);
-                                }
-                            }
-                            else if (name != null && "ulfileprogress".equals(name)) {
-                                // <root> <Info EvtType="ulfileprogress"
-                                // Result="0"
-                                // Handle="12884901888" Progress="100"
-                                // FilePath="/ vnowfileul/2014/5/29/11/20592167040-3.h264"
-                                // /> </root>
-                                String result = parser.getAttributeValue(null, "Result");
-                                if (result.equals("0")) {
-                                    String picHandle = parser.getAttributeValue(null, "Handle");
-                                    String progress = parser.getAttributeValue(null, "Progress");
-                                    String filePath = parser.getAttributeValue(null, "FilePath");
-                                    onResponseConfUpLoadFile(picHandle, progress, filePath, true);
-                                }
-                                else {
-                                    onResponseConfUpLoadFile(null, null, null, false);
-                                }
-                            }
-                        }
-                        if (name.equalsIgnoreCase("loginlink")) {}
-                        break;
-                    case XmlPullParser.END_TAG:
-                        break;
-                }
-                eventType = parser.next();
-            }
-            tInputStringStream.close();
-        }
-        catch (XmlPullParserException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    // ////////////////////////////////////////////////////////////////
-    // event process
-    private static void processCoreEvent(String strResult) {
-        System.out.println("processCoreEvent-->" + strResult);
-        handleXMLMsg(strResult);
-    }
-
+    /**
+     * 网络访问事件结果回调
+     * 
+     * @param strEvent
+     * @param strResult
+     */
     private static void processEvent(String strEvent, String strResult) {
         System.out.println(strEvent + "------>" + strResult);
         if (null == strResult)
@@ -944,78 +1051,6 @@ public class IVNowAPI {
         }
     }
 
-    private static void onResponseCall(String name) {
-        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
-            EventListener listener = (EventListener) mListenerList.get(nIndex);
-            listener.onResponseCall(true);
-        }
-    }
-
-    private static void onResponseApiStatus(String status) {
-        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
-            System.out.println("EventListeneronseApiStatus");
-            EventListener listener = (EventListener) mListenerList.get(nIndex);
-            listener.onResponseApiStatus(status);
-        }
-    }
-
-    private static void onResponseCallIn(String fromName) {
-        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
-            EventListener listener = (EventListener) mListenerList.get(nIndex);
-            listener.onResponseCallIn(fromName);
-        }
-    }
-
-    private static void onResponseTakePicture(String picPath, boolean isSuccsee) {
-        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
-            EventListener listener = (EventListener) mListenerList.get(nIndex);
-            listener.onResponseCapture(picPath, isSuccsee);
-        }
-    }
-
-    private static void onResponseVdoRecode(String vdoPath, boolean isSuccsee) {
-        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
-            EventListener listener = (EventListener) mListenerList.get(nIndex);
-            listener.onResponseVdoRecode(vdoPath, isSuccsee);
-        }
-    }
-
-    private static void onResponseSynTransparent(String contentUrl, String srcID, boolean isSuccess) {
-        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
-            EventListener listener = (EventListener) mListenerList.get(nIndex);
-            listener.onResponseSynTransport(contentUrl, srcID, isSuccess);
-        }
-    }
-
-    private static void onResponseConfUpLoadFile(String handID, String Progress, String filePath, boolean isSuccess) {
-        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
-            EventListener listener = (EventListener) mListenerList.get(nIndex);
-            listener.onResponseConfUpLoadFile(handID, Progress, filePath, isSuccess);
-        }
-    }
-
-    private static void onResponseCallFailed(String resion) {
-        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
-            EventListener listener = (EventListener) mListenerList.get(nIndex);
-            listener.onResponseCallFailed(resion);
-        }
-    }
-
-    private static void onResponseAnswerCall(String name) {
-        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
-            EventListener listener = (EventListener) mListenerList.get(nIndex);
-            System.out.println("onResponseAnswerCall-->" + listener);
-            listener.onAnswerCall(true);
-        }
-    }
-
-    private static void onResponseHangup(String name) {
-        for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
-            EventListener listener = (EventListener) mListenerList.get(nIndex);
-            listener.onResponseHangup(true);
-        }
-    }
-
     private static void onResponseCreateRoom(JSONObject jsonObject) {
         for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
             EventListener listener = (EventListener) mListenerList.get(nIndex);
@@ -1121,7 +1156,8 @@ public class IVNowAPI {
         }
     }
 
-    private static void onResponseDownloadFileProgress(JSONObject jsonObject) {
+    private static void onResponseDownloadFileProgress(JSONObject jsonObject)
+    {
         for (int nIndex = 0; nIndex < mListenerList.size(); nIndex++) {
             EventListener listener = (EventListener) mListenerList.get(nIndex);
             listener.onResponseDownloadFileProgress(true);
@@ -1311,20 +1347,6 @@ public class IVNowAPI {
             }
             else {
                 listener.onResponseUploadFileHttp(false, "", "");
-            }
-        }
-    }
-
-    // ////////////////////////////////////////////////////////////////
-    // VNow Framework callback
-    private static class VNFrameworkEventListener implements
-            IVNowFramework.IFrameworkEventListener {
-        public void onEventNotify(String strEvent, String strResult) {
-            if (strEvent.equals("coremsg")) {
-                processCoreEvent(strResult);
-            }
-            else {
-                processEvent(strEvent, strResult);
             }
         }
     }
