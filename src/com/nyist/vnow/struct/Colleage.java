@@ -1,16 +1,33 @@
 package com.nyist.vnow.struct;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName = "Colleage")
 public class Colleage extends CommItem {
-    private static final long serialVersionUID = 3L;
-    private String g_name;
-    private String g_pid;
-    private String g_type;
-    private String g_phone;
-    private String g_code;
-    private String g_updatenum;
-    private String g_createtime;
-    private String g_head;
+    public static final String USER_ID = "jUserId";
+    public static final String CREATETIME = "g_createtime";
+    @DatabaseField(id = true)
     private String g_uuid;
+    @DatabaseField
+    private String g_name;
+    @DatabaseField
+    private String g_pid;
+    @DatabaseField
+    private String g_type;
+    @DatabaseField
+    private String g_phone;
+    @DatabaseField
+    private String g_code;
+    @DatabaseField
+    private String g_updatenum;
+    @DatabaseField
+    private String g_createtime;
+    @DatabaseField
+    private String g_head;
+    @DatabaseField
+    private String jUserId;
+    
 
     public String getG_name() {
         return g_name;
@@ -83,4 +100,13 @@ public class Colleage extends CommItem {
     public void setG_uuid(String g_uuid) {
         this.g_uuid = g_uuid;
     }
+
+    public String getjUserId() {
+        return jUserId;
+    }
+
+    public void setjUserId(String jUserId) {
+        this.jUserId = jUserId;
+    }
+    
 }

@@ -7,9 +7,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.DisplayMetrics;
 
-
 /**
  * 读取和写入配置信息用sheredpreference的方式存储
+ * 
  * @author harry
  * @version Creat on 2014-6-18上午8:40:21
  */
@@ -40,6 +40,7 @@ public class Session {
     private int colleageVersion;
     private String videoParams;
     private int videoSound;
+    private String sessionId;
 
     private Session(Context context) {
         synchronized (this) {
@@ -94,7 +95,17 @@ public class Session {
         videoSound = mPreferencesUtils.getInt(Constants.SHOW_VIDEO_SOUND_RED, 240);
         passWord = mPreferencesUtils.getString(Constants.PRF_USER_PASSWORD, "");
         userPhone = mPreferencesUtils.getString(Constants.PRF_USER_PHONE, "");
+        sessionId = mPreferencesUtils.getString(Constants.PRF_SESSION_ID, "");
         // 初始化用户信息
+    }
+
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public boolean isFirstLaunch() {

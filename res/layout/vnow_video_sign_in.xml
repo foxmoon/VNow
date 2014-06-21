@@ -41,9 +41,9 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:padding="8dp"
                 android:background="@drawable/btn_bg_transport"
                 android:focusable="true"
+                android:padding="8dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/btn_camera_switch" />
 
@@ -59,9 +59,8 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/LargeTextSize"
                 android:visibility="gone" />
-            
         </RelativeLayout>
-		
+
         <LinearLayout
             android:id="@+id/llayout_operators"
             android:layout_width="fill_parent"
@@ -80,20 +79,21 @@
                 android:paddingLeft="25dp"
                 android:text="拍照签到"
                 android:textColor="@color/text_gray" />
-		<EditText
+
+            <EditText
                 android:id="@+id/sign_remark_edit"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_add_contact_edit_search"
-                android:textColor="@color/txt_black"
-                android:textSize="@dimen/LargeTextSize"
-                android:hint="@string/str_sign_remark"
-                android:paddingLeft="15dp"
-                android:layout_weight="1.5"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_weight="1.5"
+                android:background="@drawable/bg_add_contact_edit_search"
+                android:hint="@string/str_sign_remark"
+                android:paddingLeft="15dp"
                 android:singleLine="true"
-                 />
+                android:textColor="@color/txt_black"
+                android:textSize="@dimen/LargeTextSize" />
+
             <Button
                 android:id="@+id/btn_video_sign_in"
                 android:layout_width="0dp"

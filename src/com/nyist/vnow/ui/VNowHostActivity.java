@@ -1,13 +1,21 @@
 package com.nyist.vnow.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.nyist.vnow.R;
 import com.nyist.vnow.core.VNowApplication;
@@ -18,12 +26,13 @@ import com.nyist.vnow.fragment.VNowFragmentSetSvr;
 import com.nyist.vnow.struct.User;
 import com.nyist.vnow.struct.VNowRctContact;
 import com.nyist.vnow.utils.ActionEvent;
-import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.Constants;
+import com.nyist.vnow.utils.NetUtil;
 import com.nyist.vnow.utils.Session;
 import com.nyist.vnow.utils.ToastUtil;
 import com.vnow.sdk.openapi.EventListener;
 
-public class VNowHostActivity extends FragmentActivity {
+public class VNowHostActivity extends FragmentActivity implements OnClickListener {
     private ActionEvent mCurrentEvent;
     private VNowFragmentLogin mLoginFragment;
     private VNowFragmentRegist mRegistFragment;
@@ -31,6 +40,10 @@ public class VNowHostActivity extends FragmentActivity {
     private FragmentManager mFmanager;
     private MyEventListener mCallBackListener;
     private VNowCore mCore;
+    private Button mNoNetworkBar;
+    private checkNetWorkReceiver checkNetWorkReceiver;
+    private TextView mTopBarText;
+    private ImageView mTopBarBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +51,11 @@ public class VNowHostActivity extends FragmentActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.vnow_host);
         mCore = VNowApplication.newInstance().getCore();
-        CommonUtil.set_httpUrl(Session.newInstance(this).getServiceIp());
         initUI();
     }
 
     private void initUI() {
+        initTopBar();
         mLoginFragment = new VNowFragmentLogin();
         mRegistFragment = new VNowFragmentRegist();
         mSetSvrFragment = new VNowFragmentSetSvr();
@@ -53,23 +66,69 @@ public class VNowHostActivity extends FragmentActivity {
         mCore.doSetEventListener(mCallBackListener);
     }
 
+    /**
+     * 初始化topbar
+     */
+    private void initTopBar() {
+        mTopBarText = (TextView) findViewById(R.id.mTopBarText);
+        mTopBarText.setText(getText(R.string.user_login));
+        mTopBarBack = (ImageView) findViewById(R.id.mTopBarBack);
+        mTopBarBack.setOnClickListener(this);
+        mNoNetworkBar = (Button) findViewById(R.id.mNoNetworkBar);
+        mNoNetworkBar.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NetUtil.openNetSetting(VNowHostActivity.this);
+            }
+        });
+    }
+
+    private class checkNetWorkReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Constants.NET_CONNECTIVITY_CHANGE)) {
+                if (NetUtil.checkNet(VNowHostActivity.this)) {
+                    mNoNetworkBar.setVisibility(View.GONE);
+                }
+                else {
+                    mNoNetworkBar.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerCheckNetWorkReceiver();
+    }
+
+    /**
+     * 监测网络状态
+     */
+    private void registerCheckNetWorkReceiver() {
+        checkNetWorkReceiver = new checkNetWorkReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.NET_CONNECTIVITY_CHANGE);
+        intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        registerReceiver(checkNetWorkReceiver, intentFilter);
+    }
+
     @Override
     protected void onDestroy() {
-        // TODO Auto-generated method stub
         mCore.doRemoveEventListener(mCallBackListener);
+        unregisterReceiver(checkNetWorkReceiver);
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-        // TODO Auto-generated method stub
         if (mCurrentEvent == ActionEvent.ACTION_REGIST) {
-            addFragment(mLoginFragment);
-            mCurrentEvent = ActionEvent.ACTION_LOGIN;
+            actionToFragment(ActionEvent.ACTION_LOGIN);
         }
         else if (mCurrentEvent == ActionEvent.ACTION_SETSVR) {
-            addFragment(mLoginFragment);
-            mCurrentEvent = ActionEvent.ACTION_LOGIN;
+            actionToFragment(ActionEvent.ACTION_LOGIN);
         }
         else {
             VNowApplication.newInstance().getCore().doLogout();
@@ -87,16 +146,23 @@ public class VNowHostActivity extends FragmentActivity {
     public void actionToFragment(ActionEvent event) {
         switch (event) {
             case ACTION_REGIST: {
+                mTopBarBack.setVisibility(View.VISIBLE);
+                mTopBarText.setText(getString(R.string.str_regist_title));
                 addFragment(mRegistFragment);
                 mCurrentEvent = ActionEvent.ACTION_REGIST;
             }
                 break;
             case ACTION_LOGIN: {
+                mTopBarBack.setVisibility(View.INVISIBLE);
+                mTopBarText.setText(getString(R.string.user_login));
                 addFragment(mLoginFragment);
                 mCurrentEvent = ActionEvent.ACTION_LOGIN;
             }
                 break;
             case ACTION_SETSVR: {
+                mTopBarBack.setVisibility(View.VISIBLE);
+                mTopBarText.setText(getString(R.string.str_set_server));
+                mTopBarBack.setVisibility(View.VISIBLE);
                 addFragment(mSetSvrFragment);
                 mCurrentEvent = ActionEvent.ACTION_SETSVR;
             }
@@ -107,7 +173,7 @@ public class VNowHostActivity extends FragmentActivity {
     public void actionLogin() {
         String strPhone = Session.newInstance(this).getUserPhone();
         String strpws = Session.newInstance(this).getPassWord();
-        if (!TextUtils.isEmpty(strPhone) &&!TextUtils.isEmpty(strpws)) {
+        if (!TextUtils.isEmpty(strPhone) && !TextUtils.isEmpty(strpws)) {
             VNowApplication.newInstance().getCore().doLogin(strPhone, strpws, true);
         }
         else {
@@ -124,8 +190,8 @@ public class VNowHostActivity extends FragmentActivity {
                         .newInstance()
                         .getCore()
                         .doLogin(
-                                VNowApplication.newInstance().getCore().getMySelf().phone,
-                                VNowApplication.newInstance().getCore().getMySelf().password,
+                                VNowApplication.newInstance().getCore().getmUser().phone,
+                                VNowApplication.newInstance().getCore().getmUser().password,
                                 true);
             }
             else
@@ -176,6 +242,15 @@ public class VNowHostActivity extends FragmentActivity {
                     startActivity(intent);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.mTopBarBack) {
+            mTopBarBack.setVisibility(View.INVISIBLE);
+            mTopBarText.setText(getString(R.string.user_login));
+            actionToFragment(ActionEvent.ACTION_LOGIN);
         }
     }
 }

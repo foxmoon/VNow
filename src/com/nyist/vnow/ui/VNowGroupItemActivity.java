@@ -313,8 +313,8 @@ public class VNowGroupItemActivity extends Activity implements DelGroupUserListe
                         intent.putExtra("callName", group.getName());
                         intent.putExtra("isCallin", false);
                         VNowRctContact rctItem = new VNowRctContact();
-                        rctItem.setmStrUserId(mCore.getMySelf().uuid);
-                        rctItem.setmStrUserName(mCore.getMySelf().name);
+                        rctItem.setmStrUserId(mCore.getmUser().uuid);
+                        rctItem.setmStrUserName(mCore.getmUser().name);
                         rctItem.setmStrConPhone(group.getPhone());
                         rctItem.setmStrContactName(group.getName());
                         rctItem.setmCallTime(System.currentTimeMillis());

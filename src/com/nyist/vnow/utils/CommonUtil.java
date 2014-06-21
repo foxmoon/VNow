@@ -57,13 +57,14 @@ public class CommonUtil {
     public static final String TIME_FORMAT = "ahh:mm:ss";
     public static final String TIME_24FORMAT = "HH:mm:ss";
     public static final String DATE_FORMAT = "dd/MM/yy";
-    public static String _httpUrl;
-    public static String _channelPic;
-    public static String _svrAddr;
-    public static String _svrIP;
+    public static String httpUrl;
+    public static StringBuffer httpUrlStringBuffer;
+    public static String channelPic;
+    public static String svrAddr;
+    public static String svrIP;
 
     public static String get_httpUrl() {
-        return _httpUrl;
+        return httpUrl;
     }
 
     /**
@@ -71,10 +72,11 @@ public class CommonUtil {
      * @param ip
      */
     public static void set_httpUrl(String ip) {
-        CommonUtil._svrIP = ip;
-        CommonUtil._httpUrl = "http://" + ip + ":8080/remote/";
-        CommonUtil._channelPic = "http://" + ip + ":8080/other/file/";
-        CommonUtil._svrAddr = ip + ":5065";
+        CommonUtil.svrIP = ip;
+        CommonUtil.httpUrl ="http://" + ip + ":8080/remote/";
+        CommonUtil.httpUrlStringBuffer= new StringBuffer().append(CommonUtil.httpUrl );
+        CommonUtil.channelPic = "http://" + ip + ":8080/other/file/";
+        CommonUtil.svrAddr = ip + ":5065";
     }
 
     public static String CommandStringDecode(String in) {

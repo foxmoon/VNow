@@ -5,10 +5,12 @@ package com.nyist.vnow.utils;
  * @version Creat on 2014-6-17下午12:01:44
  */
 public class Constants {
+    public static final String NET_CONNECTIVITY_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
     public static final String PRF_KEY_FIRST_LAUNCH = "first_launch";
     public static final String PRF_KEY_LOGIN = "login";
     public static final String PRF_USER_PHONE = "user_phone";
     public static final String PRF_USER_PASSWORD = "user_password";
+    public static final String PRF_SESSION_ID = "session_id";
     public static final String MEDIA_SERVER_IP = "media_server_ip";
     public static final String SHOW_VIDEO_PARAMS = "show_video_params";
     public static final String SHOW_VIDEO_SOUND_RED = "show_video_sound_red";

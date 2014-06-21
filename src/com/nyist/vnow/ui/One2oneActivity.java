@@ -197,8 +197,8 @@ public class One2oneActivity extends FragmentActivity {
             intent.putExtra("callName", mCore.getmListRctContacts().get(position).getmStrContactName());
             intent.putExtra("isCallin", false);
             VNowRctContact rctItem = new VNowRctContact();
-            rctItem.setmStrUserId(mCore.getMySelf().uuid);
-            rctItem.setmStrUserName(mCore.getMySelf().name);
+            rctItem.setmStrUserId(mCore.getmUser().uuid);
+            rctItem.setmStrUserName(mCore.getmUser().name);
             rctItem.setmStrConPhone(mCore.getmListRctContacts()
                     .get(position).getmStrConPhone());
             rctItem.setmStrContactName(mCore.getmListRctContacts()
@@ -265,8 +265,8 @@ public class One2oneActivity extends FragmentActivity {
                             .toString().trim());
                     intent.putExtra("isCallin", false);
                     VNowRctContact rctItem = new VNowRctContact();
-                    rctItem.setmStrUserId(mCore.getMySelf().uuid);
-                    rctItem.setmStrUserName(mCore.getMySelf().name);
+                    rctItem.setmStrUserId(mCore.getmUser().uuid);
+                    rctItem.setmStrUserName(mCore.getmUser().name);
                     rctItem.setmStrConPhone(callPhone);
                     rctItem.setmStrContactName(name);
                     rctItem.setmCallTime(System.currentTimeMillis());

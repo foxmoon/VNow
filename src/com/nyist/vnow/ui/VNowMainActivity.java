@@ -1,7 +1,6 @@
 package com.nyist.vnow.ui;
 
 import java.util.ArrayList;
-
 import com.nyist.vnow.R;
 import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.core.VNowCore;
@@ -12,10 +11,16 @@ import com.nyist.vnow.fragment.VNowFragmentSecretary;
 import com.nyist.vnow.fragment.VNowFragmentVNow;
 import com.nyist.vnow.listener.CoreCallBack;
 import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.Constants;
+import com.nyist.vnow.utils.NetUtil;
 import com.nyist.vnow.utils.Session;
 import com.nyist.vnow.utils.ToastUtil;
 import com.vnow.sdk.openapi.IVNowAPI;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -23,7 +28,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.Window;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
     private RadioButton mRBtnTab1, mRBtnTab2, mRBtnTab3, mRBtnTab4;
@@ -38,6 +46,9 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
     private IVNowAPI mVNowAPI;
     private String filePath = Environment.getExternalStorageDirectory() + "/tmp/12.jpg";
     private int mTabFlag = 0;
+    private View mNoNetworkBar;
+    private TextView mTopBarText;
+    private checkNetWorkReceiver checkNetWorkReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +61,17 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
             mTabFlag = savedInstanceState.getInt("tabFlag");
             ArrayList<String> list = savedInstanceState
                     .getStringArrayList("user");
-            mCore.getMySelf().uuid = list.get(0);
-            mCore.getMySelf().type = list.get(1);
-            mCore.getMySelf().phone = list.get(2);
-            mCore.getMySelf().password = list.get(3);
-            mCore.getMySelf().name = list.get(4);
-            mCore.getMySelf().company_code = list.get(5);
+            mCore.getmUser().uuid = list.get(0);
+            mCore.getmUser().type = list.get(1);
+            mCore.getmUser().phone = list.get(2);
+            mCore.getmUser().password = list.get(3);
+            mCore.getmUser().name = list.get(4);
+            mCore.getmUser().company_code = list.get(5);
             VNowApplication
                     .newInstance()
                     .getCore()
-                    .doLogin(mCore.getMySelf().phone,
-                            mCore.getMySelf().password, true);
+                    .doLogin(mCore.getmUser().phone,
+                            mCore.getmUser().password, true);
         }
         initUI();
         mCore.setCoreListener(this);
@@ -71,8 +82,8 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
 
     @Override
     protected void onResume() {
-        // TODO Auto-generated method stub
         super.onResume();
+        registerCheckNetWorkReceiver();
     }
 
     @Override
@@ -98,9 +109,9 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
 
     @Override
     protected void onDestroy() {
-        // TODO Auto-generated method stub
         // mCore.unSetCoreListener();
         super.onDestroy();
+        unregisterReceiver(checkNetWorkReceiver);
     }
 
     @Override
@@ -109,16 +120,17 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
         super.onSaveInstanceState(outState);
         outState.putInt("tabFlag", mTabFlag);
         ArrayList<String> list = new ArrayList<String>();
-        list.add(mCore.getMySelf().uuid);
-        list.add(mCore.getMySelf().type);
-        list.add(mCore.getMySelf().phone);
-        list.add(mCore.getMySelf().password);
-        list.add(mCore.getMySelf().name);
-        list.add(mCore.getMySelf().company_code);
+        list.add(mCore.getmUser().uuid);
+        list.add(mCore.getmUser().type);
+        list.add(mCore.getmUser().phone);
+        list.add(mCore.getmUser().password);
+        list.add(mCore.getmUser().name);
+        list.add(mCore.getmUser().company_code);
         outState.putStringArrayList("user", list);
     }
 
     private void initUI() {
+        initTopBar();
         mRBtnTab1 = (RadioButton) findViewById(R.id.rbtn_main_tab1);
         mRBtnTab2 = (RadioButton) findViewById(R.id.rbtn_main_tab2);
         mRBtnTab3 = (RadioButton) findViewById(R.id.rbtn_main_tab3);
@@ -194,6 +206,47 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
         // mCore.doGetMyselfInfo();
     }
 
+    /**
+     * 初始化topbar
+     */
+    private void initTopBar() {
+        mNoNetworkBar = (Button) findViewById(R.id.mNoNetworkBar);
+        mTopBarText = (TextView) findViewById(R.id.mTopBarText);
+        mTopBarText.setText(getText(R.string.str_tab_vnow));
+        mNoNetworkBar.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NetUtil.openNetSetting(VNowMainActivity.this);
+            }
+        });
+    }
+
+    private class checkNetWorkReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Constants.NET_CONNECTIVITY_CHANGE)) {
+                if (NetUtil.checkNet(context)) {
+                    mNoNetworkBar.setVisibility(View.GONE);
+                }
+                else {
+                    mNoNetworkBar.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
+
+    /**
+     * 监测网络状态
+     */
+    private void registerCheckNetWorkReceiver() {
+        checkNetWorkReceiver = new checkNetWorkReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.NET_CONNECTIVITY_CHANGE);
+        intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        registerReceiver(checkNetWorkReceiver, intentFilter);
+    }
+
     private void addFragmentToMain(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.flayout_main_child_fragment_container, fragment);
@@ -211,6 +264,7 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
             switch (id) {
                 case R.id.rbtn_main_tab1: {
                     mTabFlag = 0;
+                    mTopBarText.setText(getText(R.string.str_tab_vnow));
                     if (currentFragment instanceof VNowFragmentVNow) {
                         return;
                     }
@@ -223,6 +277,7 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
                     break;
                 case R.id.rbtn_main_tab2: {
                     mTabFlag = 1;
+                    mTopBarText.setText(getText(R.string.str_tab_contacts));
                     if (currentFragment instanceof VNowFragmentContacts) {
                         return;
                     }
@@ -235,6 +290,7 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
                     break;
                 case R.id.rbtn_main_tab3: {
                     mTabFlag = 2;
+                    mTopBarText.setText(getText(R.string.str_tab_apps));
                     if (currentFragment instanceof VNowFragmentSecretary) {
                         return;
                     }
@@ -247,6 +303,7 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
                     break;
                 case R.id.rbtn_main_tab4: {
                     mTabFlag = 3;
+                    mTopBarText.setText(getText(R.string.str_tab_more));
                     if (currentFragment instanceof VNowFragmentMore) {
                         return;
                     }
@@ -260,6 +317,7 @@ public class VNowMainActivity extends FragmentActivity implements CoreCallBack {
             }
         }
     };
+    
 
     @Override
     public void onCoreCallBack(CoreEvent event) {

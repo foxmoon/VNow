@@ -2,31 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_bar_top"
-    android:gravity="center_vertical"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/iv_top_bar_back"
-        android:layout_width="40dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp" />
+        android:background="@drawable/bg_bar_top"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
 
-    <TextView
-        android:id="@+id/tv_top_bar_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="详情"
-        android:textColor="@color/white"
-        android:textSize="@dimen/LargestTextSize"
-        android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/mTopBarBack"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp" 
+            android:src="@drawable/img_back"
+            android:visibility="invisible"/>
 
-    <ImageView
-        android:id="@+id/iv_top_bar_more"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp" />
+        <TextView
+            android:id="@+id/mTopBarText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="详情"
+            android:textColor="@color/white"
+            android:textSize="@dimen/LargestTextSize"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/mTopBarRight"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/mNoNetworkBar"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@drawable/bg_net_status"
+        android:drawableLeft="@drawable/icon_net_warnning"
+        android:drawablePadding="10dp"
+        android:drawableRight="@drawable/icon_net_arraw"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="@string/no_network"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
 </LinearLayout>

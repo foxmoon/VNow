@@ -89,7 +89,7 @@ public class IVNowAPI {
 
     // interface for media server
     public int dispatchApi(String strPhone, String pwd) {
-        String strCmd = "<root><Info DispType=\"userlogin\" OpSeq=1 SvrAddr=" + CommonUtil._svrAddr + " UserID=" + strPhone + " Psw=" + pwd
+        String strCmd = "<root><Info DispType=\"userlogin\" OpSeq=1 SvrAddr=" + CommonUtil.svrAddr + " UserID=" + strPhone + " Psw=" + pwd
                 + "/></root>";
         return mIVNowFramework.dispatchApi(strCmd);
     }
@@ -149,7 +149,7 @@ public class IVNowAPI {
     }
 
     public int receiveTransChannel(String SrcID, String resUrl) {
-        String url = CommonUtil._channelPic + resUrl;
+        String url = CommonUtil.channelPic + resUrl;
         String strCmd = "<root><Info EvtType=\"transparent\" SrcID=" + SrcID + " Content=" + url + " /></root>";
         return mIVNowFramework.dispatchApi(strCmd);
     }
@@ -266,9 +266,9 @@ public class IVNowAPI {
             if (strEvent.equals("coremsg")) {
                 processCoreEvent(strResult);
             }
-            // else {
-            // processEvent(strEvent, strResult);
-            // }
+            else {
+                processEvent(strEvent, strResult);
+            }
         }
     }
 
@@ -470,7 +470,7 @@ public class IVNowAPI {
         }
     }
 
-/***********************************Web事件回调********************************************************/
+    /*********************************** Web事件回调 ********************************************************/
     /**
      * 注册用户 /login/req_register/loginRegister/SafetyExit
      * 
@@ -484,7 +484,7 @@ public class IVNowAPI {
             params.add(new BasicNameValuePair("ad_pass", user.password));
             params.add(new BasicNameValuePair("ad_name", user.name));
             params.add(new BasicNameValuePair("code", user.company_code));
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("login/req_register/loginRegister/SafetyExit.html");
             System.out.println(sBuffer.toString() + "--------------------");
             return mIVNowFramework.httpPost(sBuffer.toString(), params,
@@ -504,11 +504,11 @@ public class IVNowAPI {
      */
     public int login(String strPhone, String strPsw) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("login/").append(strPsw).append("/req_login/login/")
                     .append(strPhone)
                     .append("/")
-                    .append(CommonUtil._svrIP).append("/SafetyExit.html");
+                    .append(CommonUtil.svrIP).append("/SafetyExit.html");
             LogTag.d("login:", sBuffer.toString());
             return mIVNowFramework.httpGet(sBuffer.toString(),
                     Request.REQ_LOGIN);
@@ -524,7 +524,7 @@ public class IVNowAPI {
      */
     public int logout(User user) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("login/").append(user.password)
                     .append("/req_logout/login/").append(user.phone)
                     .append("/").append(user.uuid).append("/")
@@ -545,7 +545,7 @@ public class IVNowAPI {
      */
     public int getMyselfInfo(String uuid) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("userInfo/req_query_info/").append(uuid).append(".html;jsessionid=")
                     .append(mSessionID);
             return mIVNowFramework.httpGet(sBuffer.toString(),
@@ -557,7 +557,7 @@ public class IVNowAPI {
     // /remote/file/req_upload_file
     public int httpWebUpLoad(List<NameValuePair> value) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("file/req_upload_file").append(".html;jsessionid=")
                     .append(mSessionID);
             return mIVNowFramework.httpPost(sBuffer.toString(), value,
@@ -579,9 +579,9 @@ public class IVNowAPI {
      */
     public int queryColleagueList(String uuid, int version, String code) {
         if (mIVNowFramework != null) {
-            if (null == CommonUtil._httpUrl)
+            if (null == CommonUtil.httpUrl)
                 CommonUtil.set_httpUrl(Session.newInstance(mContext).getServiceIp());
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("coll/").append(uuid)
                     .append("/req_query_colleage_list/").append(version)
                     .append("/").append(code).append("/list.html;jsessionid=")
@@ -589,19 +589,20 @@ public class IVNowAPI {
             LogTag.d("queryColleagueList", sBuffer.toString());
             return mIVNowFramework.httpGet(sBuffer.toString(),
                     Request.REQ_QUERY_COLLEAGE_LIST);
-//            Request request = new Request(sBuffer.toString(), RequestMethod.GET);
-//            request.setCallback(new StringCallback() {
-//                @Override
-//                public void onSuccess(String arg0) {
-//                    LogTag.e("onSuccess", arg0);
-//                }
-//
-//                @Override
-//                public void onFailure(AppException arg0) {
-//                    LogTag.e("onFailure", arg0);
-//                }
-//            });
-//            request.execute();
+            // Request request = new Request(sBuffer.toString(),
+            // RequestMethod.GET);
+            // request.setCallback(new StringCallback() {
+            // @Override
+            // public void onSuccess(String arg0) {
+            // LogTag.e("onSuccess", arg0);
+            // }
+            //
+            // @Override
+            // public void onFailure(AppException arg0) {
+            // LogTag.e("onFailure", arg0);
+            // }
+            // });
+            // request.execute();
         }
         return -1;
     }
@@ -617,7 +618,7 @@ public class IVNowAPI {
      */
     public int queryFriendList(String uuid, int version) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("fid/").append(uuid)
                     .append("/req_query_group_list/").append(version)
                     .append(".html;jsessionid=").append(mSessionID);
@@ -644,7 +645,7 @@ public class IVNowAPI {
      */
     public int addFriend(String phone, String uuid, String name) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("fid/").append(phone)
                     .append("/req_add_friend/").append(uuid).append("/")
                     .append(name).append(".html;jsessionid=")
@@ -674,7 +675,7 @@ public class IVNowAPI {
     public int modifyFriend(String phone, String uuid, String name,
             String f_uuid) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("fid/").append(phone).append("/").append(uuid)
                     .append("/").append(name).append("/req_update_friend/")
                     .append(f_uuid).append("/setFird.html;jsessionid=")
@@ -704,7 +705,7 @@ public class IVNowAPI {
     public int getFriendInfo(String phone, String uuid, String name,
             String f_uuid) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("fid/").append(phone).append("/").append(uuid)
                     .append("/").append(name).append("/req_update_friend/")
                     .append(f_uuid).append("/setFird.html;jsessionid=")
@@ -731,7 +732,7 @@ public class IVNowAPI {
      */
     public int delFriend(String uuid, String phone, String f_uuid) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("fid/").append(uuid).append("/").append(phone)
                     .append("/").append(f_uuid)
                     .append("/req_del_friend/remove.html;jsessionid=")
@@ -754,7 +755,7 @@ public class IVNowAPI {
      */
     public int queryGroupList(String uuid, int version) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("guser/").append(uuid)
                     .append("/req_query_group_list/").append(version)
                     .append("/list.html;jsessionid=").append(mSessionID);
@@ -776,7 +777,7 @@ public class IVNowAPI {
      */
     public int createGroup(String uuid, String strGroupName) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("guser/").append(uuid).append("/req_create_group/")
                     .append(strGroupName).append(".html;jsessionid=")
                     .append(mSessionID);
@@ -801,7 +802,7 @@ public class IVNowAPI {
      */
     public int modifyGroup(String uuid, String gName, String g_uuid) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("guser/").append(uuid).append("/req_edit_group/")
                     .append(gName).append("/").append(g_uuid)
                     .append(".html;jsessionid=").append(mSessionID);
@@ -824,7 +825,7 @@ public class IVNowAPI {
      */
     public int delGroup(String uuid, String g_uuid) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("guser/req_del_group/").append(uuid).append("/")
                     .append(g_uuid).append(".html;jsessionid=")
                     .append(mSessionID);
@@ -858,7 +859,7 @@ public class IVNowAPI {
     public int addGroupUser(String uuid, String g_uuid, String name,
             String phone) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("guser/req_add_group_user/").append(uuid)
                     .append("/").append(g_uuid).append("/").append(name)
                     .append("/").append(phone)
@@ -883,7 +884,7 @@ public class IVNowAPI {
      */
     public int delGroupUser(String phone, String uuid, String g_uuid) {
         if (mIVNowFramework != null) {
-            StringBuffer sBuffer = new StringBuffer(CommonUtil._httpUrl);
+            StringBuffer sBuffer = new StringBuffer(CommonUtil.httpUrl);
             sBuffer.append("guser/").append(phone)
                     .append("/req_del_group_user/").append(uuid).append("/")
                     .append(g_uuid).append(".html;jsessionid=")
@@ -1033,6 +1034,7 @@ public class IVNowAPI {
         if ("1".equals(strResult)) {
             bResult = true;
             mSessionID = jsonObject.optString("ssid", "");
+            Session.newInstance(VNowApplication.newInstance()).setSessionId(mSessionID); 
             user = User.parse(jsonObject);
         }
         else {

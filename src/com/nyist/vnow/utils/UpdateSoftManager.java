@@ -72,7 +72,7 @@ public class UpdateSoftManager {
 
     public UpdateSoftManager(Context context) {
         this.mContext = context;
-        this.mDownloadVersionConfigUrl = "http://" + CommonUtil._svrIP +
+        this.mDownloadVersionConfigUrl = "http://" + CommonUtil.svrIP +
                 "/vnow_android_app_update.xml";
         if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {

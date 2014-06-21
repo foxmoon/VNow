@@ -10,6 +10,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Enumeration;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
@@ -191,4 +192,20 @@ public class NetUtil {
         catch (IOException e) {}
         return flag;
     }
+    
+    /**
+     * the method to open net settings
+     * @return
+     */
+    public static void openNetSetting(Context context){
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if(android.os.Build.VERSION.SDK_INT > 10 ){
+            intent.setAction(android.provider.Settings.ACTION_SETTINGS);
+        } else {
+            intent.setAction(android.provider.Settings.ACTION_WIRELESS_SETTINGS);
+        }
+        context.startActivity(intent);
+    }
+
 }

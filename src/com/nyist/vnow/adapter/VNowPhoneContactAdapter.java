@@ -31,6 +31,7 @@ public class VNowPhoneContactAdapter extends BaseAdapter implements
         TextView txtCatalog;
         TextView txtMsg;
         LinearLayout llayoutContent;
+        TextView mConferenceNow;
     }
 
     /**
@@ -66,6 +67,8 @@ public class VNowPhoneContactAdapter extends BaseAdapter implements
                     .findViewById(R.id.img_contact_head);
             viewHolder.txtName = (TextView) convertView
                     .findViewById(R.id.txt_contact_name);
+            viewHolder.mConferenceNow = (TextView) convertView
+                    .findViewById(R.id.txt_contact_phone);
             viewHolder.txtCatalog = (TextView) convertView
                     .findViewById(R.id.txt_contact_catalog);
             viewHolder.txtMsg = (TextView) convertView
@@ -88,13 +91,36 @@ public class VNowPhoneContactAdapter extends BaseAdapter implements
         else {
             viewHolder.txtCatalog.setVisibility(View.GONE);
         }
-        viewHolder.txtName.setText(list.get(position).getmName());
         // if (list.get(position).getmPhoto() != null) {
         // viewHolder.imgHead.setImageBitmap(list.get(position).getmPhoto());
         // } else {
         // viewHolder.imgHead.setImageResource(R.drawable.userhead);
         // }
+        bindView(position, viewHolder);
         return convertView;
+    }
+
+    /**
+     * @param position
+     * @param viewHolder
+     */
+    private void bindView(int position, ViewHolder viewHolder) {
+        VNowFriend vNowFriend = list.get(position);
+        viewHolder.txtName.setText(vNowFriend.getmName());
+        if (vNowFriend.isConferenceNow) {
+            viewHolder.mConferenceNow.setText("正在进行会议中");
+        }
+        else {
+            viewHolder.mConferenceNow.setText("");
+        }
+    }
+
+    /**
+     * 加入视频会议
+     */
+    public void addToConference(int position) {
+        list.get(position).isConferenceNow = true;
+        notifyDataSetChanged();
     }
 
     /**

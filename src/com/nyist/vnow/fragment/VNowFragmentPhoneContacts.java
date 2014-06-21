@@ -330,8 +330,8 @@ public class VNowFragmentPhoneContacts extends BaseFragment {
                         }
                         intent.putExtra("isCallin", false);
                         VNowRctContact rctItem = new VNowRctContact();
-                        rctItem.setmStrUserId(mCore.getMySelf().uuid);
-                        rctItem.setmStrUserName(mCore.getMySelf().name);
+                        rctItem.setmStrUserId(mCore.getmUser().uuid);
+                        rctItem.setmStrUserName(mCore.getmUser().name);
                         rctItem.setmStrConPhone((new DES()).encrypt(locContact.getmPhoneNum()));
                         rctItem.setmStrContactName(locContact.getmName());
                         rctItem.setmCallTime(System.currentTimeMillis());
@@ -353,7 +353,8 @@ public class VNowFragmentPhoneContacts extends BaseFragment {
         @Override
         public void onItemClick(AdapterView<?> adapter, View view,
                 int position, long id) {
-            showCallDlg(mListContacts.get(position - 1));
+//            showCallDlg(mListContacts.get(position - 1));
+            mAdapterContacts.addToConference(position - 1);
         }
     };
     private AdapterView.OnItemLongClickListener mItemLongClickListener = new AdapterView.OnItemLongClickListener() {

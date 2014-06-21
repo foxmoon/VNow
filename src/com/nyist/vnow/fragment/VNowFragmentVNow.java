@@ -175,8 +175,8 @@ public class VNowFragmentVNow extends Fragment implements OnClickListener {
                         intent.putExtra("callName", rctContact.getmStrContactName());
                         intent.putExtra("isCallin", false);
                         VNowRctContact rctItem = new VNowRctContact();
-                        rctItem.setmStrUserId(mCore.getMySelf().uuid);
-                        rctItem.setmStrUserName(mCore.getMySelf().name);
+                        rctItem.setmStrUserId(mCore.getmUser().uuid);
+                        rctItem.setmStrUserName(mCore.getmUser().name);
                         rctItem.setmStrConPhone(rctContact.getmStrConPhone());
                         rctItem.setmStrContactName(rctContact.getmStrContactName());
                         rctItem.setmCallTime(System.currentTimeMillis());

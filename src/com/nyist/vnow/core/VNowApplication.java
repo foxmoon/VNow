@@ -4,8 +4,12 @@ import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
+import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.LogTag;
+import com.nyist.vnow.utils.Session;
 import com.nyist.vnow.utils.UpdateSoftManager;
 import android.app.Application;
+import android.content.Context;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.location.Location;
 import android.os.Bundle;
@@ -16,6 +20,7 @@ public class VNowApplication extends Application implements
         AMapLocationListener, Runnable {
     private static VNowApplication mInstance;
     public static int mAppState;
+    public static Context mContext;
     private VNowCore mCore;
     private LocationManagerProxy aMapLocManager = null;
     private AMapLocation mLocation;
@@ -55,8 +60,11 @@ public class VNowApplication extends Application implements
     public void onCreate() {
         super.onCreate();
         mAppState = -1;
+        mContext = this;
         aMapLocManager = LocationManagerProxy.getInstance(this);
         startLocation();
+        CommonUtil.set_httpUrl(Session.newInstance(this).getServiceIp());
+        LogTag.e("app.onCreate", CommonUtil.httpUrl);
     }
 
     @Override

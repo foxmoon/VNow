@@ -34,9 +34,9 @@ public class EventReceiver extends BroadcastReceiver {
                 callIntent.addFlags(callIntent.FLAG_ACTIVITY_NEW_TASK);
                 VNowRctContact rctItem = new VNowRctContact();
                 rctItem.setmStrUserId(VNowApplication.newInstance().getCore()
-                        .getMySelf().uuid);
+                        .getmUser().uuid);
                 rctItem.setmStrUserName(VNowApplication.newInstance().getCore()
-                        .getMySelf().name);
+                        .getmUser().name);
                 rctItem.setmStrConPhone((new DES()).encrypt(strUserID));
                 rctItem.setmStrContactName(strUserID);
                 rctItem.setmCallTime(System.currentTimeMillis());

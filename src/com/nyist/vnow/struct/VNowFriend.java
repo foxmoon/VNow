@@ -8,9 +8,9 @@ public class VNowFriend extends CommItem {
     private Bitmap mPhoto;
     private String mNick;
     private String mHeadUrl;
+    public boolean isConferenceNow = false;
 
-    public VNowFriend() {
-    }
+    public VNowFriend() {}
 
     public VNowFriend(String mName, String mPhoneNum) {
         super();

@@ -1,5 +1,10 @@
 package com.nyist.vnow.fragment;
 
+import java.util.ArrayList;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,16 +16,26 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.nyist.vnow.R;
 import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.core.VNowCore;
+import com.nyist.vnow.struct.User;
 import com.nyist.vnow.ui.VNowHostActivity;
 import com.nyist.vnow.utils.ActionEvent;
+import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.LogTag;
+import com.nyist.vnow.utils.MD5;
+import com.nyist.vnow.utils.NetUtil;
 import com.nyist.vnow.utils.SIMCardInfo;
 import com.nyist.vnow.utils.ToastUtil;
+import com.stay.AppException;
+import com.stay.net.Request;
+import com.stay.net.Request.RequestMethod;
+import com.stay.net.callback.JsonCallback;
+import com.stay.net.callback.StringCallback;
 
 public class VNowFragmentRegist extends Fragment implements OnClickListener {
-    private ImageButton mImgBtnBack;
     private Button mBtnRegist;
     private EditText mEdUserName;
     private EditText mEdPassword;
@@ -45,7 +60,6 @@ public class VNowFragmentRegist extends Fragment implements OnClickListener {
 
     private void initUI(View view) {
         // TODO Auto-generated method stub
-        mImgBtnBack = (ImageButton) view.findViewById(R.id.btn_back);
         mBtnRegist = (Button) view.findViewById(R.id.regist_button);
         mEdUserName = (EditText) view.findViewById(R.id.regist_username_ed);
         mEdPassword = (EditText) view.findViewById(R.id.regist_password_ed);
@@ -54,7 +68,6 @@ public class VNowFragmentRegist extends Fragment implements OnClickListener {
         mEdCmpEmail = (EditText) view.findViewById(R.id.regist_email_ed);
         mEdCmpCode = (EditText) view.findViewById(R.id.regist_code_ed);
         mEdPhone.setText(mSimCardInfo.getNativePhoneNumber());
-        mImgBtnBack.setOnClickListener(this);
         mBtnRegist.setOnClickListener(this);
     }
 
@@ -77,7 +90,28 @@ public class VNowFragmentRegist extends Fragment implements OnClickListener {
         if (code.length() == 0) {
             code = "000001";
         }
-        mCore.doRegidt(userName, password, phone, emial, code);
+        // mCore.doRegidt(userName, password, phone, emial, code);
+        if (NetUtil.checkNet(getActivity())) {
+            String registUrl = mCore.getRegistUrl();
+            Request request = new Request(registUrl, RequestMethod.POST);
+            ArrayList<NameValuePair> registParams = mCore.getRegistParams(userName, rePassword, phone, emial, code);
+            request.setEntity(registParams);
+            request.setCallback(new StringCallback() {
+                @Override
+                public void onSuccess(String result) {
+                    LogTag.e("regist+onSuccess", result);
+                }
+
+                @Override
+                public void onFailure(AppException result) {
+                    LogTag.e("regist+onFailure", result);
+                }
+            });
+            request.execute();
+        }
+        else {
+            ToastUtil.getInstance(getActivity()).showShort(getString(R.string.no_network));
+        }
     }
 
     @Override
@@ -85,10 +119,10 @@ public class VNowFragmentRegist extends Fragment implements OnClickListener {
         // TODO Auto-generated method stub
         int id = v.getId();
         switch (id) {
-            case R.id.btn_back: {
-                ((VNowHostActivity) getActivity()).actionToFragment(ActionEvent.ACTION_LOGIN);
-            }
-                break;
+//            case R.id.btn_back: {
+//                ((VNowHostActivity) getActivity()).actionToFragment(ActionEvent.ACTION_LOGIN);
+//            }
+//                break;
             case R.id.regist_button: {
                 UIRegist();
             }

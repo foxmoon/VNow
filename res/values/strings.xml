@@ -47,6 +47,7 @@
     <string name="str_click_exit">再按一次退出程序</string>
     <string name="str_logout">退出当前登录</string>
     <string name="str_set_error_server">请输入正确服务器信息！</string>
+    <string name="str_set_server">设置服务器</string>
     <string name="str_set_save_server">保存成功！</string>
     <!-- common strings -->
     <string name="str_tab_vnow">VNow</string>
@@ -62,6 +63,7 @@
     <string name="str_more_recommend_friend">推荐好友</string>
     <string name="str_more_app_about">关于</string>
     <string name="str_cancel">取消</string>
+    <string name="user_login">用户登录</string>
 
     <!-- contacts strings -->
     <string name="str_btn_colleague">同事</string>
@@ -140,7 +142,7 @@
     <!-- widgets strings -->
     <string name="str_recently_update">最近更新:</string>
     <string name="str_pull_refresh">下拉刷新</string>
-    <string name="str_refreshing">正在刷新...</string>
+    <string name="str_refreshing">正在刷新…</string>
     <string name="str_release_refresh">松开刷新</string>
     <string name="str_last_refresh">上次更新</string>
     <string name="str_alert_tip">提示</string>
@@ -150,7 +152,7 @@
     <string name="str_video_mode2">标准</string>
     <string name="str_video_mode3">高清</string>
     <string name="str_sign_remark">备注信息</string>
-    <string name="no_network">没有网络，请检查手机网络连接</string>
+    <string name="no_network">当前网络不可用，请检查网络连接</string>
     <string name="title_activity_confence">ConfenceActivity</string>
 
 </resources>

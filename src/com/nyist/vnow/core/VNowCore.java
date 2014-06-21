@@ -80,7 +80,7 @@ public class VNowCore {
     private VNConfItem mCurrentConfInfo;
     private List<VNConfItem> mConfItemList;
     private VNTaskDao mTaskDao;
-    private User mMySelf;
+    private User mUser;
     private DES mDES;
     private VNJsonUtil mJsonUtil;
     private String mApiStatus = null;
@@ -112,7 +112,7 @@ public class VNowCore {
         mIVNowAPI.setEventListener(mEventListener);
         mDES = new DES();
         mJsonUtil = new VNJsonUtil();
-        mMySelf = new User();
+        mUser = new User();
     }
 
     public void setCoreListener(CoreCallBack listener) {
@@ -220,9 +220,9 @@ public class VNowCore {
         if (null == location)
             return;
         double[] ltResult = bd_encrypt(location.getLatitude(), location.getLongitude());
-        String serverName = "http://" + CommonUtil._svrIP + ":8080" + newName;
+        String serverName = "http://" + CommonUtil.svrIP + ":8080" + newName;
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("uuid", mMySelf.uuid));
+        params.add(new BasicNameValuePair("uuid", mUser.uuid));
         params.add(new BasicNameValuePair("latitude", String.valueOf(String.valueOf(ltResult[0]))));
         params.add(new BasicNameValuePair("longitude", String.valueOf(String.valueOf(ltResult[1]))));
         params.add(new BasicNameValuePair("remarks", remark));
@@ -246,13 +246,45 @@ public class VNowCore {
     public synchronized void doRegidt(String userName, String password, String phone, String emial, String code) {
         String passMD5 = MD5.getMD5(password);
         String phoneDes = mDES.encrypt(phone);
-        if (null == mMySelf)
-            mMySelf = new User();
-        mMySelf.name = userName;
-        mMySelf.password = passMD5;
-        mMySelf.phone = phoneDes;
-        mMySelf.company_code = code;
-        mIVNowAPI.register(mMySelf);
+        if (mUser == null) {
+            mUser = new User();
+        }
+        mUser.name = userName;
+        mUser.password = passMD5;
+        mUser.phone = phoneDes;
+        mUser.company_code = code;
+        mIVNowAPI.register(mUser);
+    }
+
+    public String getRegistUrl() {
+        StringBuffer httpUrlStringBuffer = CommonUtil.httpUrlStringBuffer;
+        httpUrlStringBuffer.append("login/req_register/loginRegister/SafetyExit.html");
+        return httpUrlStringBuffer.toString();
+    }
+
+    /**
+     * web 注册接口参数生成
+     * 
+     * @param userName
+     * @param password
+     * @param phone
+     * @param emial
+     * @param code
+     * @return
+     */
+    public ArrayList<NameValuePair> getRegistParams(String userName, String password, String phone, String emial, String code) {
+        String passMD5 = MD5.getMD5(password);
+        String phoneDes = mDES.encrypt(phone);
+        mUser.name = userName;
+        mUser.password = passMD5;
+        mUser.phone = phoneDes;
+        mUser.company_code = code;
+        ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("ad_phone", phoneDes));
+        params.add(new BasicNameValuePair("ad_pass", passMD5));
+        params.add(new BasicNameValuePair("ad_name", userName));
+        params.add(new BasicNameValuePair("code", code));
+        return params;
     }
 
     /**
@@ -272,10 +304,10 @@ public class VNowCore {
             phoneDes = strPhone;
             passMD5 = strPsw;
         }
-        if (null == mMySelf)
-            mMySelf = new User();
-        mMySelf.phone = phoneDes;
-        mMySelf.password = passMD5;
+        if (null == mUser)
+            mUser = new User();
+        mUser.phone = phoneDes;
+        mUser.password = passMD5;
         mIVNowAPI.login(phoneDes, passMD5);
     }
 
@@ -283,21 +315,21 @@ public class VNowCore {
      * web 注销接口调用
      */
     public void doLogout() {
-        if (null != mMySelf) {
+        if (null != mUser) {
             // mIVNowAPI.logout(mMySelf);
             _isCheckVersion = false;
-            mMySelf.reset();
+            mUser.reset();
         }
     }
 
     public void exitCore() {
-        if (null != mMySelf) {
+        if (null != mUser) {
             mConfItemList.clear();
             mListFriends.clear();
             mListFileUpdate.clear();
             mListRctContacts.clear();
             mIVNowAPI.coreExit(mContext);
-            mMySelf.reset();
+            mUser.reset();
         }
         if (null != mCallBackListener)
             mCallBackListener.onCoreCallBack(CoreEvent.EVENT_LOGOUT_TASK);
@@ -315,12 +347,12 @@ public class VNowCore {
     }
 
     public void loadWebData() {
-        mTaskDao.deleteAllColleage(mMySelf.uuid);
-        mTaskDao.deleteAllGroup(mMySelf.uuid);
-        mTaskDao.deleteAllFriend(mMySelf.uuid);
-        mIVNowAPI.queryColleagueList(mMySelf.uuid, 0, mMySelf.company_code);
-        mIVNowAPI.queryFriendList(mMySelf.uuid, 0);
-        mIVNowAPI.queryGroupList(mMySelf.uuid, 0);
+        mTaskDao.deleteAllColleage(mUser.uuid);
+        mTaskDao.deleteAllGroup(mUser.uuid);
+        mTaskDao.deleteAllFriend(mUser.uuid);
+        mIVNowAPI.queryColleagueList(mUser.uuid, 0, mUser.company_code);
+        mIVNowAPI.queryFriendList(mUser.uuid, 0);
+        mIVNowAPI.queryGroupList(mUser.uuid, 0);
     }
 
     /**
@@ -329,8 +361,24 @@ public class VNowCore {
      * @param version
      */
     public synchronized void doQueryColleagueList() {
-        int currentVersion = Session.newInstance(mContext).getColleageVersion(mMySelf.uuid);
-        mIVNowAPI.queryColleagueList(mMySelf.uuid, currentVersion, mMySelf.company_code);
+        int currentVersion = Session.newInstance(mContext).getColleageVersion(mUser.uuid);
+        mIVNowAPI.queryColleagueList(mUser.uuid, currentVersion, mUser.company_code);
+    }
+
+    /**
+     * web 同事列表URL
+     * 
+     * @return
+     */
+    public String getColleagueUrl() {
+        int currentVersion = Session.newInstance(mContext).getColleageVersion(mUser.uuid);
+        String sessionId = Session.newInstance(mContext).getSessionId();
+        StringBuffer mhttpUrlStringBuffer = CommonUtil.httpUrlStringBuffer;
+        mhttpUrlStringBuffer.append("coll/").append(mUser.uuid)
+        .append("/req_query_colleage_list/").append(currentVersion)
+        .append("/").append(mUser.company_code).append("/list.html;jsessionid=")
+        .append(sessionId);
+        return mhttpUrlStringBuffer.toString();
     }
 
     /**
@@ -339,8 +387,8 @@ public class VNowCore {
      * @param version
      */
     public synchronized void doQueryFriendList() {
-        int currentVersion = Session.newInstance(mContext).getFriendVersion(mMySelf.uuid);
-        mIVNowAPI.queryFriendList(mMySelf.uuid, currentVersion);
+        int currentVersion = Session.newInstance(mContext).getFriendVersion(mUser.uuid);
+        mIVNowAPI.queryFriendList(mUser.uuid, currentVersion);
     }
 
     /**
@@ -349,8 +397,8 @@ public class VNowCore {
      * @param version
      */
     public synchronized void doQueryGroupList() {
-        int currentVersion = Session.newInstance(mContext).getGroupVersion(mMySelf.uuid);
-        mIVNowAPI.queryGroupList(mMySelf.uuid, currentVersion);
+        int currentVersion = Session.newInstance(mContext).getGroupVersion(mUser.uuid);
+        mIVNowAPI.queryGroupList(mUser.uuid, currentVersion);
     }
 
     /**
@@ -359,7 +407,7 @@ public class VNowCore {
      * @param version
      */
     public synchronized void doCreateGroup(String strGroupName) {
-        mIVNowAPI.createGroup(mMySelf.uuid, strGroupName);
+        mIVNowAPI.createGroup(mUser.uuid, strGroupName);
     }
 
     /**
@@ -369,7 +417,7 @@ public class VNowCore {
      * @param name
      */
     public synchronized void doAddFriend(String phone, String name) {
-        mIVNowAPI.addFriend(mDES.encrypt(phone), mMySelf.uuid, name);
+        mIVNowAPI.addFriend(mDES.encrypt(phone), mUser.uuid, name);
     }
 
     /**
@@ -380,7 +428,7 @@ public class VNowCore {
      * @param f_uuid
      */
     public synchronized void doModifyFrient(String phone, String name, String f_uuid) {
-        mIVNowAPI.modifyFriend(mDES.encrypt(phone), mMySelf.uuid, name, f_uuid);
+        mIVNowAPI.modifyFriend(mDES.encrypt(phone), mUser.uuid, name, f_uuid);
     }
 
     /**
@@ -390,7 +438,7 @@ public class VNowCore {
      * @param f_uuid
      */
     public synchronized void doDelFriend(String phone, String f_uuid) {
-        mIVNowAPI.delFriend(mMySelf.uuid, phone, f_uuid);
+        mIVNowAPI.delFriend(mUser.uuid, phone, f_uuid);
     }
 
     /**
@@ -400,7 +448,7 @@ public class VNowCore {
      * @param g_uuid
      */
     public synchronized void doModifyGroup(String gName, String g_uuid) {
-        mIVNowAPI.modifyGroup(mMySelf.uuid, gName, g_uuid);
+        mIVNowAPI.modifyGroup(mUser.uuid, gName, g_uuid);
     }
 
     /**
@@ -409,7 +457,7 @@ public class VNowCore {
      * @param g_uuid
      */
     public synchronized void doDelGroup(String g_uuid) {
-        mIVNowAPI.delGroup(mMySelf.uuid, g_uuid);
+        mIVNowAPI.delGroup(mUser.uuid, g_uuid);
     }
 
     /**
@@ -420,7 +468,7 @@ public class VNowCore {
      * @param phone
      */
     public synchronized void doAddGroupUser(String g_uuid, String name, String phone) {
-        mIVNowAPI.addGroupUser(mMySelf.uuid, g_uuid, name, mDES.encrypt(phone));
+        mIVNowAPI.addGroupUser(mUser.uuid, g_uuid, name, mDES.encrypt(phone));
     }
 
     /**
@@ -430,11 +478,11 @@ public class VNowCore {
      * @param g_uuid
      */
     public synchronized void doDelGroupUser(String phone, String g_uuid) {
-        mIVNowAPI.delGroupUser(phone, mMySelf.uuid, g_uuid);
+        mIVNowAPI.delGroupUser(phone, mUser.uuid, g_uuid);
     }
 
     public void doGetMyselfInfo() {
-        mIVNowAPI.getMyselfInfo(mMySelf.uuid);
+        mIVNowAPI.getMyselfInfo(mUser.uuid);
     }
 
     /**
@@ -469,23 +517,23 @@ public class VNowCore {
     private class MyEventListener extends EventListener {
         public void onResponseRegister(boolean bSuccess, String uuid) {// 注册回调
             if (bSuccess) {
-                mMySelf.uuid = uuid;
+                mUser.uuid = uuid;
             }
             else
-                mMySelf = null;
+                mUser = null;
         }
 
         public void onResponseLogin(boolean bSuccess, User user) {// 登录回调
             if (bSuccess) {
-                mMySelf.uuid = user.uuid;
-                mMySelf.company_code = user.company_code;
-                mIVNowAPI.dispatchApi(mDES.decrypt(mMySelf.phone), mMySelf.password);
-                Session.newInstance(mContext).setUserPhone(mMySelf.phone);
-                Session.newInstance(mContext).setPassWord(mMySelf.password);
+                mUser.uuid = user.uuid;
+                mUser.company_code = user.company_code;
+                mIVNowAPI.dispatchApi(mDES.decrypt(mUser.phone), mUser.password);
+                Session.newInstance(mContext).setUserPhone(mUser.phone);
+                Session.newInstance(mContext).setPassWord(mUser.password);
                 loadWebData();
             }
             else
-                mMySelf.reset();
+                mUser.reset();
         }
 
         public void onResponseLogout(boolean bSuccess) {// 注销回调
@@ -497,17 +545,17 @@ public class VNowCore {
                         jsonResult.indexOf("]") + 1);
                 mJsonUtil.parseColleageFromJson(jsonResult);
                 List<Colleage> cacheColleages = mJsonUtil.getColleageList();
-                int currentVersion = Session.newInstance(mContext).getColleageVersion(mMySelf.uuid);
+                int currentVersion = Session.newInstance(mContext).getColleageVersion(mUser.uuid);
                 int serverVersion = Integer.parseInt(cacheColleages.get(0).getG_updatenum());
                 if (serverVersion != currentVersion) {
-                    Session.newInstance(mContext).setColleageVersion(mMySelf.uuid,
+                    Session.newInstance(mContext).setColleageVersion(mUser.uuid,
                             serverVersion);
                 }
                 // 返回数据，写入数据库
-                mTaskDao.reLoadColleage(mMySelf.uuid, cacheColleages);
+                mTaskDao.reLoadColleage(mUser.uuid, cacheColleages);
             }
             mListColleages.clear();
-            //再从数据库中读取出数据
+            // 再从数据库中读取出数据
             mListColleages = getDBColleageList();
         }
 
@@ -517,13 +565,13 @@ public class VNowCore {
                         jsonResult.indexOf("]") + 1);
                 mJsonUtil.parseGroupFromJson(jsonResult);
                 List<Group> cacheGroups = mJsonUtil.getGroupList();
-                int currentVersion = Session.newInstance(mContext).getGroupVersion(mMySelf.uuid);
+                int currentVersion = Session.newInstance(mContext).getGroupVersion(mUser.uuid);
                 int serverVersion = Integer.parseInt(cacheGroups.get(0).getUpdatenum());
                 if (serverVersion != currentVersion) {
-                    Session.newInstance(mContext).setGroupVersion(mMySelf.uuid,
+                    Session.newInstance(mContext).setGroupVersion(mUser.uuid,
                             serverVersion);
                 }
-                mTaskDao.reLoadGroup(mMySelf.uuid, cacheGroups);
+                mTaskDao.reLoadGroup(mUser.uuid, cacheGroups);
             }
             mListGroups.clear();
             mListGroups = getDBGroupList();
@@ -535,13 +583,13 @@ public class VNowCore {
                         jsonResult.indexOf("]") + 1);
                 mJsonUtil.parseFriendFromJson(jsonResult);
                 List<Friend> cacheFriends = mJsonUtil.getFriendList();
-                int currentVersion = Session.newInstance(mContext).getFriendVersion(mMySelf.uuid);
+                int currentVersion = Session.newInstance(mContext).getFriendVersion(mUser.uuid);
                 int serverVersion = Integer.parseInt(cacheFriends.get(0).getF_updatenum());
                 if (serverVersion != currentVersion) {
-                    Session.newInstance(mContext).setFriendVersion(mMySelf.uuid,
+                    Session.newInstance(mContext).setFriendVersion(mUser.uuid,
                             serverVersion);
                 }
-                mTaskDao.reLoadFriend(mMySelf.uuid, cacheFriends);
+                mTaskDao.reLoadFriend(mUser.uuid, cacheFriends);
             }
             mListFriends.clear();
             mListFriends = getDBFriendList();
@@ -600,7 +648,7 @@ public class VNowCore {
     }
 
     public void doSendTransChannel(String DstID, String serUrl) {
-        String serverName = "http://" + CommonUtil._svrIP + ":8080" + serUrl;
+        String serverName = "http://" + CommonUtil.svrIP + ":8080" + serUrl;
         mIVNowAPI.sendTransChannel(DstID, serverName);
     }
 
@@ -626,8 +674,12 @@ public class VNowCore {
      * 
      * @return 当前用户对象
      */
-    public User getMySelf() {
-        return mMySelf;
+    public User getmUser() {
+        return mUser;
+    }
+
+    public void setmUser(User mUser) {
+        this.mUser = mUser;
     }
 
     public String getApiStatus() {
@@ -711,58 +763,58 @@ public class VNowCore {
     }
 
     public List<VNowRctContact> getRctContact() {
-        mListRctContacts = mTaskDao.getCallHistory(mMySelf.uuid);
+        mListRctContacts = mTaskDao.getCallHistory(mUser.uuid);
         return mListRctContacts;
     }
 
     public int deleteCallHistory(String rctContactName) {
-        return mTaskDao.deleteCallHistory(mMySelf.uuid, rctContactName);
+        return mTaskDao.deleteCallHistory(mUser.uuid, rctContactName);
     }
 
     // -------同事 db--------
     public void insertColleageList() {
         for (Colleage colleage : mListColleages) {
-            mTaskDao.insertColleage(colleage, mMySelf.uuid);
+            mTaskDao.insertColleage(colleage, mUser.uuid);
         }
     }
 
     public List<Colleage> getDBColleageList() {
-        return mTaskDao.getVNColleage(mMySelf.uuid);
+        return mTaskDao.getVNColleage(mUser.uuid);
     }
 
     // --------好友 db-------
     public void insertFriendList() {
         for (Friend friend : mListFriends) {
-            mTaskDao.insertFriend(friend, mMySelf.uuid);
+            mTaskDao.insertFriend(friend, mUser.uuid);
         }
     }
 
     public List<Friend> getDBFriendList() {
-        return mTaskDao.getVNFriend(mMySelf.uuid);
+        return mTaskDao.getVNFriend(mUser.uuid);
     }
 
     public void deleteDBFriendItem(String f_phone) {
-        mTaskDao.deleteFriend(mMySelf.uuid, f_phone);
+        mTaskDao.deleteFriend(mUser.uuid, f_phone);
     }
 
     // ------群组 db-------
     public void insertGroupList() {
         for (Group group : mListGroups) {
-            mTaskDao.insertGroup(group, mMySelf.uuid);
+            mTaskDao.insertGroup(group, mUser.uuid);
         }
     }
 
     public List<Group> getDBGroupList() {
-        return mTaskDao.getVNGroup(mMySelf.uuid);
+        return mTaskDao.getVNGroup(mUser.uuid);
     }
 
     public void deleteDBGroupItem(String uuId, int type) {
         if (type == 1) {
-            mTaskDao.deleteGroup(mMySelf.uuid, uuId);
-            mTaskDao.deleteGChild(mMySelf.uuid, uuId);
+            mTaskDao.deleteGroup(mUser.uuid, uuId);
+            mTaskDao.deleteGChild(mUser.uuid, uuId);
         }
         else {
-            mTaskDao.deleteChild(mMySelf.uuid, uuId);
+            mTaskDao.deleteChild(mUser.uuid, uuId);
         }
     }
 

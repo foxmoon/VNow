@@ -3,12 +3,22 @@ package com.nyist.vnow.struct;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+@DatabaseTable(tableName = "User")
 public class User {
+    @DatabaseField(id = true)
     public String uuid;
+    @DatabaseField
     public String type; // 管理员：1，普通用户：0
+    @DatabaseField
     public String phone;
+    @DatabaseField
     public String password;
+    @DatabaseField
     public String name;
+    @DatabaseField
     public String company_code;
 
     public static User parse(String jsonString) {

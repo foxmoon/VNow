@@ -524,8 +524,8 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
                         intent.putExtra("callName", friend.getF_name());
                         intent.putExtra("isCallin", false);
                         VNowRctContact rctItem = new VNowRctContact();
-                        rctItem.setmStrUserId(mCore.getMySelf().uuid);
-                        rctItem.setmStrUserName(mCore.getMySelf().name);
+                        rctItem.setmStrUserId(mCore.getmUser().uuid);
+                        rctItem.setmStrUserName(mCore.getmUser().name);
                         rctItem.setmStrConPhone(friend.getF_phone());
                         rctItem.setmStrContactName(friend.getF_name());
                         rctItem.setmCallTime(System.currentTimeMillis());
@@ -583,8 +583,8 @@ public class VnowFragmentContactOther extends Fragment implements DelFriendListe
             // TODO Auto-generated method stub
             super.onResponseAddFriend(bSuccess, reason);
             if (bSuccess) {
-                int currentVersion = Session.newInstance(getActivity()).getFriendVersion(mCore.getMySelf().uuid);
-                Session.newInstance(getActivity()).setFriendVersion(mCore.getMySelf().uuid, currentVersion - 1);
+                int currentVersion = Session.newInstance(getActivity()).getFriendVersion(mCore.getmUser().uuid);
+                Session.newInstance(getActivity()).setFriendVersion(mCore.getmUser().uuid, currentVersion - 1);
                 mMainHandler.sendEmptyMessage(ADD_FRIEND_SUCCESS);
             }
             else {

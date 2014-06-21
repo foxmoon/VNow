@@ -15,28 +15,40 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.myjson.reflect.TypeToken;
 import com.nyist.vnow.R;
 import com.nyist.vnow.adapter.VNowColleageAdapter;
 import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.core.VNowCore;
+import com.nyist.vnow.db.ColleageDTOController;
+import com.nyist.vnow.db.RefreshManager;
 import com.nyist.vnow.dialog.AvcProgress;
 import com.nyist.vnow.dialog.VNowAlertDlg;
 import com.nyist.vnow.struct.Colleage;
+import com.nyist.vnow.struct.User;
 import com.nyist.vnow.struct.VNowRctContact;
 import com.nyist.vnow.ui.ConfActivity;
 import com.nyist.vnow.utils.CharacterParser;
+import com.nyist.vnow.utils.CommonUtil;
+import com.nyist.vnow.utils.LogTag;
 import com.nyist.vnow.utils.NetUtil;
 import com.nyist.vnow.utils.PinyinComparator;
+import com.nyist.vnow.utils.Session;
 import com.nyist.vnow.utils.ToastUtil;
 import com.nyist.vnow.view.SideBar;
 import com.nyist.vnow.view.SideBar.OnTouchingLetterChangedListener;
 import com.nyist.vnow.view.ViEPullToRefreshListView;
 import com.nyist.vnow.view.ViEPullToRefreshListView.OnRefreshListener;
+import com.stay.AppException;
+import com.stay.net.Request;
+import com.stay.net.Request.RequestMethod;
+import com.stay.net.callback.JsonCallback;
+import com.stay.net.callback.StringCallback;
+import com.stay.utilities.TextUtil;
 import com.vnow.sdk.openapi.EventListener;
 import com.vnow.sdk.openapi.IVNowAPI;
 
@@ -182,28 +194,82 @@ public class VNowFragmentColleague extends Fragment {
      * the method to init the contacts from phone
      */
     private void initColleageData() {
-        if (mCore.getColleageList().size() <= 0) {
-            if (!HadGetColleague) {
-                startProgress();
-            }
-            new Thread(new Runnable() {
+        if (NetUtil.checkNet(getActivity())) {
+            String colleagueUrl = mCore.getColleagueUrl();
+            Request request = new Request(colleagueUrl, RequestMethod.GET);
+            request.setCallback(new JsonCallback<ArrayList<Colleage>>() {
+                // 回调子线程的onPreHandle方法
                 @Override
-                public void run() {
-                    // TODO Auto-generated method stub
-                    if (mCore.getColleageList().size() == 0) {
-                        if (NetUtil.checkNet(getActivity())) {
-                            mCore.doQueryColleagueList();
-                        }
-                        else {
-                            ToastUtil.getInstance(getActivity()).showShort(getString(R.string.no_network));
-                        }
-                    }
+                public ArrayList<Colleage> onPreHandle(ArrayList<Colleage> t) {
+                    LogTag.d("onPreHandle", "onPreHandle");
+                    // 存入数据库
+                    ColleageDTOController.addOrUpdate(t,mCore.getmUser().uuid);
+                    return super.onPreHandle(t);
                 }
-            }).start();
+
+                @Override
+                public ArrayList<Colleage> onPreRequest() {
+                    // 判断是否需要刷新，如果要刷新就返回null
+                    if (RefreshManager.getInstance().needRefresh(Colleage.class)) {
+                        LogTag.d("needRefresh：", "needRefresh");
+                        return null;
+                    }
+                    // 如果不需要刷新，则查询数据库
+                    ArrayList<Colleage> entities = ColleageDTOController.queryAll(mCore.getmUser().uuid);
+                    LogTag.d("onPreRequest：", "" + (TextUtil.isValidate(entities) ? entities.size() : 0));
+                    return entities;
+                }
+
+                @Override
+                public void onFailure(AppException result) {}
+
+                @Override
+                public void onSuccess(ArrayList<Colleage> result) {
+                    mListviewContact.setVisibility(View.VISIBLE);
+                    mIndexBar.setVisibility(View.VISIBLE);
+                    mListColleage.clear();
+                    stopProgress();
+                    if (result.size() > 0) {
+                        mListColleage.addAll(filledData(result));
+                        // 根据a-z进行排序源数据
+                        Collections.sort(mListColleage, pinyinComparator);
+                        mAdapterColleage = new VNowColleageAdapter(getActivity(),
+                                mListColleage);
+                        mListviewContact.setAdapter(mAdapterColleage);
+                        mListviewContact
+                                .setOnItemClickListener(mListItemClickListener);
+                    }
+                    mListviewContact.onRefreshComplete();
+                }
+            }.setReturnType(new TypeToken<ArrayList<Colleage>>() {}.getType()));
+            request.execute();
         }
         else {
-            mMainHandler.sendEmptyMessage(LOAD_COLLEAGUE_FINISH);
+            ToastUtil.getInstance(getActivity()).showShort(getString(R.string.no_network));
         }
+        // if (mCore.getColleageList().size() <= 0) {
+        // if (!HadGetColleague) {
+        // startProgress();
+        // }
+        // new Thread(new Runnable() {
+        // @Override
+        // public void run() {
+        // // TODO Auto-generated method stub
+        // if (mCore.getColleageList().size() == 0) {
+        // if (NetUtil.checkNet(getActivity())) {
+        // // mCore.doQueryColleagueList();
+        //
+        // }
+        // else {
+        // ToastUtil.getInstance(getActivity()).showShort(getString(R.string.no_network));
+        // }
+        // }
+        // }
+        // }).start();
+        // }
+        // else {
+        // mMainHandler.sendEmptyMessage(LOAD_COLLEAGUE_FINISH);
+        // }
     }
 
     /**
@@ -331,8 +397,8 @@ public class VNowFragmentColleague extends Fragment {
                         intent.putExtra("callName", colleage.getG_name());
                         intent.putExtra("isCallin", false);
                         VNowRctContact rctItem = new VNowRctContact();
-                        rctItem.setmStrUserId(mCore.getMySelf().uuid);
-                        rctItem.setmStrUserName(mCore.getMySelf().name);
+                        rctItem.setmStrUserId(mCore.getmUser().uuid);
+                        rctItem.setmStrUserName(mCore.getmUser().name);
                         rctItem.setmStrConPhone(colleage.getG_phone());
                         rctItem.setmStrContactName(colleage.getG_name());
                         rctItem.setmCallTime(System.currentTimeMillis());

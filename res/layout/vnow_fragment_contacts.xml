@@ -5,24 +5,6 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_bar_top"
-        android:gravity="center" >
-
-        <TextView
-            android:id="@+id/txt_fragment_contacts_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="@string/str_tab_contacts"
-            android:textColor="@color/list_white"
-            android:textSize="@dimen/LargestTextSize"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" 

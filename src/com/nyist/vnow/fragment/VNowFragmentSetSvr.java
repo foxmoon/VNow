@@ -25,7 +25,6 @@ import com.nyist.vnow.utils.ToastUtil;
 
 public class VNowFragmentSetSvr extends Fragment implements OnClickListener {
     private final int RESET_VNAPI_CORE = 0x01;
-    private ImageButton mImgBtnBack;
     private VNowCore mCore;
     private Button mBtnSave;
     private EditText mEdServer;
@@ -60,11 +59,9 @@ public class VNowFragmentSetSvr extends Fragment implements OnClickListener {
     private void initUI(View view) {
         mBtnSave = (Button) view.findViewById(R.id.btn_save);
         mEdServer = (EditText) view.findViewById(R.id.edit_server);
-        mImgBtnBack = (ImageButton) view.findViewById(R.id.btn_back);
         _lastServer = Session.newInstance(getActivity()).getServiceIp();
         mEdServer.setText(_lastServer);
         mBtnSave.setOnClickListener(this);
-        mImgBtnBack.setOnClickListener(this);
     }
 
     private void saveServer() {
@@ -90,10 +87,10 @@ public class VNowFragmentSetSvr extends Fragment implements OnClickListener {
             imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
         int id = v.getId();
         switch (id) {
-            case R.id.btn_back: {
-                ((VNowHostActivity) getActivity()).actionToFragment(ActionEvent.ACTION_LOGIN);
-            }
-                break;
+//            case R.id.btn_back: {
+//                ((VNowHostActivity) getActivity()).actionToFragment(ActionEvent.ACTION_LOGIN);
+//            }
+//                break;
             case R.id.btn_save: {
                 saveServer();
             }
