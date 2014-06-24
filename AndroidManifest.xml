@@ -172,8 +172,12 @@
             android:name="com.nyist.vnow.ui.ConfenceActivity"
             android:alwaysRetainTaskState="true"
             android:configChanges="orientation|keyboardHidden|navigation"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name="com.nyist.vnow.ui.ChoiceMemberActivity"
+            android:windowSoftInputMode="adjustPan">
         </activity>
     </application>
 

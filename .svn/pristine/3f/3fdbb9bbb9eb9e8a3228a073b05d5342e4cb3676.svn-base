@@ -1,0 +1,262 @@
+package com.nyist.vnow.ui;
+
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.nyist.vnow.R;
+import com.nyist.vnow.core.VNowApplication;
+import com.nyist.vnow.core.VNowCore;
+import com.nyist.vnow.fragment.VNowFragmentLogin;
+import com.nyist.vnow.fragment.VNowFragmentRegist;
+import com.nyist.vnow.fragment.VNowFragmentSetSvr;
+import com.nyist.vnow.receiver.CheckNetWorkReceiver;
+import com.nyist.vnow.struct.User;
+import com.nyist.vnow.struct.VNowRctContact;
+import com.nyist.vnow.utils.ActionEvent;
+import com.nyist.vnow.utils.Constants;
+import com.nyist.vnow.utils.LogTag;
+import com.nyist.vnow.utils.NetUtil;
+import com.nyist.vnow.utils.Session;
+import com.nyist.vnow.utils.ThreadHelper;
+import com.nyist.vnow.utils.ToastUtil;
+import com.vnow.sdk.openapi.EventListener;
+
+import de.greenrobot.event.EventBus;
+
+public class VNowHostActivity extends FragmentActivity implements OnClickListener {
+    private ActionEvent mCurrentEvent;
+    private VNowFragmentLogin mLoginFragment;
+    private VNowFragmentRegist mRegistFragment;
+    private VNowFragmentSetSvr mSetSvrFragment;
+    private FragmentManager mFmanager;
+    private MyEventListener mCallBackListener;
+    private VNowCore mCore;
+    private Button mNoNetworkBar;
+    private CheckNetWorkReceiver checkNetWorkReceiver;
+    private TextView mTopBarText;
+    private ImageView mTopBarBack;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.vnow_host);
+        mCore = VNowApplication.newInstance().getCore();
+        initUI();
+    }
+
+    private void initUI() {
+        initTopBar();
+        mLoginFragment = new VNowFragmentLogin();
+        mRegistFragment = new VNowFragmentRegist();
+        mSetSvrFragment = new VNowFragmentSetSvr();
+        mFmanager = getSupportFragmentManager();
+        addFragment(mLoginFragment);
+        mCurrentEvent = ActionEvent.ACTION_LOGIN;
+        mCallBackListener = new MyEventListener();
+        mCore.doSetEventListener(mCallBackListener);
+    }
+
+    /**
+     * 初始化topbar
+     */
+    private void initTopBar() {
+        mTopBarText = (TextView) findViewById(R.id.mTopBarText);
+        mTopBarText.setText(getText(R.string.user_login));
+        mTopBarBack = (ImageView) findViewById(R.id.mTopBarBack);
+        mTopBarBack.setOnClickListener(this);
+        mNoNetworkBar = (Button) findViewById(R.id.mNoNetworkBar);
+        mNoNetworkBar.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NetUtil.openNetSetting(VNowHostActivity.this);
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerCheckNetWorkReceiver();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
+    }
+
+    // will be called on the main thread
+    public void onEventMainThread(CheckNetWorkReceiver.NetworkConnectionChanged event) {
+        LogTag.d("in onEventMainThread! ", ThreadHelper.getThreadInfo());
+        if (NetUtil.checkNet(VNowHostActivity.this)) {
+            mNoNetworkBar.setVisibility(View.GONE);
+        }
+        else {
+            mNoNetworkBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * 监测网络状态
+     */
+    private void registerCheckNetWorkReceiver() {
+        checkNetWorkReceiver = new CheckNetWorkReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.NET_CONNECTIVITY_CHANGE);
+        intentFilter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        registerReceiver(checkNetWorkReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mCore.doRemoveEventListener(mCallBackListener);
+        unregisterReceiver(checkNetWorkReceiver);
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mCurrentEvent == ActionEvent.ACTION_REGIST) {
+            actionToFragment(ActionEvent.ACTION_LOGIN);
+        }
+        else if (mCurrentEvent == ActionEvent.ACTION_SETSVR) {
+            actionToFragment(ActionEvent.ACTION_LOGIN);
+        }
+        else {
+            VNowApplication.newInstance().getCore().doLogout();
+            // VNowApplication.the().destroyCore();
+            System.exit(0);
+        }
+    }
+
+    private void addFragment(Fragment fragment) {
+        FragmentTransaction ft = mFmanager.beginTransaction();
+        ft.replace(R.id.host_fragment_plane, fragment);
+        ft.commitAllowingStateLoss();
+    }
+
+    public void actionToFragment(ActionEvent event) {
+        switch (event) {
+            case ACTION_REGIST: {
+                mTopBarBack.setVisibility(View.VISIBLE);
+                mTopBarText.setText(getString(R.string.str_regist_title));
+                addFragment(mRegistFragment);
+                mCurrentEvent = ActionEvent.ACTION_REGIST;
+            }
+                break;
+            case ACTION_LOGIN: {
+                mTopBarBack.setVisibility(View.INVISIBLE);
+                mTopBarText.setText(getString(R.string.user_login));
+                addFragment(mLoginFragment);
+                mCurrentEvent = ActionEvent.ACTION_LOGIN;
+            }
+                break;
+            case ACTION_SETSVR: {
+                mTopBarBack.setVisibility(View.VISIBLE);
+                mTopBarText.setText(getString(R.string.str_set_server));
+                mTopBarBack.setVisibility(View.VISIBLE);
+                addFragment(mSetSvrFragment);
+                mCurrentEvent = ActionEvent.ACTION_SETSVR;
+            }
+                break;
+        }
+    }
+
+    public void actionLogin() {
+        String strPhone = Session.newInstance(this).getUserPhone();
+        String strpws = Session.newInstance(this).getPassWord();
+        if (!TextUtils.isEmpty(strPhone) && !TextUtils.isEmpty(strpws)) {
+            VNowApplication.newInstance().getCore().doLogin(strPhone, strpws, true);
+        }
+        else {
+            mCore.checkUpVersion(this, true);
+        }
+    }
+
+    // web 接口回调
+    private class MyEventListener extends EventListener {
+        public void onResponseRegister(boolean bSuccess, String uuid) {
+            if (bSuccess) {
+                ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_regist_success));
+                VNowApplication
+                        .newInstance()
+                        .getCore()
+                        .doLogin(
+                                VNowApplication.newInstance().getCore().getmUser().phone,
+                                VNowApplication.newInstance().getCore().getmUser().password,
+                                true);
+            }
+            else
+                ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_regist_field));
+        }
+
+        public void onResponseLogin(boolean bSuccess, User user) {
+            if (bSuccess) {
+                Intent intent = new Intent();
+                intent.setClass(VNowHostActivity.this, VNowMainActivity.class);
+                if (null != VNowApplication.newInstance().getCore().getApiStatus()) {
+                    startActivity(intent);
+                    VNowHostActivity.this.finish();
+                    ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_login_success));
+                }
+            }
+            else {
+                mLoginFragment.loginError();
+                ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_login_field));
+                mCore.checkUpVersion(VNowHostActivity.this, true);
+            }
+        }
+
+        public void onResponseLogout(boolean bSuccess) {}
+
+        public void onResponseApiStatus(String status) {
+            // TODO Auto-generated method stub
+            if (status.equals("0") || status.equals("2")) {
+                actionLogin();
+            }
+            else if (status.equals("1")) {
+                Intent intent = new Intent();
+                intent.setClass(VNowHostActivity.this, VNowMainActivity.class);
+                if (null != VNowApplication.newInstance().getCore().getApiStatus()) {
+                    startActivity(intent);
+                    VNowHostActivity.this.finish();
+                    ToastUtil.getInstance(VNowHostActivity.this).showShort(getString(R.string.str_login_success));
+                }
+            }
+            else if (status.equals("5") || status.equals("7")) {
+                Intent intent = new Intent(VNowHostActivity.this,
+                        ConfActivity.class);
+                if (mCore.getRctContact().size() > 0) {
+                    VNowRctContact rctItem = mCore.getRctContact().get(0);
+                    intent.putExtra("callNumber", rctItem.getmStrConPhone());
+                    intent.putExtra("callName", rctItem.getmStrContactName());
+                    intent.putExtra("isCallin", false);
+                    startActivity(intent);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.mTopBarBack) {
+            mTopBarBack.setVisibility(View.INVISIBLE);
+            mTopBarText.setText(getString(R.string.user_login));
+            actionToFragment(ActionEvent.ACTION_LOGIN);
+        }
+    }
+}

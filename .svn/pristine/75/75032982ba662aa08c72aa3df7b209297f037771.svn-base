@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/conf_bg_gary"
+    android:orientation="horizontal" >
+
+    <VideoView
+        android:id="@+id/conf_screen"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/flayout_sub_view"
+        android:layout_width="@dimen/frame_sub_with"
+        android:layout_height="@dimen/frame_sub_high"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@android:color/holo_red_dark"
+        android:padding="1dp" >
+
+        <VideoView
+            android:id="@+id/conf_sub_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent" />
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/conf_defult_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/img_conf_defult" />
+
+    <LinearLayout
+        android:id="@+id/llayout_title"
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:background="@color/conf_title_bg"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/conf_title_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/str_conf_title"
+            android:textColor="@color/conf_title_txt_color"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_bottom_toolbar"
+        android:layout_width="fill_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/conf_title_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:id="@+id/rgroup_main_fragment_tabs"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2"
+            android:orientation="horizontal" >
+
+            <CheckBox
+                android:id="@+id/conf_open_video_tab"
+                style="@style/conf_check_tab_button"
+                android:drawableTop="@drawable/tab_open_video"
+                android:text="@string/str_conf_open_video" />
+
+            <CheckBox
+                android:id="@+id/conf_open_audio_tab"
+                style="@style/conf_check_tab_button"
+                android:drawableTop="@drawable/tab_open_audio"
+                android:text="@string/str_conf_open_audio"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/conf_upload_capture_tab"
+                style="@style/conf_tab_button"
+                android:drawableTop="@drawable/btn_upload_capture"
+                android:enabled="false"
+                android:text="@string/str_conf_upload_capture" />
+
+            <Button
+                android:id="@+id/conf_upload_file_tab"
+                style="@style/conf_tab_button"
+                android:drawableTop="@drawable/btn_upload_file"
+                android:text="@string/str_conf_open_share" />
+
+            <CheckBox
+                android:id="@+id/conf_upload_video_tab"
+                style="@style/conf_check_tab_button"
+                android:drawableTop="@drawable/tab_share_scrn"
+                android:enabled="false"
+                android:text="@string/str_conf_upload_video" />
+
+            <CheckBox
+                android:id="@+id/conf_share_scrn_tab"
+                style="@style/conf_check_tab_button"
+                android:drawableTop="@drawable/tab_share_scrn"
+                android:text="@string/str_conf_share_scrn"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/conf_hangup_btn"
+                style="@style/conf_tab_button"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:drawableTop="@drawable/btn_hangup"
+                android:text="@string/str_conf_hangup"
+                android:textSize="13sp" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/conf_hangup_btn" >
+
+                <Chronometer
+                    android:id="@+id/conf_last_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="7dp"
+                    android:text="@string/str_conf_time"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <include
+        android:id="@+id/layout_2p2_call"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        layout="@layout/fragment_one2one_call" />
+
+    <fragment
+        android:id="@+id/layout_right_panle"
+        android:name="com.nyist.vnow.fragment.VNowFragmentPhoto"
+        android:layout_width="@dimen/frame_sub_with"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/flayout_sub_view"
+        android:layout_alignParentRight="true"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/layout_right_include"
+        android:layout_width="240dp"
+        android:layout_height="300dp"
+        android:layout_below="@+id/llayout_title"
+        android:layout_marginBottom="2dp"
+        android:layout_toLeftOf="@+id/layout_file_update"
+        layout="@layout/vnow_doc"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/layout_file_update"
+        android:layout_width="220dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/flayout_sub_view"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="2dp"
+        layout="@layout/vnow_file_update"
+        android:visibility="invisible" />
+
+    <fragment
+        android:id="@+id/layout_syn_pic"
+        android:name="com.nyist.vnow.fragment.VNowFragmentSynPic"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/frame_sub_high"
+        android:layout_above="@id/layout_bottom_toolbar"
+        android:visibility="gone" />
+
+</RelativeLayout>

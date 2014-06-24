@@ -1,0 +1,260 @@
+package com.nyist.vnow.fragment;
+
+import java.util.List;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.nyist.vnow.R;
+import com.nyist.vnow.adapter.VNowRctContactAdapter;
+import com.nyist.vnow.core.VNowApplication;
+import com.nyist.vnow.core.VNowCore;
+import com.nyist.vnow.dialog.VNowAlertDlg;
+import com.nyist.vnow.struct.VNowRctContact;
+import com.nyist.vnow.ui.ConfActivity;
+import com.nyist.vnow.ui.ConfenceActivity;
+import com.nyist.vnow.ui.CreateConfActivity;
+import com.nyist.vnow.ui.One2oneActivity;
+import com.nyist.vnow.utils.ToastUtil;
+import com.vnow.sdk.openapi.EventListener;
+
+public class VNowFragmentVNow extends Fragment implements OnClickListener {
+    private final int LOAD_RCT_CONTACT_FINISH = 0X301;
+    private ImageButton mBtnOne2one;
+    private ImageButton mBtnCrtConf;
+    private ImageButton mBtnJoinConf;
+    private ImageButton mBtnRollConf;
+    private ListView mListviewRctContact;
+    private TextView mTxtStatus;
+    private VNowRctContactAdapter mAdapterRctContact;
+    private VNowCore mCore;
+    private MyEventListener mCallBackListener;
+    private List<VNowRctContact> mListRctContacts;
+    private VNowAlertDlg mDialog;
+    private Handler mMainHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            if (msg.what == LOAD_RCT_CONTACT_FINISH) {
+                mListRctContacts = mCore.getmListRctContacts();
+                if (null != mListRctContacts) {
+                    mAdapterRctContact = new VNowRctContactAdapter(
+                            getActivity(), mListRctContacts);
+                    mListviewRctContact.setAdapter(mAdapterRctContact);
+                }
+            }
+        };
+    };
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onCreate(savedInstanceState);
+        mCore = VNowApplication.newInstance().getCore();
+        mCallBackListener = new MyEventListener();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        View view = inflater.inflate(R.layout.vnow_fragment_vnow, container,
+                false);
+        initUI(view);
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        initRctContactData();
+        mCore.doSetEventListener(mCallBackListener);
+    }
+
+    @Override
+    public void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        mCore.doRemoveEventListener(mCallBackListener);
+    }
+
+    @Override
+    public void onStop() {
+        // TODO Auto-generated method stub
+        if (null != mDialog)
+            mDialog.dismiss();
+        super.onStop();
+    }
+
+    private void initUI(View view) {
+        mBtnOne2one = (ImageButton) view.findViewById(R.id.vnow_one2one);
+        mBtnCrtConf = (ImageButton) view.findViewById(R.id.vnow_create_conf);
+        mBtnJoinConf = (ImageButton) view.findViewById(R.id.vnow_join_conf);
+        mBtnRollConf = (ImageButton) view.findViewById(R.id.vnow_rollback_conf);
+        mTxtStatus = (TextView) view.findViewById(R.id.txt_server_status);
+        mListviewRctContact = (ListView) view
+                .findViewById(R.id.listview_rct_contact);
+        mBtnOne2one.setOnClickListener(this);
+        mBtnCrtConf.setOnClickListener(this);
+        mBtnJoinConf.setOnClickListener(this);
+        mBtnRollConf.setOnClickListener(this);
+        mListviewRctContact.setOnItemClickListener(mListItemClickListener);
+        mListviewRctContact.setOnItemLongClickListener(mItemLongClickListener);
+    }
+
+    /**
+     * the method to init the contacts from phone
+     */
+    private void initRctContactData() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                mCore.getRctContact();
+                mMainHandler.sendEmptyMessage(LOAD_RCT_CONTACT_FINISH);
+            }
+        }).start();
+    }
+
+    /**
+     * the method to show recent chat message dialog when you long clik recent
+     * chat listview item
+     * 
+     * @param longClickPos
+     */
+    private void showItemLongClickDialog(final int longClickPos) {
+        final VNowRctContact grp = mCore.getmListRctContacts()
+                .get(longClickPos);
+        String[] choices = new String[1];
+        choices[0] = getString(R.string.str_delete_contact);
+        new AlertDialog.Builder(getActivity())
+                .setTitle(grp.getmStrContactName())
+                .setItems(choices, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0: {
+                                mCore.deleteCallHistory(grp.getmStrContactName());
+                                mCore.getmListRctContacts().remove(longClickPos);
+                                mAdapterRctContact.notifyDataSetChanged();
+                            }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }).show();
+    }
+
+    private void showCallDlg(final VNowRctContact rctContact) {
+        if (null != mDialog) {
+            mDialog.dismiss();
+            mDialog = null;
+        }
+        mDialog = new VNowAlertDlg(getActivity(), R.style.navComSettingDialogTheme);
+        mDialog.show();
+        mDialog.setTitle(R.string.str_alert_tip);
+        mDialog.setContent(getString(R.string.str_call_title).replace("${CALL_NUM}", rctContact.getmStrContactName()));
+        mDialog.setOKButton(getString(R.string.str_call),
+                new VNowAlertDlg.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        // TODO Auto-generated method stub
+                        Intent intent = new Intent(getActivity(), ConfActivity.class);
+                        intent.putExtra("callNumber", rctContact.getmStrConPhone());
+                        intent.putExtra("callName", rctContact.getmStrContactName());
+                        intent.putExtra("isCallin", false);
+                        VNowRctContact rctItem = new VNowRctContact();
+                        rctItem.setmStrUserId(mCore.getmUser().uuid);
+                        rctItem.setmStrUserName(mCore.getmUser().name);
+                        rctItem.setmStrConPhone(rctContact.getmStrConPhone());
+                        rctItem.setmStrContactName(rctContact.getmStrContactName());
+                        rctItem.setmCallTime(System.currentTimeMillis());
+                        rctItem.setmIsCallIn(false);
+                        mCore.insertCallHistory(rctItem);
+                        startActivity(intent);
+                    }
+                });
+        mDialog.setCancelButton(getString(R.string.str_cancel),
+                new VNowAlertDlg.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        // TODO Auto-generated method stub
+                    }
+                });
+    }
+
+    private AdapterView.OnItemClickListener mListItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapter, View view,
+                int position, long id) {
+            showCallDlg(mCore.getmListRctContacts().get(position));
+        }
+    };
+    private AdapterView.OnItemLongClickListener mItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> adapter, View view,
+                int position, long id) {
+            // TODO Auto-generated method stub
+            showItemLongClickDialog(position);
+            return false;
+        }
+    };
+
+    @Override
+    public void onClick(View v) {
+        // TODO Auto-generated method stub
+        int id = v.getId();
+        switch (id) {
+            case R.id.vnow_one2one: {
+                Intent openCameraIntent = new Intent(getActivity(),
+                        One2oneActivity.class);
+                startActivityForResult(openCameraIntent, 0);
+            }
+                break;
+            case R.id.vnow_create_conf: {
+                 Intent openConfIntent = new Intent(getActivity(),
+                         CreateConfActivity.class);
+                 startActivity(openConfIntent);
+            }
+                break;
+            case R.id.vnow_join_conf: {
+                ToastUtil.getInstance(getActivity()).showShort("该版本暂未提供此功能");
+            }
+                break;
+            case R.id.vnow_rollback_conf: {
+                // Intent openCameraIntent = new Intent(getActivity(),
+                // BackConfActivity.class);
+                // startActivityForResult(openCameraIntent, 0);
+                ToastUtil.getInstance(getActivity()).showShort("该版本暂未提供此功能");
+            }
+                break;
+        }
+    }
+
+    // web �ӿڻص�
+    private class MyEventListener extends EventListener {
+        @Override
+        public void onResponseApiStatus(String status) {
+            // TODO Auto-generated method stub
+            super.onResponseApiStatus(status);
+            if (status.equals("0")) {
+                mTxtStatus.setVisibility(View.VISIBLE);
+            }
+            else {
+                mTxtStatus.setVisibility(View.GONE);
+            }
+        }
+    }
+}

@@ -411,7 +411,6 @@ public class VNowFragmentColleague extends Fragment {
                 new VNowAlertDlg.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
-                        // TODO Auto-generated method stub
                     }
                 });
     }
@@ -428,7 +427,6 @@ public class VNowFragmentColleague extends Fragment {
     private class MyEventListener extends EventListener {
         @Override
         public void onResponseQueryColleageList(boolean bSuccess, String result) {
-            // TODO Auto-generated method stub
             super.onResponseQueryColleageList(bSuccess, result);
             HadGetColleague = true;
             mMainHandler.sendEmptyMessage(LOAD_COLLEAGUE_FINISH);

@@ -115,6 +115,9 @@
     <string name="str_conf_call_accept">√	接受</string>
     <string name="str_conf_call_cancel">X	 取消</string>
     <string name="str_conf_title">您正在与${NAME}进行通话</string>
+    <string name="invite">邀请</string>
+    <string name="member">与会人员</string>
+    <string name="style">画面风格</string>
     <string name="str_conf_open_video">开启视频</string>
     <string name="str_conf_open_audio">开启音频</string>
     <string name="str_conf_upload_capture">拍照上传</string>
@@ -154,5 +157,6 @@
     <string name="str_sign_remark">备注信息</string>
     <string name="no_network">当前网络不可用，请检查网络连接</string>
     <string name="title_activity_confence">ConfenceActivity</string>
+    <string name="title_activity_choice_member">ChoiceMemberActivity</string>
 
 </resources>

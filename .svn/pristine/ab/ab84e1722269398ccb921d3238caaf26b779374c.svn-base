@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="5dip" >
+
+    <ImageView
+        android:id="@+id/photo_img"
+        android:layout_width="64dp"
+        android:layout_height="54dp"
+        android:paddingLeft="10dp"
+        android:scaleType="centerInside" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:orientation="vertical" >
+
+        <ProgressBar
+            android:id="@+id/upload_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/upload_progress_wait"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:text="@string/str_upload_waitting"
+            android:textColor="@color/conf_title_txt_color"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/file_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:textColor="@color/conf_txt_file_name_color"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+</LinearLayout>

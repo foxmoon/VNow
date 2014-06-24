@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/transparent"
+    android:orientation="vertical" >
+
+    <Button 
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="上一级"/>
+    
+    <ListView
+        android:id="@+id/file_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="#f2f2f2"
+        android:dividerHeight="0.5dp"
+        android:scrollbars="none"
+        android:fadingEdge="none" />
+
+</LinearLayout>

@@ -1,0 +1,16 @@
+<resources>
+
+    <!--
+         Customize dimensions originally defined in res/values/dimens.xml (such as
+         screen margins) for sw600dp devices (e.g. 7" tablets) here.
+    -->
+<dimen name="sliding_width">260dp</dimen>
+
+<dimen name="sliding_bar_width">33dp</dimen>
+	
+	<dimen name="sliding_content_width">227dp</dimen>
+	<dimen name="right_layout_panle">280dp</dimen>
+	
+	<dimen name="frame_sub_with">266dp</dimen>
+	<dimen name="frame_sub_high">198dp</dimen>
+</resources>

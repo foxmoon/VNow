@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rct_contacts_list_item"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:minHeight="60dp" >
+
+    <ImageView
+        android:id="@+id/item_group_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="11dp"
+        android:src="@drawable/icon_conf" />
+
+    <TextView
+        android:id="@+id/item_group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:ellipsize="marquee"
+        android:gravity="center_vertical|left"
+        android:paddingLeft="10dp"
+        android:singleLine="true"
+        android:textColor="@color/group_txt_color"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" >
+
+        <Button
+            android:id="@+id/group_del_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/img_arrow"
+            android:background="@drawable/btn_delete_bg"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:layout_marginRight="5dp"
+            android:text="@string/str_delete_contact"
+            android:textColor="@color/white"
+            android:textSize="@dimen/BasicTextSize" />
+
+        <ImageView
+            android:id="@+id/img_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/img_more_enter_icon"
+            android:layout_marginRight="5dp" />
+    </RelativeLayout>
+
+</LinearLayout>

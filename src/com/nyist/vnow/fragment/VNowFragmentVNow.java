@@ -23,8 +23,10 @@ import com.nyist.vnow.core.VNowApplication;
 import com.nyist.vnow.core.VNowCore;
 import com.nyist.vnow.dialog.VNowAlertDlg;
 import com.nyist.vnow.struct.VNowRctContact;
+import com.nyist.vnow.ui.ChoiceMemberActivity;
 import com.nyist.vnow.ui.ConfActivity;
 import com.nyist.vnow.ui.ConfenceActivity;
+import com.nyist.vnow.ui.CreateConfActivity;
 import com.nyist.vnow.ui.One2oneActivity;
 import com.nyist.vnow.utils.ToastUtil;
 import com.vnow.sdk.openapi.EventListener;
@@ -224,7 +226,7 @@ public class VNowFragmentVNow extends Fragment implements OnClickListener {
                 break;
             case R.id.vnow_create_conf: {
                  Intent openConfIntent = new Intent(getActivity(),
-                         ConfenceActivity.class);
+                         CreateConfActivity.class);
                  startActivity(openConfIntent);
             }
                 break;

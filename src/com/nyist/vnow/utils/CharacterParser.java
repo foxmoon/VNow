@@ -1,9 +1,5 @@
 package com.nyist.vnow.utils;
 
-/**
- * Java����ת��Ϊƴ��
- * 
- */
 public class CharacterParser {
     private static int[] pyvalue = new int[] { -20319, -20317, -20304, -20295, -20292, -20283, -20265, -20257, -20242, -20230, -20051,
             -20036, -20032,
@@ -111,7 +107,6 @@ public class CharacterParser {
         this.resource = resource;
     }
 
-    /** * ����ת��ASCII�� * * @param chs * @return */
     private int getChsAscii(String chs) {
         int asc = 0;
         try {
@@ -134,7 +129,6 @@ public class CharacterParser {
         return asc;
     }
 
-    /** * ���ֽ��� * * @param str * @return */
     public String convert(String str) {
         String result = null;
         int ascii = getChsAscii(str);
@@ -152,7 +146,6 @@ public class CharacterParser {
         return result;
     }
 
-    /** * ������� * * @param chs * @return */
     public String getSelling(String chs) {
         String key, value;
         buffer = new StringBuilder();
