@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">VNow</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <!-- setting -->
+    <string name="setting_defult_server_ip">112.5.192.156</string>
+    <string name="setting_login_user_phone">loginphone</string>
+    <string name="setting_login_user_pwd">loginpassword</string>
+    <string name="setting_video_show_params">show_video_setting</string>
+    <string name="setting_video_sound_red">show_video_sound_red</string>
+    <string name="setting_media_server_ip">media_server_ip</string>
+    <string name="friend_update_version">friend_update_version</string>
+    <string name="colleage_update_version">colleage_update_version</string>
+    <string name="group_update_version">group_update_version</string>
+    <string name="setting_pref_auto_update">versionUpdate</string>
+    <string name="str_update_mode">更新方式</string>
+    <string name="str_update_auto">自动更新</string>
+    <string name="str_update_hand">手动更新</string>
+    <string name="str_external_store_no_find">未发现外部存储!</string>
+    <string name="str_apk_already_exist">文件已存在，无需下载!</string>
+    <string name="soft_update_check">检测更新</string>
+    <string name="soft_update_no">已经是最新版本</string>
+    <string name="soft_update_title">检测到新版本，立即更新吗?</string>
+    <string name="soft_update_updatebtn">更新</string>
+    <string name="soft_update_later">稍后更新</string>
+    <string name="soft_updating">正在更新</string>
+    <string name="str_more_server_id">当前服务：</string>
+    <string name="str_more_version">当前版本：</string>
+    <string name="str_new_version">最新版本：</string>
+
+    <!-- login regist strings -->
+    <string name="login_hint_name">请输入账号</string>
+    <string name="login_hint_password">请输入密码</string>
+    <string name="login_name_error">用户名输入有误！</string>
+    <string name="login_password_error">密码输入有误！</string>
+    <string name="login_forget_password">忘记密码</string>
+    <string name="str_regist">注 册 →</string>
+    <string name="str_regist_title">注 册</string>
+    <string name="str_regist_error_info">请输入完整注册信息！</string>
+    <string name="str_regist_error_password">密码校验有误！</string>
+    <string name="str_regist_success">注册成功！</string>
+    <string name="str_regist_field">注册失败！</string>
+    <string name="str_login_success">登录成功！</string>
+    <string name="str_login_field">登录失败！</string>
+    <string name="str_click_exit">再按一次退出程序</string>
+    <string name="str_logout">退出当前登录</string>
+    <string name="str_set_error_server">请输入正确服务器信息！</string>
+    <string name="str_set_server">设置服务器</string>
+    <string name="str_set_save_server">保存成功！</string>
+    <!-- common strings -->
+    <string name="str_tab_vnow">VNow</string>
+    <string name="str_tab_contacts">通讯录</string>
+    <string name="str_tab_apps">我的应用</string>
+    <string name="str_tab_more">更多</string>
+    <string name="str_search">搜   索</string>
+    <string name="str_menu_addgrp">添加联系人组</string>
+    <string name="str_menu_addcat">添加联系人</string>
+    <string name="str_menu_exit">退出会议</string>
+    <string name="str_more_my_store">我的商店</string>
+    <string name="str_more_app_settings">设置</string>
+    <string name="str_more_recommend_friend">推荐好友</string>
+    <string name="str_more_app_about">关于</string>
+    <string name="str_cancel">取消</string>
+    <string name="user_login">用户登录</string>
+
+    <!-- contacts strings -->
+    <string name="str_btn_colleague">同事</string>
+    <string name="str_btn_cell_contacts">手机通讯录</string>
+    <string name="str_btn_others">其他</string>
+    <string name="str_edit_text_contacts_search">请输入联系人</string>
+    <string name="str_edit_text_id_search">搜索帐号</string>
+    <string name="str_add_phone_contact">添加手机联系人</string>
+    <string name="str_add_qq_contact">添加QQ好友</string>
+    <string name="str_dlg_create">创建</string>
+    <string name="str_dlg_cancel">取消</string>
+    <string name="str_dlg_create_group">创建群组</string>
+    <string name="str_dlg_group_name">群名称</string>
+    <string name="str_dlg_group_desc">群描述</string>
+    <string name="str_create_group">+创建群组</string>
+    <string name="str_create_other">+添加</string>
+    <string name="str_modify">编辑</string>
+    <string name="str_edit_friend_phone">电话</string>
+    <string name="str_edit_friend_name">姓名</string>
+    <string name="str_add">添加</string>
+    <string name="str_add_friend">添加好友</string>
+    <string name="str_grp_name_not_null">群组名不能为空！</string>
+    <string name="str_add_grp_user">添加群组成员</string>
+    <string name="str_del_group_success">删除群组成功</string>
+    <string name="str_del_group_field">删除群组失败</string>
+    <string name="str_del_friend_success">删除好友成功</string>
+    <string name="str_del_friend_failed">删除好友失败</string>
+    <string name="str_modify_not_null">编辑内容不能为空！</string>
+    <string name="str_modify_friend_success">好友信息修改成功</string>
+    <string name="str_modify_friend_failed">好友信息修改失败</string>
+    <string name="str_add_friend_success">添加好友成功</string>
+    <string name="str_add_friend_failed">添加好友失败</string>
+    <string name="str_add_friend_error_nobody">联系人不存在</string>
+    <string name="str_create_group_success">创建群组成功</string>
+    <string name="str_create_group_failed">创建群组失败</string>
+    <string name="str_modify_group_success">修改群组信息成功</string>
+    <string name="str_modify_group_failed">修改群组信息失败</string>
+    <string name="str_add_grp_user_success">添加群组成员成功</string>
+    <string name="str_add_grp_user_failed">添加群组成员失败</string>
+    <string name="str_add_grp_user_error_nobody">群组成员不存在</string>
+
+    <!-- conf strings -->
+    <string name="title_conf">会议进行中...</string>
+    <string name="str_contact_loading">正在加载...</string>
+    <string name="str_delete_contact">删 除</string>
+    <string name="str_cancel_delete_contact">取消删除</string>
+
+    <!-- conf strings -->
+    <string name="str_conf_call_accept">√	接受</string>
+    <string name="str_conf_call_cancel">X	 取消</string>
+    <string name="str_conf_title">您正在与${NAME}进行通话</string>
+    <string name="invite">邀请</string>
+    <string name="member">与会人员</string>
+    <string name="style">画面风格</string>
+    <string name="str_conf_open_video">开启视频</string>
+    <string name="str_conf_open_audio">开启音频</string>
+    <string name="str_conf_upload_capture">拍照上传</string>
+    <string name="str_conf_upload_file">上传文件</string>
+    <string name="str_conf_upload_video">上传视频</string>
+    <string name="str_conf_share_scrn">屏幕共享</string>
+    <string name="str_conf_forbid_video">屏蔽视频</string>
+    <string name="str_conf_open_share">共享图片</string>
+    <string name="str_upload_waitting">等待上传...</string>
+    <string name="str_insert_list_success"> 照片加入上传列表成功</string>
+    <string name="str_insert_list_fialed"> 照片加入上传列表失败</string>
+    <string name="str_upvideo_success">视频上传成功！</string>
+    <string name="str_uppic_again">图片传输列表中第一张图片上传失败,已经开始自动重传！</string>
+    <string name="str_uppic_fialed">图片传输列表中第一个文件上传失败，已经删除！</string>
+    <string name="str_conf_time">通话时长</string>
+    <string name="str_conf_hangup">挂断</string>
+    <string name="str_call_field_resion">呼叫失败：</string>
+    <string name="str_conf_exit_title">你確定要挂断通话吗？</string>
+    <string name="str_call_title">呼叫 ${CALL_NUM} ?</string>
+    <string name="str_call">呼叫 </string>
+    <string name="str_ok">确定</string>
+    <string name="str_other_offine">对方不在线</string>
+    <string name="str_other_busy">对方正忙</string>
+    <string name="str_waiting_anser">等待对方接听</string>
+    <!-- widgets strings -->
+    <string name="str_recently_update">最近更新:</string>
+    <string name="str_pull_refresh">下拉刷新</string>
+    <string name="str_refreshing">正在刷新…</string>
+    <string name="str_release_refresh">松开刷新</string>
+    <string name="str_last_refresh">上次更新</string>
+    <string name="str_alert_tip">提示</string>
+    <string name="str_video_setting">显示设置</string>
+    <string name="str_sound_back">回声抵消延时设置(ms)</string>
+    <string name="str_video_mode1">流畅</string>
+    <string name="str_video_mode2">标准</string>
+    <string name="str_video_mode3">高清</string>
+    <string name="str_sign_remark">备注信息</string>
+    <string name="no_network">当前网络不可用，请检查网络连接</string>
+    <string name="title_activity_confence">ConfenceActivity</string>
+    <string name="title_activity_choice_member">ChoiceMemberActivity</string>
+
+</resources>
