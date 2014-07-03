@@ -1,0 +1,302 @@
+package com.nyist.vnow.fragment;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+import com.google.myjson.reflect.TypeToken;
+import com.nyist.vnow.R;
+import com.nyist.vnow.adapter.ConfMemberSelectAdapter;
+import com.nyist.vnow.adapter.ConfMemberSelectAdapter.OnItemCheckedChangeListener;
+import com.nyist.vnow.core.VNowApplication;
+import com.nyist.vnow.core.VNowCore;
+import com.nyist.vnow.db.ColleageDTOController;
+import com.nyist.vnow.db.RefreshManager;
+import com.nyist.vnow.exception.UrlException;
+import com.nyist.vnow.struct.Colleage;
+import com.nyist.vnow.utils.CharacterParser;
+import com.nyist.vnow.utils.LogTag;
+import com.nyist.vnow.utils.NetUtil;
+import com.nyist.vnow.utils.PinyinComparator;
+import com.nyist.vnow.utils.ToastUtil;
+import com.nyist.vnow.view.SideBar;
+import com.nyist.vnow.view.ViEPullToRefreshListView;
+import com.stay.AppException;
+import com.stay.net.Request;
+import com.stay.net.Request.RequestMethod;
+import com.stay.net.callback.JsonCallback;
+import com.stay.utilities.TextUtil;
+
+import de.greenrobot.event.EventBus;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+public class ChoseMemberFragment extends BaseFragment implements OnItemCheckedChangeListener {
+    /**
+     * 汉字转换成拼音的类
+     */
+    private CharacterParser characterParser;
+    /**
+     * 根据拼音来排列ListView里面的数据类
+     */
+    private PinyinComparator pinyinComparator;
+    private VNowCore mCore;
+    private ViEPullToRefreshListView mListviewContact;
+    private SideBar mIndexBar;
+    private ArrayList<Colleage> mListColleage;
+    private LinearLayout mSelectedMemberLayout;
+    private HashMap<Integer, ImageView> mSelectMemberHashMap = new HashMap<Integer,
+            ImageView>();
+    private ImageView mSelectedUserPhoto;
+    private HorizontalScrollView mScrollView;
+    private Button mConfirm;
+    private int mSelectedMembersNumber;
+    private View mChoseMemberView;
+    private boolean mVisiable;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mChoseMemberView = inflater.inflate(R.layout.fragment_chose_member, null);
+        initializeViews(mChoseMemberView);
+        return mChoseMemberView;
+    }
+
+    protected void initializeViews(View view) {
+        initTopBar(view);
+        initSelectedMemberBar(view);
+        initMemberListView(view);
+    }
+
+    public void setUIVisibility(int visiable) {
+        mChoseMemberView.setVisibility(visiable);
+        if (visiable == View.VISIBLE) {
+            mVisiable = true;
+        }
+        else {
+            mVisiable = false;
+        }
+    }
+
+    
+    public boolean ismVisiable() {
+        return mVisiable;
+    }
+
+    public void setmVisiable(boolean mVisiable) {
+        this.mVisiable = mVisiable;
+    }
+
+    /**
+     * 
+     */
+    private void initMemberListView(View view) {
+        mListviewContact = (ViEPullToRefreshListView) view.findViewById(R.id.listview_add_friends);
+        mIndexBar = (SideBar) view.findViewById(R.id.sidebar_add_friends);
+    }
+
+    /**
+     * 
+     */
+    private void initSelectedMemberBar(View view) {
+        mScrollView = (HorizontalScrollView) view.findViewById(R.id.sv_member_selected);
+        mSelectedMemberLayout = (LinearLayout) view.findViewById(R.id.mSelectedMember);
+    }
+
+    /**
+     * 
+     */
+    private void initTopBar(View view) {
+        TextView mHeaderText = (TextView) view.findViewById(R.id.mTopBarText);
+        mHeaderText.setText("选择与会人员");
+        ImageView mTopBarRight = (ImageView) view.findViewById(R.id.mTopBarRight);
+        mConfirm = (Button) view.findViewById(R.id.btn_sure);
+        mConfirm.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                EventBus.getDefault().post(new Colleage());
+            }
+        });
+    }
+
+    /**
+     * the method to init the contacts from phone
+     */
+    private void initColleageData() {
+        if (NetUtil.checkNet(getActivity())) {
+            String colleagueUrl;
+            try {
+                colleagueUrl = mCore.getColleagueUrl();
+            }
+            catch (UrlException e) {
+                ToastUtil.getInstance(getActivity()).showShort(e.getMessage());
+                return;
+            }
+            Request request = new Request(colleagueUrl, RequestMethod.GET);
+            request.setCallback(new JsonCallback<ArrayList<Colleage>>() {
+                private ConfMemberSelectAdapter mConfMemberSelectAdapter;
+
+                // 回调子线程的onPreHandle方法
+                @Override
+                public ArrayList<Colleage> onPreHandle(ArrayList<Colleage> t) {
+                    LogTag.d("onPreHandle", "onPreHandle");
+                    // 存入数据库
+                    ColleageDTOController.addOrUpdate(t, mCore.getmUser().uuid);
+                    return super.onPreHandle(t);
+                }
+
+                @Override
+                public ArrayList<Colleage> onPreRequest() {
+                    // 判断是否需要刷新，如果要刷新就返回null
+                    if (RefreshManager.getInstance().needRefresh(Colleage.class)) {
+                        LogTag.d("needRefresh：", "needRefresh");
+                        return null;
+                    }
+                    // 如果不需要刷新，则查询数据库
+                    ArrayList<Colleage> entities = ColleageDTOController.queryAll(mCore.getmUser().uuid);
+                    LogTag.d("onPreRequest：", "" + (TextUtil.isValidate(entities) ? entities.size() : 0));
+                    return entities;
+                }
+
+                @Override
+                public void onFailure(AppException result) {
+                    ToastUtil.getInstance(getActivity()).showShort("获取同事列表是吧！");
+                }
+
+                @Override
+                public void onSuccess(ArrayList<Colleage> result) {
+                    mListviewContact.setVisibility(View.VISIBLE);
+                    mIndexBar.setVisibility(View.VISIBLE);
+                    mListColleage.clear();
+                    // stopProgress();
+                    if (result.size() > 0) {
+                        mListColleage.addAll(filledData(result));
+                        // 根据a-z进行排序源数据
+                        Collections.sort(mListColleage, pinyinComparator);
+                        mConfMemberSelectAdapter = new ConfMemberSelectAdapter(getActivity(),
+                                mListColleage);
+                        mListviewContact.setAdapter(mConfMemberSelectAdapter);
+                        mConfMemberSelectAdapter.setOnItemCheckedChangeListener(ChoseMemberFragment.this);
+                    }
+                    mListviewContact.onRefreshComplete();
+                }
+            }.setReturnType(new TypeToken<ArrayList<Colleage>>() {}.getType()));
+            request.execute();
+        }
+        else {
+            ToastUtil.getInstance(getActivity()).showShort(getString(R.string.no_network));
+        }
+    }
+
+    /**
+     * 为ListView填充数据
+     * 
+     * @param objects
+     * @return
+     */
+    private List<Colleage> filledData(List<Colleage> list) {
+        List<Colleage> mSortList = new ArrayList<Colleage>();
+        for (int i = 0; i < list.size(); i++) {
+            Colleage friend = new Colleage();
+            friend.setG_name(list.get(i).getG_name());
+            friend.setG_phone(list.get(i).getG_phone());
+            // 汉字转换成拼音
+            String pinyin = characterParser.getSelling(list.get(i).getG_name());
+            String sortString = pinyin.substring(0, 1).toUpperCase();
+            friend.setmPyName(pinyin);
+            // 正则表达式，判断首字母是否是英文字母
+            if (sortString.matches("[A-Z]")) {
+                friend.setmSortLetters(sortString.toUpperCase());
+            }
+            else {
+                friend.setmSortLetters("#");
+            }
+            mSortList.add(friend);
+        }
+        return mSortList;
+    }
+
+    @Override
+    public void OnCheckedChange(final CompoundButton checkBox, final int position, boolean isChecked) {
+        if (isChecked) {
+            if (!mSelectMemberHashMap.containsKey(position)) {
+                mSelectedUserPhoto = (ImageView) LayoutInflater
+                        .from(getActivity())
+                        .inflate(R.layout.choose_imageview, mSelectedMemberLayout, false);
+                mSelectedMemberLayout.addView(mSelectedUserPhoto);
+                mSelectedMemberLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        int off = mSelectedMemberLayout.getMeasuredWidth() - mScrollView.getWidth();
+                        if (off > 0) {
+                            mScrollView.smoothScrollTo(off, 0);
+                        }
+                    }
+                }, 100);
+                mSelectMemberHashMap.put(position, mSelectedUserPhoto);
+                mSelectedMembersNumber++;
+                mConfirm.setText("确定(" + mSelectedMembersNumber + ")");
+                mConfirm.setEnabled(true);
+                mSelectedUserPhoto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        checkBox.setChecked(false);
+                        removeSelectedUserPhoto(position);
+                    }
+                });
+            }
+        }
+        else {
+            removeSelectedUserPhoto(position);
+        }
+    }
+
+    /**
+     * @param position
+     */
+    protected void removeSelectedUserPhoto(int position) {
+        if (mSelectMemberHashMap.containsKey(position))
+        {
+            mSelectedMemberLayout.removeView(mSelectMemberHashMap.get(position));
+            mSelectMemberHashMap.remove(position);
+            mSelectedMembersNumber--;
+            if (mSelectedMembersNumber == 0) {
+                mConfirm.setText("确定");
+                mConfirm.setEnabled(false);
+            }
+            else {
+                mConfirm.setText("确定(" + mSelectedMembersNumber + ")");
+            }
+        }
+    }
+
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchObjectData();
+    }
+
+    @Override
+    public void fetchObjectData() {
+        mCore = VNowApplication.newInstance().getCore();
+        characterParser = CharacterParser.getInstance();
+        pinyinComparator = new PinyinComparator();
+        mListColleage = new ArrayList<Colleage>();
+        initColleageData();
+    }
+}

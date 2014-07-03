@@ -1,0 +1,277 @@
+package com.nyist.vnow.utils;
+
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.util.DisplayMetrics;
+
+/**
+ * 读取和写入配置信息用sheredpreference的方式存储
+ * 
+ * @author harry
+ * @version Creat on 2014-6-18上午8:40:21
+ */
+public class Session {
+    private final String TAG = "Session";
+    private Context mContext;
+    private static Session mInstance;
+    private PreferencesUtils mPreferencesUtils;// 通用的配置文件
+    private PreferencesUtils mPreferencesUtilsConfig;// 应用配置的配置文件
+    private boolean isFirstLaunch = false;// 是不是第一次启动
+    private boolean isLogin = false;// 是否登录
+    private String appName; // application name
+    private int densityDpi;
+    private int devWidth; // 屏幕宽度
+    private int devHeight; // 屏幕高度
+    private String versionName; // versionName
+    private int versionCode; // versionCode
+    private String packageName; // app package name
+    private float density;// 屏幕密度
+    private String webServerIp;
+    private String userPhone;
+    private String passWord;
+    private int groupVersion;
+    private int friendVersion;
+    private int colleageVersion;
+    private String videoParams;
+    private int videoSound;
+    private String sessionId;
+    private String uuid;
+    private String companyCode;
+    private String mediaServerAddress;
+
+    private Session(Context context) {
+        synchronized (this) {
+            mContext = context.getApplicationContext();
+            mPreferencesUtilsConfig = new PreferencesUtils(mContext,
+                    PreferencesUtils.P_CONFIG);
+            mPreferencesUtils = new PreferencesUtils(mContext);
+            readSettings(context);
+        }
+    }
+
+    public static Session newInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new Session(context);
+        }
+        return mInstance;
+    }
+
+    /*
+     * 读取手机设置
+     */
+    private void readSettings(Context context) {
+        readPreference();
+        getApplicationInfo();
+        initDisplay(context);
+    }
+
+    private void initDisplay(Context context) {
+        try {
+            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+            devWidth = metrics.widthPixels;
+            devHeight = metrics.heightPixels;
+            densityDpi = metrics.densityDpi;
+            if (devWidth > devHeight) {// Session被销毁，重构的时候，可能因为游戏的横屏，导致这里数据异常
+                int temp = devHeight;
+                devHeight = devWidth;
+                devWidth = temp;
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readPreference() {
+        // 如果没有数据，默认是第一次打开
+        isFirstLaunch = mPreferencesUtils.getBoolean(
+                Constants.PRF_KEY_FIRST_LAUNCH, true);
+        isLogin = mPreferencesUtils.getBoolean(Constants.PRF_KEY_LOGIN, false);
+        webServerIp = mPreferencesUtils.getString(Constants.WEB_SERVER_IP, Constants.DEFULT_WEB_SERVER_IP);
+        videoParams = mPreferencesUtils.getString(Constants.SHOW_VIDEO_PARAMS, Constants.DEFULT_VIDEO_PARAMS);
+        videoSound = mPreferencesUtils.getInt(Constants.SHOW_VIDEO_SOUND_RED, 240);
+        passWord = mPreferencesUtils.getString(Constants.PRF_USER_PASSWORD, "");
+        userPhone = mPreferencesUtils.getString(Constants.PRF_USER_PHONE, "");
+        sessionId = mPreferencesUtils.getString(Constants.PRF_SESSION_ID, "");
+        uuid = mPreferencesUtils.getString(Constants.PRF_UU_ID, "");
+        companyCode = mPreferencesUtils.getString(Constants.PRF_COMPANY_CODE, "");
+        mediaServerAddress = mPreferencesUtils.getString(Constants.MEDIA_SERVER_ADDRESS, Constants.DEFULT_MEDIA_SERVER_ADD);
+        // 初始化用户信息
+    }
+
+    public String getCompanyCode() {
+        return companyCode;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public boolean isFirstLaunch() {
+        return isFirstLaunch;
+    }
+
+//    public boolean isLogin() {
+//        return isLogin;
+//    }
+
+    public int getGroupVersion(String userId) {
+        return mPreferencesUtils.getInt(Constants.GROUP_UPDATE_VERSION + userId, 0);
+    }
+
+    public void setGroupVersion(String userId, int groupVersion) {
+        this.groupVersion = groupVersion;
+        mPreferencesUtils.putInt(Constants.GROUP_UPDATE_VERSION + userId, groupVersion);
+    }
+
+    public int getFriendVersion(String userId) {
+        return mPreferencesUtils.getInt(Constants.FRIEND_UPDATE_VERSION + userId, 0);
+    }
+
+    public void setFriendVersion(String userId, int friendVersion) {
+        this.friendVersion = friendVersion;
+        mPreferencesUtils.putInt(Constants.FRIEND_UPDATE_VERSION + userId, friendVersion);
+    }
+
+    public int getColleageVersion(String userId) {
+        return mPreferencesUtils.getInt(Constants.COLLEAGE_UPDATE_VERSION + userId, 0);
+    }
+
+    public void setColleageVersion(String userId, int colleageVersion) {
+        this.colleageVersion = colleageVersion;
+        mPreferencesUtils.putInt(Constants.COLLEAGE_UPDATE_VERSION + userId, colleageVersion);
+    }
+
+    public void setWebServerIp(String ip) {
+        webServerIp = ip;
+        mPreferencesUtils.putString(Constants.WEB_SERVER_IP, ip);
+    }
+
+    public String getWebServerIp() {
+        return webServerIp;
+    }
+
+    public String getMediaServerAddress() {
+        return mediaServerAddress;
+    }
+
+    public void setMediaServerAddress(String ip) {
+        mediaServerAddress = ip + ":5065";
+        mPreferencesUtils.putString(Constants.MEDIA_SERVER_ADDRESS, mediaServerAddress);
+    }
+
+    public String getVideoParams() {
+        return videoParams;
+    }
+
+    public void setVideoParams(String videoParams) {
+        this.videoParams = videoParams;
+        mPreferencesUtils.putString(Constants.SHOW_VIDEO_PARAMS, videoParams);
+    }
+
+    public int getVideoSound() {
+        return videoSound;
+    }
+
+    public void setVideoSound(int videoSound) {
+        this.videoSound = videoSound;
+        mPreferencesUtils.putInt(Constants.SHOW_VIDEO_SOUND_RED, videoSound);
+    }
+
+    public String getUserPhone() {
+        return userPhone;
+    }
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
+        mPreferencesUtils.putString(Constants.PRF_USER_PHONE, userPhone);
+    }
+
+    public String getPassWord() {
+        return passWord;
+    }
+
+    public void setPassWord(String passWord) {
+        this.passWord = passWord;
+        mPreferencesUtils.putString(Constants.PRF_USER_PASSWORD, passWord);
+    }
+
+    public void setIsLogin(boolean isLogin) {
+        this.isLogin = isLogin;
+        mPreferencesUtils.putBoolean(Constants.PRF_KEY_LOGIN,
+                isLogin);
+    }
+
+    public void setIsFirstLaunch(boolean isFirstLaunch) {
+        this.isFirstLaunch = isFirstLaunch;
+        mPreferencesUtils.putBoolean(Constants.PRF_KEY_FIRST_LAUNCH,
+                isFirstLaunch);
+    }
+
+    private void getApplicationInfo() {
+        final PackageManager pm = (PackageManager) mContext.getPackageManager();
+        try {
+            final PackageInfo pi = pm.getPackageInfo(mContext.getPackageName(),
+                    0);
+            isUpdateApp = versionCode == 0 ? true
+                    : pi.versionCode > versionCode;
+            // 是否为刚更新的版本
+            if (isUpdateApp) {
+                /*
+				 */
+                // 删除之前的cache
+            }
+            setVersionCode(pi.versionCode);
+            versionName = pi.versionName;
+            final ApplicationInfo ai = pm.getApplicationInfo(
+                    mContext.getPackageName(), PackageManager.GET_META_DATA);
+            appName = String.valueOf(ai.loadLabel(pm));
+            packageName = mContext.getPackageName();
+            density = mContext.getResources().getDisplayMetrics().density;
+        }
+        catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getVersionCode() {
+        if (versionCode == 0) {
+            readPreference();
+        }
+        return versionCode;
+    }
+
+    public void setVersionCode(int versionCode) {
+        this.versionCode = versionCode;
+        mPreferencesUtilsConfig.putInt(Constants.P_APP_OLD_VERSION_CODE,
+                versionCode);
+    }
+
+    private boolean isUpdateApp = false;
+
+    public boolean isUpdateApp() {
+        boolean temp = isUpdateApp;
+        // 只用一次
+        isUpdateApp = false;
+        return temp;
+    }
+}

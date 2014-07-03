@@ -1,4 +1,4 @@
-package com.nyist.vnow.ui;
+package com.nyist.vnow.fragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,12 +28,15 @@ import com.stay.net.Request.RequestMethod;
 import com.stay.net.callback.JsonCallback;
 import com.stay.utilities.TextUtil;
 
+import de.greenrobot.event.EventBus;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
@@ -41,7 +44,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ChoiceMemberActivity extends BaseActivity implements OnItemCheckedChangeListener {
+public class ChoseMemberFragment extends BaseFragment implements OnItemCheckedChangeListener {
     /**
      * 汉字转换成拼音的类
      */
@@ -61,69 +64,69 @@ public class ChoiceMemberActivity extends BaseActivity implements OnItemCheckedC
     private HorizontalScrollView mScrollView;
     private Button mConfirm;
     private int mSelectedMembersNumber;
+    private View mChoseMemberView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mChoseMemberView = inflater.inflate(R.layout.fragment_chose_member, null);
+        initializeViews(mChoseMemberView);
+        return mChoseMemberView;
     }
 
-    @Override
-    protected void setContentView() {
-        setContentView(R.layout.activity_choice_member);
+    protected void initializeViews(View view) {
+        initTopBar(view);
+        initSelectedMemberBar(view);
+        initMemberListView(view);
+    }
+
+    public void setUIVisibility(int visiable) {
+        mChoseMemberView.setVisibility(visiable);
+    }
+    /**
+     * 
+     */
+    private void initMemberListView(View view) {
+        mListviewContact = (ViEPullToRefreshListView) view.findViewById(R.id.listview_add_friends);
+        mIndexBar = (SideBar) view.findViewById(R.id.sidebar_add_friends);
     }
 
     /**
      * 
      */
-    private void initMemberListView() {
-        mListviewContact = (ViEPullToRefreshListView) findViewById(R.id.listview_add_friends);
-        mIndexBar = (SideBar) findViewById(R.id.sidebar_add_friends);
+    private void initSelectedMemberBar(View view) {
+        mScrollView = (HorizontalScrollView) view.findViewById(R.id.sv_member_selected);
+        mSelectedMemberLayout = (LinearLayout) view.findViewById(R.id.mSelectedMember);
     }
 
     /**
      * 
      */
-    private void initSelectedMemberBar() {
-        mScrollView = (HorizontalScrollView) findViewById(R.id.sv_member_selected);
-        mSelectedMemberLayout = (LinearLayout) findViewById(R.id.mSelectedMember);
-    }
-
-    /**
-     * 
-     */
-    private void initTopBar() {
-        TextView mHeaderText = (TextView) findViewById(R.id.mTopBarText);
+    private void initTopBar(View view) {
+        TextView mHeaderText = (TextView) view.findViewById(R.id.mTopBarText);
         mHeaderText.setText("选择与会人员");
-        ImageView mTopBarRight = (ImageView) findViewById(R.id.mTopBarRight);
-        mConfirm = (Button) findViewById(R.id.btn_sure);
+        ImageView mTopBarRight = (ImageView) view.findViewById(R.id.mTopBarRight);
+        mConfirm = (Button) view.findViewById(R.id.btn_sure);
         mConfirm.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
-            {}
+            {
+                EventBus.getDefault().post(new Colleage());
+            }
         });
-    }
-
-    @Override
-    protected void initializeData() {
-        mCore = VNowApplication.newInstance().getCore();
-        characterParser = CharacterParser.getInstance();
-        pinyinComparator = new PinyinComparator();
-        mListColleage = new ArrayList<Colleage>();
-        initColleageData();
     }
 
     /**
      * the method to init the contacts from phone
      */
     private void initColleageData() {
-        if (NetUtil.checkNet(ChoiceMemberActivity.this)) {
+        if (NetUtil.checkNet(getActivity())) {
             String colleagueUrl;
             try {
                 colleagueUrl = mCore.getColleagueUrl();
             }
             catch (UrlException e) {
-                ToastUtil.getInstance(ChoiceMemberActivity.this).showShort(e.getMessage());
+                ToastUtil.getInstance(getActivity()).showShort(e.getMessage());
                 return;
             }
             Request request = new Request(colleagueUrl, RequestMethod.GET);
@@ -165,10 +168,10 @@ public class ChoiceMemberActivity extends BaseActivity implements OnItemCheckedC
                         mListColleage.addAll(filledData(result));
                         // 根据a-z进行排序源数据
                         Collections.sort(mListColleage, pinyinComparator);
-                        mConfMemberSelectAdapter = new ConfMemberSelectAdapter(ChoiceMemberActivity.this,
+                        mConfMemberSelectAdapter = new ConfMemberSelectAdapter(getActivity(),
                                 mListColleage);
                         mListviewContact.setAdapter(mConfMemberSelectAdapter);
-                        mConfMemberSelectAdapter.setOnItemCheckedChangeListener(ChoiceMemberActivity.this);
+                        mConfMemberSelectAdapter.setOnItemCheckedChangeListener(ChoseMemberFragment.this);
                     }
                     mListviewContact.onRefreshComplete();
                 }
@@ -176,7 +179,7 @@ public class ChoiceMemberActivity extends BaseActivity implements OnItemCheckedC
             request.execute();
         }
         else {
-            ToastUtil.getInstance(ChoiceMemberActivity.this).showShort(getString(R.string.no_network));
+            ToastUtil.getInstance(getActivity()).showShort(getString(R.string.no_network));
         }
     }
 
@@ -209,18 +212,11 @@ public class ChoiceMemberActivity extends BaseActivity implements OnItemCheckedC
     }
 
     @Override
-    protected void initializeViews() {
-        initTopBar();
-        initSelectedMemberBar();
-        initMemberListView();
-    }
-
-    @Override
     public void OnCheckedChange(final CompoundButton checkBox, final int position, boolean isChecked) {
         if (isChecked) {
             if (!mSelectMemberHashMap.containsKey(position)) {
                 mSelectedUserPhoto = (ImageView) LayoutInflater
-                        .from(ChoiceMemberActivity.this)
+                        .from(getActivity())
                         .inflate(R.layout.choose_imageview, mSelectedMemberLayout, false);
                 mSelectedMemberLayout.addView(mSelectedUserPhoto);
                 mSelectedMemberLayout.postDelayed(new Runnable() {
@@ -267,5 +263,14 @@ public class ChoiceMemberActivity extends BaseActivity implements OnItemCheckedC
                 mConfirm.setText("确定(" + mSelectedMembersNumber + ")");
             }
         }
+    }
+
+    @Override
+    public void fetchObjectData() {
+        mCore = VNowApplication.newInstance().getCore();
+        characterParser = CharacterParser.getInstance();
+        pinyinComparator = new PinyinComparator();
+        mListColleage = new ArrayList<Colleage>();
+        initColleageData();
     }
 }

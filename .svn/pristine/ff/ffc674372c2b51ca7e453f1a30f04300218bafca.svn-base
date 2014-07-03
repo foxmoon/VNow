@@ -3,8 +3,10 @@ package com.nyist.vnow.adapter;
 import java.util.ArrayList;
 import java.util.List;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
@@ -14,13 +16,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+
 import com.nyist.vnow.R;
 import com.nyist.vnow.struct.Colleage;
+import com.nyist.vnow.utils.LogTag;
 
-public class ConfMemberSelectAdapter extends BaseAdapter implements SectionIndexer {
+public class ConfColleagueSelectAdapter extends BaseAdapter implements SectionIndexer, OnClickListener {
     private List<Colleage> mListColleages;
     private Context mContext;
-//    private ArrayList<Integer> mSelectedMembers;
+    private ArrayList<String> mSelectedMembers;
 
     final static class ViewHolder {
         ImageView imgHead;
@@ -31,10 +36,10 @@ public class ConfMemberSelectAdapter extends BaseAdapter implements SectionIndex
         CheckBox mMemberCheckBox;
     }
 
-    public ConfMemberSelectAdapter(Context context, List<Colleage> list) {
+    public ConfColleagueSelectAdapter(Context context, List<Colleage> list, ArrayList<String> selectedPhotos) {
         mContext = context;
-        this.mListColleages = list;
-//        mSelectedMembers = selectedMembers;
+        mListColleages = list;
+        mSelectedMembers = selectedPhotos;
     }
 
     public void updateListView(List<Colleage> list) {
@@ -42,14 +47,18 @@ public class ConfMemberSelectAdapter extends BaseAdapter implements SectionIndex
         notifyDataSetChanged();
     }
 
+    // public void updateSelectedMembers(ArrayList<String> selectedPhotos) {
+    // mSelectedMembers = selectedPhotos;
+    // notifyDataSetChanged();
+    // }
     @Override
     public int getCount() {
-        return mListColleages.size();
+        return mListColleages != null ? mListColleages.size() : 0;
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return mListColleages.get(position);
     }
 
     @Override
@@ -65,7 +74,6 @@ public class ConfMemberSelectAdapter extends BaseAdapter implements SectionIndex
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
-        final Colleage mContent = mListColleages.get(position);
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.avc_list_member_item, null);
@@ -85,28 +93,56 @@ public class ConfMemberSelectAdapter extends BaseAdapter implements SectionIndex
         else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        bindView(position, viewHolder);
+        return convertView;
+    }
+
+    /**
+     * @param position
+     * @param viewHolder
+     */
+    private void bindView(final int position, ViewHolder viewHolder) {
+        final Colleage colleage = mListColleages.get(position);
+        viewHolder.txtName.setText(colleage.getG_name());
+        viewHolder.mMemberCheckBox.setTag(position);
+        // 注意这里是设置点击事件而不是check事件
+        viewHolder.mMemberCheckBox.setOnClickListener(this);
+        if (isInSelectedDataList(colleage.getG_phone()))
+        {
+            viewHolder.mMemberCheckBox.setChecked(true);
+        }
+        else
+        {
+            viewHolder.mMemberCheckBox.setChecked(false);
+        }
         int section = getSectionForPosition(position);
         if (position == getPositionForSection(section)) {
             viewHolder.txtCatalog.setVisibility(View.VISIBLE);
             viewHolder.llayoutContent.setPadding(0, 5, 0, 5);
-            viewHolder.txtCatalog.setText(mContent.getmSortLetters());
+            viewHolder.txtCatalog.setText(colleage.getmSortLetters());
         }
         else {
             viewHolder.txtCatalog.setVisibility(View.GONE);
         }
-        viewHolder.txtName.setText(mListColleages.get(position).getG_name());
-        viewHolder.mMemberCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mOnCheckedChangeListener.OnCheckedChange(buttonView, position, isChecked);
+    }
+
+    private boolean isInSelectedDataList(
+            String selectedString)
+    {
+        for (int i = 0; i < mSelectedMembers.size(); i++)
+        {
+            if (mSelectedMembers.get(i).equals(
+                    selectedString))
+            {
+                return true;
             }
-        });
-        return convertView;
+        }
+        return false;
     }
 
     public interface OnItemCheckedChangeListener
     {
-        public void OnCheckedChange(CompoundButton buttonView, int position, boolean isChecked);
+        public void OnCheckedChange(CompoundButton buttonView, int position, String path, boolean isChecked);
     }
 
     private OnItemCheckedChangeListener mOnCheckedChangeListener;
@@ -115,20 +151,6 @@ public class ConfMemberSelectAdapter extends BaseAdapter implements SectionIndex
     {
         mOnCheckedChangeListener = onCheckedChangeListener;
     }
-
-//    private boolean isInSelectedDataList(
-//            int position)
-//    {
-//        for (int i = 0; i < mSelectedMembers.size(); i++)
-//        {
-//            if (mSelectedMembers.get(i).equals(
-//                    position))
-//            {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
     public int getSectionForPosition(int position) {
         return mListColleages.get(position).getmSortLetters().charAt(0);
@@ -158,5 +180,21 @@ public class ConfMemberSelectAdapter extends BaseAdapter implements SectionIndex
     @Override
     public Object[] getSections() {
         return null;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view instanceof CheckBox)
+        {
+            CheckBox checkBox = (CheckBox) view;
+            int position = (Integer) checkBox.getTag();
+            if (mListColleages != null
+                    && mOnCheckedChangeListener != null
+                    && position < mListColleages.size())
+            {
+                Colleage colleage = mListColleages.get(position);
+                mOnCheckedChangeListener.OnCheckedChange(checkBox, position, colleage.getG_phone(), checkBox.isChecked());
+            }
+        }
     }
 }

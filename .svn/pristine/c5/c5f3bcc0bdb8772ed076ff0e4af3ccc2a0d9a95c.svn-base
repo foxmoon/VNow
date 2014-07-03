@@ -1,0 +1,155 @@
+package com.nyist.vnow.fragment;
+
+import java.util.ArrayList;
+
+import org.apache.http.NameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.nyist.vnow.R;
+import com.nyist.vnow.core.VNowApplication;
+import com.nyist.vnow.core.VNowCore;
+import com.nyist.vnow.ui.VNowHostActivity;
+import com.nyist.vnow.utils.ActionEvent;
+import com.nyist.vnow.utils.LogTag;
+import com.nyist.vnow.utils.NetUtil;
+import com.nyist.vnow.utils.SIMCardInfo;
+import com.nyist.vnow.utils.ToastUtil;
+import com.stay.AppException;
+import com.stay.net.Request;
+import com.stay.net.Request.RequestMethod;
+import com.stay.net.callback.StringCallback;
+
+public class VNowFragmentRegist extends Fragment implements OnClickListener {
+    private Button mBtnRegist;
+    private EditText mEdUserName;
+    private EditText mEdPassword;
+    private EditText mEdRePassword;
+    private EditText mEdPhone;
+    private EditText mEdCmpEmail;
+    private EditText mEdCmpCode;
+    private VNowCore mCore;
+    private SIMCardInfo mSimCardInfo;
+
+    @SuppressLint("NewApi")
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        View view = inflater.inflate(R.layout.vnow_regist, container, false);
+        mCore = VNowApplication.newInstance().getCore();
+        mSimCardInfo = new SIMCardInfo(getActivity());
+        initUI(view);
+        return view;
+    }
+
+    private void initUI(View view) {
+        // TODO Auto-generated method stub
+        mBtnRegist = (Button) view.findViewById(R.id.regist_button);
+        mEdUserName = (EditText) view.findViewById(R.id.regist_username_ed);
+        mEdPassword = (EditText) view.findViewById(R.id.regist_password_ed);
+        mEdRePassword = (EditText) view.findViewById(R.id.regist_repassword_ed);
+        mEdPhone = (EditText) view.findViewById(R.id.regist_phone_ed);
+        mEdCmpEmail = (EditText) view.findViewById(R.id.regist_email_ed);
+        mEdCmpCode = (EditText) view.findViewById(R.id.regist_code_ed);
+        mEdPhone.setText(mSimCardInfo.getNativePhoneNumber());
+        mBtnRegist.setOnClickListener(this);
+    }
+
+    private void UIRegist() {
+        String userName = mEdUserName.getText().toString().trim();
+        final String password = mEdPassword.getText().toString().trim();
+        String rePassword = mEdRePassword.getText().toString().trim();
+        final String phone = mEdPhone.getText().toString().trim();
+        String emial = mEdCmpEmail.getText().toString().trim();
+        String code = mEdCmpCode.getText().toString().trim();
+        if (userName.length() == 0 || password.length() == 0 || rePassword.length() == 0 || phone.length() == 0
+                || emial.length() == 0) {
+            ToastUtil.getInstance(getActivity()).showShort(getString(R.string.str_regist_error_info));
+            return;
+        }
+        if (password.length() < 6 || !password.equals(rePassword)) {
+            mEdPassword.setError(getString(R.string.str_regist_error_password));
+            return;
+        }
+        if (code.length() == 0) {
+            code = "000002";
+        }
+        // mCore.doRegidt(userName, password, phone, emial, code);
+        if (NetUtil.checkNet(getActivity())) {
+            String registUrl = mCore.getRegistUrl();
+            if (!TextUtils.isEmpty(registUrl)) {
+                LogTag.e("regist+registUrl", registUrl);
+                Request request = new Request(registUrl, RequestMethod.POST);
+                ArrayList<NameValuePair> registParams = mCore.getRegistParams(userName, password, phone, emial, code);
+                request.setEntity(registParams);
+                request.setCallback(new StringCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        LogTag.e("regist+onSuccess", result);
+                        if (!TextUtils.isEmpty(result)) {
+                            try {
+                                JSONObject resultObject = new JSONObject(result);
+                                String resultTag = resultObject.optString("result");
+                                if (resultTag.equals("1")||resultTag.equals("2")) {
+                                    ToastUtil.getInstance(getActivity()).showShort(getString(R.string.str_regist_success));
+                                    ((VNowHostActivity) getActivity()).requestLogin(phone, password, false);
+                                }
+                            }
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(AppException result) {
+                        LogTag.e("regist+onFailure", result);
+                        ToastUtil.getInstance(getActivity()).showShort(getString(R.string.str_regist_field));
+                    }
+
+                    @Override
+                    public void onPreExecute() {
+                        // TODO Auto-generated method stub
+                        
+                    }
+                });
+                request.execute();
+            }
+            else {
+                ToastUtil.getInstance(getActivity()).showShort(getString(R.string.unuseful_url));
+            }
+        }
+        else {
+            ToastUtil.getInstance(getActivity()).showShort(getString(R.string.no_network));
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        // TODO Auto-generated method stub
+        int id = v.getId();
+        switch (id) {
+        // case R.id.btn_back: {
+        // ((VNowHostActivity)
+        // getActivity()).actionToFragment(ActionEvent.ACTION_LOGIN);
+        // }
+        // break;
+            case R.id.regist_button: {
+                UIRegist();
+            }
+                break;
+        }
+    }
+}

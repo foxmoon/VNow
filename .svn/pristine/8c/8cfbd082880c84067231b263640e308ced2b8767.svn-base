@@ -1,0 +1,18 @@
+package com.nyist.vnow.ui;
+
+public class ChoseMemberActivity extends BaseFragmentActivity {
+    @Override
+    protected void setContentView() {
+        
+    }
+
+    @Override
+    protected void initializeData() {
+        
+    }
+
+    @Override
+    protected void initializeViews() {
+        
+    }
+}

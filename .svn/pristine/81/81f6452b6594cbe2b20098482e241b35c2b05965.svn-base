@@ -1,0 +1,207 @@
+package com.nyist.vnow.ui;
+
+import java.io.File;
+import com.nyist.vnow.R;
+import com.nyist.vnow.core.VNowApplication;
+import com.nyist.vnow.core.VNowCore;
+import com.nyist.vnow.struct.LoginResult;
+import com.nyist.vnow.struct.VNowRctContact;
+import com.nyist.vnow.utils.ImageUtil;
+import com.nyist.vnow.utils.LogTag;
+import com.nyist.vnow.utils.NetUtil;
+import com.nyist.vnow.utils.Session;
+import com.nyist.vnow.utils.ToastUtil;
+import com.stay.AppException;
+import com.stay.net.Request;
+import com.stay.net.Request.RequestMethod;
+import com.stay.net.callback.JsonCallback;
+import com.vnow.sdk.openapi.EventListener;
+import android.os.Bundle;
+import android.os.Handler;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.Window;
+import android.view.animation.AlphaAnimation;
+import android.widget.ImageView;
+
+/**
+ * 开机启动页面
+ * 
+ * @author harry
+ * 
+ */
+public class SplashActivity extends Activity {
+    // 原图
+    private Bitmap mSourceBitmap;
+    // 处理后的图
+    private Bitmap mTargetBitmap;
+    private Session mSession;
+    private VNowCore mCore;
+    private MyEventListener mCallBackListener;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView();
+        initializeData();
+        initializeViews();
+    }
+
+    private void startMainActivity() {
+        Intent intent = new Intent(this, VNowMainActivity.class);
+        startActivity(intent);
+        this.finish();
+    }
+
+    private void startHostActivity() {
+        Intent intent = new Intent(this, VNowHostActivity.class);
+        startActivity(intent);
+        this.finish();
+    }
+
+    /*
+     * 初始化Splash背景图
+     */
+    private void initSplashBg() {
+        ImageView v = ((ImageView) findViewById(R.id.iv_splash));
+        File splashFile = new File(getApplicationContext().getCacheDir(),
+                "splash.png");
+        if (splashFile.exists()) {
+            mSourceBitmap = BitmapFactory.decodeFile(splashFile
+                    .getAbsolutePath());
+            if (ImageUtil.isAvailableBitmap(mSourceBitmap)) {
+                v.setImageBitmap(mSourceBitmap);
+                return;
+            }
+        }
+        /*
+         * // 没有新的Splash页，使用默认图 mSourceBitmap =
+         * BitmapFactory.decodeResource(getResources(), R.drawable.splash_bg);
+         * setSplashBitmap(mSourceBitmap);
+         */
+        v.setImageResource(R.drawable.ic_launcher);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mCore.doRemoveEventListener(mCallBackListener);
+        // if (ImageUtil.isAvailableBitmap(mTargetBitmap)) {
+        // mTargetBitmap.recycle();
+        // }
+        // if (ImageUtil.isAvailableBitmap(mSourceBitmap)) {
+        // mSourceBitmap.recycle();
+        // }
+    }
+
+    protected void setContentView() {
+        final View view = View.inflate(this, R.layout.vnow_activity_startup, null);
+        setContentView(view);
+        AlphaAnimation alphaAnim = new AlphaAnimation(0.0f, 1.0f);
+        alphaAnim.setDuration(2000);
+        view.setAnimation(alphaAnim);
+    }
+
+    protected void initializeData() {
+        VNowApplication.setAppState(0);
+        mCore = VNowApplication.newInstance().getCore();
+        mCallBackListener = new MyEventListener();
+        mCore.doSetEventListener(mCallBackListener);
+        mSession = Session.newInstance(getApplicationContext());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!TextUtils.isEmpty(mSession.getSessionId())) {
+                    startMainActivity();
+                }
+                else {
+                    startHostActivity();
+                }
+            }
+        }, 2500);
+    }
+
+    protected void initializeViews() {}
+
+    // web 接口回调
+    private class MyEventListener extends EventListener {
+        public void onResponseApiStatus(String status) {
+            if (status.equals("0") || status.equals("2")) {
+                autoLogin();
+            }
+            else if (status.equals("1")) {
+                Intent intent = new Intent();
+                intent.setClass(SplashActivity.this, VNowMainActivity.class);
+                if (null != VNowApplication.newInstance().getCore().getApiStatus()) {
+                    startActivity(intent);
+                    SplashActivity.this.finish();
+                    ToastUtil.getInstance(SplashActivity.this).showShort(getString(R.string.str_login_success));
+                }
+            }
+            else if (status.equals("5") || status.equals("7")) {
+                Intent intent = new Intent(SplashActivity.this,
+                        ConfActivity.class);
+                VNowRctContact rctItem = mCore.getRctContact().get(0);
+                intent.putExtra("callNumber", rctItem.getmStrConPhone());
+                intent.putExtra("callName", rctItem.getmStrContactName());
+                intent.putExtra("isCallin", false);
+                startActivity(intent);
+            }
+        }
+    }
+
+    public void autoLogin() {
+        String strPhone = mSession.getUserPhone();
+        String strpws = mSession.getPassWord();
+        if (!TextUtils.isEmpty(strPhone) && !TextUtils.isEmpty(strpws)) {
+            String loginUrl = mCore.getLoginUrl(strPhone, strpws, true);
+            Request request = new Request(loginUrl, RequestMethod.GET);
+            request.setCallback(new JsonCallback<LoginResult>() {
+                @Override
+                public LoginResult onPreHandle(LoginResult t) {
+                    return super.onPreHandle(t);
+                }
+
+                @Override
+                public void onSuccess(LoginResult result) {
+                    LogTag.e("onSuccess", result.toString());
+                    if (result.getResult() == 1) {
+                        if (!TextUtils.isEmpty(result.getSsid()) && !TextUtils.isEmpty(result.getUuid())
+                                && !TextUtils.isEmpty(result.getCode())) {
+                            Session session = Session.newInstance(SplashActivity.this);
+                            session.setUuid(result.getUuid());
+                            session.setCompanyCode(result.getCode());
+                            session.setSessionId(result.getSsid());
+                            String sessionId = session.getSessionId();
+                            if (sessionId.equals(result.getSsid())) {
+                                session.setIsLogin(true);
+                            }
+                            if (!TextUtils.isEmpty(result.getMserver())) {
+                                session.setMediaServerAddress(result.getMserver());
+                            }
+                        }
+                        startMainActivity();
+                        ToastUtil.getInstance(SplashActivity.this).showShort(getString(R.string.str_login_success));
+                    }
+                }
+
+                @Override
+                public void onFailure(AppException result) {
+                    startHostActivity();
+                    ToastUtil.getInstance(SplashActivity.this).showShort(getString(R.string.str_login_success));
+                }
+            }.setReturnClass(LoginResult.class));
+            if (NetUtil.checkNet(SplashActivity.this)) {
+                request.execute();
+            }
+            else {
+                ToastUtil.getInstance(SplashActivity.this).showShort(getString(R.string.no_network));
+            }
+        }
+    }
+}

@@ -1,0 +1,71 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ChoseMemberActivity" >
+
+    <include layout="@layout/top_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_contacts_txt"
+        android:orientation="vertical" >
+
+        <com.viewpagerindicator.TabPageIndicator
+            android:id="@+id/m_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.viewpagerindicator.UnderlinePageIndicatorEx
+            android:id="@+id/m_underline_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="2dp" />
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/white" />
+
+    <RelativeLayout
+        android:id="@+id/member_bar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp" >
+
+        <Button
+            android:id="@+id/btn_sure"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/btn_submit_selector"
+            android:enabled="false"
+            android:gravity="center"
+            android:text="@string/str_ok"
+            android:textColor="@color/white"
+            android:textSize="13sp" />
+
+        <HorizontalScrollView
+            android:id="@+id/sv_member_selected"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_toLeftOf="@+id/btn_sure"
+            android:scrollbars="none" >
+
+            <LinearLayout
+                android:id="@+id/mSelectedMember"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </HorizontalScrollView>
+    </RelativeLayout>
+
+</LinearLayout>

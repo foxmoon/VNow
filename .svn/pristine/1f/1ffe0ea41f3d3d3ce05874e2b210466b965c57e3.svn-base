@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:minHeight="50dp" >
+
+    <ImageView
+        android:id="@+id/mActionRowIconImg"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true" />
+    
+    <TextView
+        android:id="@+id/mActionRowLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textSize="20sp"
+        android:layout_toRightOf="@+id/mActionRowIconImg"
+        android:layout_marginLeft="5dp"
+        android:textColor="@android:color/black" />
+
+    <ImageView
+        android:id="@+id/mActionRowActionImg"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/mActionRowDetailLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:textSize="18sp"
+        android:layout_toLeftOf="@id/mActionRowActionImg"
+        android:textColor="@android:color/darker_gray" />
+
+</RelativeLayout>

@@ -1,0 +1,139 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <include
+            android:id="@+id/mTopBar"
+            layout="@layout/top_bar" />
+
+        <ScrollView
+            android:id="@+id/scrollView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/mTopBar"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="50dp" >
+
+                    <ImageView
+                        android:id="@+id/mConfThemeIconImg"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:id="@+id/mConfThemeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@+id/mConfThemeIconImg"
+                        android:text="@string/confTheme"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:id="@+id/mConfThemeImg"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:id="@+id/mConfThemeDetailLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:layout_toLeftOf="@id/mConfThemeImg"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:minHeight="50dp" >
+
+                    <ImageView
+                        android:id="@+id/mConfTimeIconImg"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:id="@+id/mConfTimeLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:layout_toRightOf="@+id/mConfTimeIconImg"
+                        android:text="@string/confTime"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:id="@+id/mConfTimeImg"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true" />
+
+                    <TextView
+                        android:id="@+id/mConfTimeDetailLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dp"
+                        android:layout_toLeftOf="@id/mConfTimeImg"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+
+                <com.nyist.vnow.view.CustomGridView
+                    android:id="@+id/mGridConfMember"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:numColumns="4"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="7dp" >
+                </com.nyist.vnow.view.CustomGridView>
+
+                <Button
+                    android:id="@+id/mCreatConfButton"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/str_ok" />
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+    <!-- <fragment -->
+    <!-- android:id="@+id/mFragChoseMember" -->
+    <!-- android:name="com.nyist.vnow.fragment.ChoseMemberFragment" -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="match_parent" -->
+    <!-- android:orientation="vertical" /> -->
+
+</FrameLayout>
